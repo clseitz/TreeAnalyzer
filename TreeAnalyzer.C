@@ -158,7 +158,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	vector<TLorentzVector> vetoLep;
 	TLorentzVector dummy;
 	/////////////   event loop   //////////////////////              
-	for(int entry=0; entry <  min(100000,Nevents); entry+=1){
+	for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
 	  goodJet.clear();
 	  goodLep.clear(); vetoLep.clear();
 	  goodEl.clear(); goodMu.clear();
@@ -223,7 +223,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	      if(dummy.Pt() > goodJetPt && fabs(dummy.Eta()) < goodEta){
 		goodJet.push_back(dummy);
 		nJetGood++;
-		HT40 =  HT40 + dummy.Pt(); //something buggy for HT, distribution looks strange?
+		HT40 =  HT40 + dummy.Pt(); //something buggy for HT, distribution looks strang?
 	      }
 	    }
 	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();
