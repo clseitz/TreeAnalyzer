@@ -1,16 +1,6 @@
 //---NtupleTools----------
-//   Version 2.0
-//   15.07.2010
-//   19.11.2010 duplicate check in AllRootFilesNoDup
-//   29.11.2010 clash removed in case of multiple opened EasyChains
-//   15.02.2011 conditionals for pure header use if __NTHEADER___ defined.
-//              This aproach allows the use of NtupleTools2.h with command line macros
-//              since the complete implementation is in one file
-//     2.5.2011 - Improved performance in case of multiple acces of a branch for same entry
-//              - new dcache door 
-//     8.6.2013 - simple TClonesArray to vector interface
-//              - no duplicates default -> false
-//              - unique name base argument
+//   Version 3.0
+//   Original version by Dirk Kruecker
 //   dirk.kruecker@desy.de
 
 #ifndef NtupleTools3_h

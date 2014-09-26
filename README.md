@@ -12,6 +12,7 @@ How to run:
 * ./go.sh TreeAnalyzer
 
 ToDo List:
+ * adjust "0" cut to represent the ntuple cuts for consistency check
  * adjust weights properly, need to input number of events manually since we are applying a skim
  * implement jetID (applied already in CMG), muon, electron id
  * fix setupNAF.sh script to use work properly on SL6 machines

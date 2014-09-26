@@ -1,8 +1,5 @@
 #include "NtupleTools3.h"
 
-//#include "mt2w_bisect.h"
-//#include "mt2w_bisect.cpp"
-
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -45,7 +42,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	// CutFlow variables
 	const int CutNumb = 2;
 	const char * CutList[CutNumb] = {"noCut",
-					 "== 1 lepton",
+					 "== 1 lepton, >= 2 jets",
 	                                };
 	//top
 	double CFCounter[CutNumb];
@@ -82,9 +79,9 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	    CutFlow->GetXaxis()->SetBinLabel(cj+1,CutList[cj]);
 	    TString cutName=CutList[cj];
 	    TString nCut; nCut.Form("%d",cj); 
-	    hHT[cj] = new TH1F ("HT_"+nCut,"HT "+cutName,400,0.0,4000.0);
+	    hHT[cj] = new TH1F ("HT_"+nCut,"HT "+cutName,200,0.0,4000.0);
 	    hHT[cj]->Sumw2();
-	    hST[cj] = new TH1F ("ST_"+nCut,"ST "+cutName,400,0.0,4000.0);
+	    hST[cj] = new TH1F ("ST_"+nCut,"ST "+cutName,200,0.0,4000.0);
 	    hST[cj]->Sumw2();
 	    h0JetpT[cj] = new TH1F ("0JetpT_"+nCut,"0JetpT "+cutName,200,0.0,2000.0);
 	    h0JetpT[cj]->Sumw2();
@@ -156,9 +153,9 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	vector<TLorentzVector> goodEl;
 	vector<TLorentzVector> goodMu;
 	vector<TLorentzVector> vetoLep;
-	TLorentzVector dummy;
+
 	/////////////   event loop   //////////////////////              
-	for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
+	for(int entry=0; entry <  min(100000,Nevents); entry+=1){
 	  goodJet.clear();
 	  goodLep.clear(); vetoLep.clear();
 	  goodEl.clear(); goodMu.clear();
@@ -197,17 +194,19 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	  ///at some point export this as functions  
 	  for(int ilep=0;ilep<nLep;ilep++)
 	    {
-	      dummy.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
-	      if(dummy.Pt() > vetoLepPt && fabs(dummy.Eta()) < goodEta){
-		vetoLep.push_back(dummy);
-		if( dummy.Pt() > goodLepPt && LepGood_relIso03[ilep] < 0.15){ //TODO: need to adjust isolation
-		  goodLep.push_back(dummy);
+	      TLorentzVector dummyLep;
+	      dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
+
+	      if(dummyLep.Pt() > vetoLepPt && fabs(dummyLep.Eta()) < goodEta){
+		vetoLep.push_back(dummyLep);
+		if( dummyLep.Pt() > goodLepPt && LepGood_relIso03[ilep] < 0.15){ //TODO: need to adjust isolation
+		  goodLep.push_back(dummyLep);
 		  if(abs(LepGood_pdgId[ilep]) == 11){
-		    goodEl.push_back(dummy);
+		    goodEl.push_back(dummyLep);
 		    nElGood++;
 		  }
 		  if(abs(LepGood_pdgId[ilep]) == 13){
-		    goodMu.push_back(dummy);
+		    goodMu.push_back(dummyLep);
 		    nMuGood++;
 		  }
 		  nLepGood++;
@@ -217,13 +216,14 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	    }
 	  for(int ijet=0;ijet<nJet;ijet++)
 	    {
-	      dummy.SetPtEtaPhiM(Jet_pt[ijet],Jet_eta[ijet],Jet_phi[ijet],Jet_mass[ijet]);
+	      TLorentzVector dummyJet;
+	     dummyJet.SetPtEtaPhiM(Jet_pt[ijet],Jet_eta[ijet],Jet_phi[ijet],Jet_mass[ijet]);
 	      //put pt, eta, cuts and other stuff
 	      //jet are already cleaned from all loose leptons that are in LepGood
-	      if(dummy.Pt() > goodJetPt && fabs(dummy.Eta()) < goodEta){
-		goodJet.push_back(dummy);
+	      if(dummyJet.Pt() > goodJetPt && fabs(dummyJet.Eta()) < goodEta){
+		goodJet.push_back(dummyJet);
 		nJetGood++;
-		HT40 =  HT40 + dummy.Pt(); //something buggy for HT, distribution looks strang?
+		HT40 = HT40 + dummyJet.Pt();
 	      }
 	    }
 	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();
@@ -248,7 +248,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	  //////////////////Require exactly one good lepton and one jet (maybe change later)
 	  //, need to implement loose veto//////////
 	  if (nLepGood != 1) continue;
-	  if (nJetGood < 1) continue;
+	  if (nJetGood < 2) continue; //already a njet > 2 cut applied in the ntuple for 25 GeV jets
 	  hnJet[1]->Fill(nJetGood,EvWeight);
 	  hnLep[1]->Fill(nLepGood,EvWeight);
 	  hnMu[1]->Fill(nMuGood,EvWeight);
