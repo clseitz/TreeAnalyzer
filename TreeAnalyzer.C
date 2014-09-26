@@ -155,7 +155,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	vector<TLorentzVector> vetoLep;
 
 	/////////////   event loop   //////////////////////              
-	for(int entry=0; entry <  min(100000,Nevents); entry+=1){
+	for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
 	  goodJet.clear();
 	  goodLep.clear(); vetoLep.clear();
 	  goodEl.clear(); goodMu.clear();
