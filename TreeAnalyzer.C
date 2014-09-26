@@ -44,7 +44,9 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 
 	// CutFlow variables
 	const int CutNumb = 2;
-	const char * CutList[CutNumb] = {"noCut"};
+	const char * CutList[CutNumb] = {"noCut",
+					 "== 1 lepton",
+	                                };
 	//top
 	double CFCounter[CutNumb];
 	int   iCFCounter[CutNumb];
@@ -55,6 +57,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	}
 	TH1F* CutFlow= new TH1F("CutFlow","Cut Flow",CutNumb,0.5,CutNumb+0.5);
 	TH1F *hHT[CutNumb];
+	TH1F *hST[CutNumb];
 	TH1F *h0JetpT[CutNumb];
 	TH1F *h1JetpT[CutNumb];
 	TH1F *h2JetpT[CutNumb];
@@ -79,9 +82,10 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	    CutFlow->GetXaxis()->SetBinLabel(cj+1,CutList[cj]);
 	    TString cutName=CutList[cj];
 	    TString nCut; nCut.Form("%d",cj); 
-	    hHT[cj] = new TH1F ("HT_"+nCut,"HT "+cutName,700,0.0,7000.0);
+	    hHT[cj] = new TH1F ("HT_"+nCut,"HT "+cutName,400,0.0,4000.0);
 	    hHT[cj]->Sumw2();
-
+	    hST[cj] = new TH1F ("ST_"+nCut,"ST "+cutName,400,0.0,4000.0);
+	    hST[cj]->Sumw2();
 	    h0JetpT[cj] = new TH1F ("0JetpT_"+nCut,"0JetpT "+cutName,200,0.0,2000.0);
 	    h0JetpT[cj]->Sumw2();
             h1JetpT[cj] = new TH1F ("1JetpT_"+nCut,"1JetpT "+cutName,200,0.0,2000.0);
@@ -132,7 +136,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	Float_t goodMuPt = 20.0;
 	Float_t goodLepPt = 20.0;
 	Float_t vetoLepPt = 10.0;
-	Float_t goodJetPt = 10.0;
+	Float_t goodJetPt = 40.0;
 	Float_t goodEta = 2.4;
 	int arrayN = 500;
 	Float_t Jet_pt[arrayN]; 
@@ -154,7 +158,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	vector<TLorentzVector> vetoLep;
 	TLorentzVector dummy;
 	/////////////   event loop   //////////////////////              
-	for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
+	for(int entry=0; entry <  min(100000,Nevents); entry+=1){
 	  goodJet.clear();
 	  goodLep.clear(); vetoLep.clear();
 	  goodEl.clear(); goodMu.clear();
@@ -166,7 +170,8 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 
 	  int EvWeight = 1;//fw; //lumi calcualtion done in runAnalyzer.py (fb and pb)
 	  /////////////////////////NEW for CMG//////////////////////
-
+	  Float_t HT40=0;
+	  Float_t ST=0;
 	  int nJet = tree->Get(nJet,"nJet");
 	  int nJetGood = 0;
 	  tree->Get(Jet_pt[0],"Jet_pt");
@@ -207,7 +212,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 		  }
 		  nLepGood++;
 		}
-
+		
 	      }
 	    }
 	  for(int ijet=0;ijet<nJet;ijet++)
@@ -218,24 +223,51 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	      if(dummy.Pt() > goodJetPt && fabs(dummy.Eta()) < goodEta){
 		goodJet.push_back(dummy);
 		nJetGood++;
+		HT40 =  HT40 + dummy.Pt(); //something buggy for HT, distribution looks strange?
 	      }
 	    }
-
+	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();
 	  hnJet[0]->Fill(nJetGood,EvWeight);
 	  hnLep[0]->Fill(nLepGood,EvWeight);
-	  if (nJet > 0) h0JetpT[0]->Fill(goodJet[0].Pt(),EvWeight);
-	  if (nJet > 1) h1JetpT[0]->Fill(goodJet[1].Pt(),EvWeight);
-	  if (nJet > 2) h2JetpT[0]->Fill(goodJet[2].Pt(),EvWeight);
-	  if (nJet > 6) h3JetpT[0]->Fill(goodJet[6].Pt(),EvWeight);
-
+	  hnMu[0]->Fill(nMuGood,EvWeight);
+	  hnEl[0]->Fill(nElGood,EvWeight);
+	  if (nJetGood > 0) h0JetpT[0]->Fill(goodJet[0].Pt(),EvWeight);
+	  if (nJetGood > 1) h1JetpT[0]->Fill(goodJet[1].Pt(),EvWeight);
+	  if (nJetGood > 2) h2JetpT[0]->Fill(goodJet[2].Pt(),EvWeight);
+	  if (nJetGood > 3) h3JetpT[0]->Fill(goodJet[3].Pt(),EvWeight);
 	  if (nLepGood > 0) hLeppt[0]->Fill(goodLep[0].Pt(),EvWeight);
 	  if (nMuGood > 0) hMupt[0]->Fill(goodMu[0].Pt(),EvWeight);
 	  if (nElGood > 0) hElpt[0]->Fill(goodEl[0].Pt(),EvWeight);
 
 	  hMET[0]->Fill(MET,EvWeight);
+	  hHT[0]->Fill(HT40,EvWeight);
+	  hST[0]->Fill(ST,EvWeight);
 
 	  CFCounter[0]+= EvWeight;                                                                  
 	  iCFCounter[0]++;      
+	  //////////////////Require exactly one good lepton and one jet (maybe change later)
+	  //, need to implement loose veto//////////
+	  if (nLepGood != 1) continue;
+	  if (nJetGood < 1) continue;
+	  hnJet[1]->Fill(nJetGood,EvWeight);
+	  hnLep[1]->Fill(nLepGood,EvWeight);
+	  hnMu[1]->Fill(nMuGood,EvWeight);
+	  hnEl[1]->Fill(nElGood,EvWeight);
+	  if (nJetGood > 0) h0JetpT[1]->Fill(goodJet[0].Pt(),EvWeight);
+	  if (nJetGood > 1) h1JetpT[1]->Fill(goodJet[1].Pt(),EvWeight);
+	  if (nJetGood > 2) h2JetpT[1]->Fill(goodJet[2].Pt(),EvWeight);
+	  if (nJetGood > 3) h3JetpT[1]->Fill(goodJet[3].Pt(),EvWeight);
+	  if (nLepGood > 0) hLeppt[1]->Fill(goodLep[0].Pt(),EvWeight);
+	  if (nMuGood > 0) hMupt[1]->Fill(goodMu[0].Pt(),EvWeight);
+	  if (nElGood > 0) hElpt[1]->Fill(goodEl[0].Pt(),EvWeight);
+
+	  hMET[1]->Fill(MET,EvWeight);
+	  hHT[1]->Fill(HT40,EvWeight);
+	  hST[1]->Fill(ST,EvWeight);
+
+	  CFCounter[1]+= EvWeight;                                                                  
+	  iCFCounter[1]++;      
+
 
 	  	  ////////////////////////////////////////////////////////////
 	  /////////////////////////////////////////////////////////
@@ -267,7 +299,9 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	
 	for(int cj = 0; cj < CutNumb; cj++)
 	  {
+
 	    hHT[cj]->Write();
+	    hST[cj]->Write();
 	    h0JetpT[cj]->Write();
 	    h1JetpT[cj]->Write();
 	    h2JetpT[cj]->Write();
