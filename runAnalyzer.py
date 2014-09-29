@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys
+import sys, os
 from ROOT import gROOT
 
 # scenarios and samples
@@ -57,32 +57,38 @@ if not flag: help()
 # prepare empty dictionaries
 dirsHT={}
 inDir={}
-weights={}
+xsec_lumi={}
+evtgen={}
 for scene in scenarios:
 	inDir[scene]={}
 #	weights[scene]={}
 
 
 dirsHT['TTbar']  = ['/']
-weights['TTbar'] = [812.8] #cross section in pb
-#weights['TTbar'] = scale(Lumi,weights['TTbar'])
-inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/treeProducerSusySingleLepton/'
+xsec_lumi['TTbar'] = [812.8*Lumi] #cross section in pb
+
+#xsec['TTbar'] = scale(Lumi,weights['TTbar'])
+inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+evtgen['TTbar']=10#os.system("grep 'all' inDir['MC']['TTbar']+'ttHLepSkimmerevents.txt' | awk '{print $3}'")
+#test = os.system("grep 'all' /afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/ttHLepSkimmer/events.txt | awk '{print $3}'")
+
 
 # for HT binned input files use: 
 #dirsHT['DiBoson']  = ['0-300/','300-700/','700-1300/','1300-2100/','2100-100000/']
-#weights['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
-#weights['DiBoson'] = scale(Lumi,weights['DiBoson'])
+#xsec_lumi['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
+#xsec_lumi['DiBoson'] = scale(Lumi,weights['DiBoson'])
 #inDir['MC']['DiBoson'] = '/afs/desy.de/user/t/trippk/dust/AN_PAS_TP/DELPHES/nTUPLER/batch/1st_Output/PhaseII_140PU_ProdJul28/diboson/'
 
 ## TP
 dirsHT['T1tttt_1500_100'] = ['/']
-weights['T1tttt_1500_100'] = [0.1*Lumi]
-inDir['MC']['T1tttt_1500_100'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/treeProducerSusySingleLepton/'
+evtgen['T1tttt_1500_100']=20
+xsec_lumi['T1tttt_1500_100'] = [0.1*Lumi]
+inDir['MC']['T1tttt_1500_100'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/'
 
 dirsHT['T1tttt_1200_800'] = ['/']
-weights['T1tttt_1200_800'] = [0.1*Lumi]
-inDir['MC']['T1ttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/treeProducerSusySingleLepton/'
-
+xsec_lumi['T1tttt_1200_800'] = [0.1*Lumi]
+inDir['MC']['T1ttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
+evtgen['T1ttt_1200_800']=25000000
 
 from ROOT import TFile
 from glob import glob
@@ -105,8 +111,9 @@ for scene in scenarios:
 			f=''
 			print dirsHT, samp
 			for i in range(len(dirsHT[samp])):
-				entries = GetEntries(inDir[scene][samp]+dirsHT[samp][i])
-				f=f+inDir[scene][samp]+dirsHT[samp][i]+' '+str(weights[samp][i]/entries)+' '
+				entries = evtgen[samp]
+				print entries, xsec_lumi[samp]
+				f=f+inDir[scene][samp]+"treeProducerSusySingleLepton"+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
 			print f,samp,scene
 			reader(f,scene+'_'+samp)
 
