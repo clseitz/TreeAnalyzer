@@ -4,19 +4,19 @@
 #
 #######################################################
 ##### new commands for running on bird #####
-#$ -l h=!bird025.desy.de                                                                                                                                                                                        
-#$ -l h=!bird020.desy.de                                                                                                                                                                                        
-#$ -l h=!bird028.desy.de                                                                                                                                                                                        
-#$ -l arch=amd64                                                                                                                                                                                               
-#$ -l distro=sld5                                                                                                                                                                                                
+#$ -l h=!bird025.desy.de
+#$ -l h=!bird020.desy.de
+#$ -l h=!bird028.desy.de
+#$ -l arch=amd64
+#$ -l distro=sld5
 #######################################################
 #
 ## the cpu time for this job
-##$ -l h_cpu=02:00:00
-#$ -l h_cpu=05:00:00
+#$ -l h_cpu=02:00:00
+##$ -l h_cpu=05:00:00
 #$ -l site=hh
 ## the maximum memory usage of this job
-#$ -l h_vmem=1500M
+#$ -l h_vmem=1900M
 ##$ -l h_vmem=3000M
 ## stderr and stdout are merged together to stdout
 #$ -j y
