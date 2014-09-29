@@ -12,45 +12,45 @@ Lumi=Lumi * 1000
 
 
 def help():
-	print 'First argument analysis:'
-	print './runreader.py   SingleS TYPE_SAMPLE'
-	print ' TYPE = MC, data'
-	print ' SAMPLE = ',
-	for sample in samples: 
-		print sample,
-	sys.exit(0)
+        print 'First argument analysis:'
+        print './runreader.py   SingleS TYPE_SAMPLE'
+        print ' TYPE = MC, data'
+        print ' SAMPLE = ',
+        for sample in samples:
+                print sample,
+        sys.exit(0)
 
 from operator import mul
 def scale(fac,list):
- 	return map(mul,len(list)*[fac],list)
+        return map(mul,len(list)*[fac],list)
 
 # choose the analysis and a sample
 if len(sys.argv)>1:
-	if sys.argv[1]=='SingleS_P':  # single lepton testing version 
-		gROOT.LoadMacro('readerSingleS_P.C+')
-		from ROOT import readerSingleS_P as reader
-	elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version 
-		gROOT.LoadMacro('TreeAnalyzer.C+')
-		from ROOT import TreeAnalyzer as reader
-	else: 
-		help()
-else: 
-	help()
+        if sys.argv[1]=='SingleS_P':  # single lepton testing version
+                gROOT.LoadMacro('readerSingleS_P.C+')
+                from ROOT import readerSingleS_P as reader
+        elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
+                gROOT.LoadMacro('TreeAnalyzer.C+')
+                from ROOT import TreeAnalyzer as reader
+        else:
+                help()
+else:
+        help()
 
 
 #prepare empty dictionaries
 do={}
 for scene in scenarios:
-	do[scene]={}
-	for samp in samples:
-		do[scene][samp] = 0
+        do[scene]={}
+        for samp in samples:
+                do[scene][samp] = 0
 flag=False
 for e in sys.argv:
-	for scene in scenarios:
-		for samp in samples:
-			if e==scene+'_'+samp: 
- 				do[scene][samp] = 1			
-				flag=True
+        for scene in scenarios:
+                for samp in samples:
+                        if e==scene+'_'+samp:
+                                do[scene][samp] = 1
+                                flag=True
 if not flag: help()
 
 
@@ -59,8 +59,8 @@ dirsHT={}
 inDir={}
 weights={}
 for scene in scenarios:
-	inDir[scene]={}
-#	weights[scene]={}
+        inDir[scene]={}
+#       weights[scene]={}
 
 
 dirsHT['TTbar']  = ['/']
@@ -68,7 +68,7 @@ weights['TTbar'] = [812.8] #cross section in pb
 #weights['TTbar'] = scale(Lumi,weights['TTbar'])
 inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/treeProducerSusySingleLepton/'
 
-# for HT binned input files use: 
+# for HT binned input files use:
 #dirsHT['DiBoson']  = ['0-300/','300-700/','700-1300/','1300-2100/','2100-100000/']
 #weights['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
 #weights['DiBoson'] = scale(Lumi,weights['DiBoson'])
@@ -87,28 +87,52 @@ inDir['MC']['T1ttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/
 from ROOT import TFile
 from glob import glob
 from sys import exit
-def GetEntries(dirname):
-	files = glob(dirname+'/*.root')
-	if len(files)>1:
-		print 'GetEntries: there is more than 1 root file in '+dirname
+
+def GetTreeName(file):
+	keylist = file.GetListOfKeys()
+	treeKey = keylist.At(0)
+	treeName = treeKey.GetName()
+
+	if 'tree' in treeName:
+		return treeName
+	else:
+		print 'Tree not found in ', file.GetName()
 		exit(0)
-	print dirname,files
-	file=TFile(files[0])
-	#tree = file.Get("delphTree")
-	tree = file.Get("treeProducerSusySingleLepton")
-	return tree.GetEntries()
-	
+
+def GetEntries(dirname):
+        files = glob(dirname+'/*.root')
+
+        if len(files)<1:
+                print 'GetEntries: there is NO root file in '+dirname
+                exit(0)
+
+        elif len(files)==1:
+                print dirname,files
+                file=TFile(files[0])
+		treeName =  GetTreeName(file)
+               #tree = file.Get("delphTree")
+               #tree = file.Get("treeProducerSusySingleLepton")
+		tree = file.Get(treeName)
+
+		print 'Going to analyze ', treeName
+                return tree.GetEntries()
+
+        elif len(files)>1:
+                print 'GetEntries: there is more than 1 root file in '+dirname
+                exit(0)
+
+
 # do it
 for scene in scenarios:
-	for samp in samples:
-		if do[scene][samp]: 
-			f=''
-			print dirsHT, samp
-			for i in range(len(dirsHT[samp])):
-				entries = GetEntries(inDir[scene][samp]+dirsHT[samp][i])
-				f=f+inDir[scene][samp]+dirsHT[samp][i]+' '+str(weights[samp][i]/entries)+' '
-			print f,samp,scene
-			reader(f,scene+'_'+samp)
+        for samp in samples:
+                if do[scene][samp]:
+                        f=''
+                        print dirsHT, samp
+                        for i in range(len(dirsHT[samp])):
+                                entries = GetEntries(inDir[scene][samp]+dirsHT[samp][i])
+                                f=f+inDir[scene][samp]+dirsHT[samp][i]+' '+str(weights[samp][i]/entries)+' '
+                        print f,samp,scene
+                        reader(f,scene+'_'+samp)
 
 
 
