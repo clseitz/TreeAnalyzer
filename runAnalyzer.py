@@ -69,8 +69,9 @@ xsec_lumi['TTbar'] = [812.8*Lumi] #cross section in pb
 
 #xsec['TTbar'] = scale(Lumi,weights['TTbar'])
 inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-evtgen['TTbar']=10#os.system("grep 'all' inDir['MC']['TTbar']+'ttHLepSkimmerevents.txt' | awk '{print $3}'")
-#test = os.system("grep 'all' /afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/ttHLepSkimmer/events.txt | awk '{print $3}'")
+#FIX to do this automatically from the textfile
+evtgen['TTbar']= 25060456
+#os.system("grep 'all' "+inDir['MC']['TTbar']+"/ttHLepSkimmer/events.txt' | awk '{print $3}'")
 
 
 # for HT binned input files use:
@@ -81,14 +82,14 @@ evtgen['TTbar']=10#os.system("grep 'all' inDir['MC']['TTbar']+'ttHLepSkimmereven
 
 ## TP
 dirsHT['T1tttt_1500_100'] = ['/']
-evtgen['T1tttt_1500_100']=20
+evtgen['T1tttt_1500_100']=105679
 xsec_lumi['T1tttt_1500_100'] = [0.1*Lumi]
 inDir['MC']['T1tttt_1500_100'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/'
 
 dirsHT['T1tttt_1200_800'] = ['/']
 xsec_lumi['T1tttt_1200_800'] = [0.1*Lumi]
 inDir['MC']['T1ttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
-evtgen['T1ttt_1200_800']=25000000
+evtgen['T1ttt_1200_800']=100322
 
 from ROOT import TFile
 from glob import glob
@@ -136,8 +137,7 @@ for scene in scenarios:
 			print dirsHT, samp
 			for i in range(len(dirsHT[samp])):
 				entries = evtgen[samp]
-				print entries, xsec_lumi[samp]
-				f=f+inDir[scene][samp]+GetTreeName(file)+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
+				f=f+inDir[scene][samp]+"treeProducerSusySingleLepton"+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
 			print f,samp,scene
 			reader(f,scene+'_'+samp)
 

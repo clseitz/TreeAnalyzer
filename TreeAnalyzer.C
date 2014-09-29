@@ -155,7 +155,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	vector<TLorentzVector> vetoLep;
 
 	/////////////   event loop   //////////////////////              
-	for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
+	for(int entry=0; entry <  min(1000000,Nevents); entry+=1){
 	  goodJet.clear();
 	  goodLep.clear(); vetoLep.clear();
 	  goodEl.clear(); goodMu.clear();
@@ -163,9 +163,10 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 	  //tree->GetEntry(entry); // <<<<<<<<<<< dk
 	  Float_t fw = tree->GetEntryW(entry);	  
 	  progressT();
- 
+	  
 
-	  int EvWeight = 1;//fw; //lumi calcualtion done in runAnalyzer.py (fb and pb)
+	  Float_t EvWeight = fw; //lumi calcualtion done in runAnalyzer.py (fb and pb)
+
 	  /////////////////////////NEW for CMG//////////////////////
 	  Float_t HT40=0;
 	  Float_t ST=0;
