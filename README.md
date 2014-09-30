@@ -13,11 +13,10 @@ How to run:
 
 ToDo List:
  * adjust "0" cut to represent the ntuple cuts for consistency check
- * get generated number of events automatically
  * implement jetID (applied already in CMG), muon, electron id
  * fix setupNAF.sh script to use work properly on SL6 machines
  * allow input of multiple files
  * implement analysis, histograms, etc.
 
 Done:
- * event weight is fixed
+ * event weight is fixed, automatic read in fixed

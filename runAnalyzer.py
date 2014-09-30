@@ -7,8 +7,8 @@ from ROOT import gROOT
 scenarios = ['MC','data']
 samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
 treename = 'treeProducerSusySingleLepton'
-Lumi=1 #given in fb^-1
-Lumi=Lumi * 1000
+Lumi = 1 #given in fb^-1
+Lumi = Lumi * 1000
 
 
 def help():
@@ -23,6 +23,15 @@ def help():
 from operator import mul
 def scale(fac,list):
         return map(mul,len(list)*[fac],list)
+
+def GetNevents(loc):
+	EvtFile = open(loc+"/ttHLepSkimmer/events.txt", "r")
+	theInts = []
+	for val in EvtFile.read().split():
+		if val.isdigit(): 
+			theInts.append(val)
+	EvtFile.close()	
+	return float(theInts[0])
 
 # choose the analysis and a sample
 if len(sys.argv)>1:
@@ -63,18 +72,13 @@ for scene in scenarios:
         inDir[scene]={}
 #       weights[scene]={}
 
-
-dirsHT['TTbar']  = ['/']
-xsec_lumi['TTbar'] = [812.8*Lumi] #cross section in pb
+sample = 'TTbar'
+dirsHT[sample]  = ['/']
+xsec_lumi[sample] = [812.8*Lumi] #cross section in pb
 #xsec['TTbar'] = scale(Lumi,weights['TTbar'])
-inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-# not optimal but it does the trick
-evtgen['TTbar'] = 25060456
-test = os.system("grep 'all' "+inDir['MC']['TTbar']+"/ttHLepSkimmer/events.txt | awk '{print $3}'")
-
-
-
-
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+ 
 # for HT binned input files use:
 #dirsHT['DiBoson']  = ['0-300/','300-700/','700-1300/','1300-2100/','2100-100000/']
 #xsec_lumi['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
@@ -82,15 +86,17 @@ test = os.system("grep 'all' "+inDir['MC']['TTbar']+"/ttHLepSkimmer/events.txt |
 #inDir['MC']['DiBoson'] = '/afs/desy.de/user/t/trippk/dust/AN_PAS_TP/DELPHES/nTUPLER/batch/1st_Output/PhaseII_140PU_ProdJul28/diboson/'
 
 ## TP
-dirsHT['T1tttt_1500_100'] = ['/']
-evtgen['T1tttt_1500_100']=105679
-xsec_lumi['T1tttt_1500_100'] = [0.1*Lumi]
-inDir['MC']['T1tttt_1500_100'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/TLVector/T1tttt2J_6_PU_S14_POSTLS170/'
+sample = 'T1tttt_1500_100'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.0141903*Lumi]
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_6_PU_S14_POSTLS170/'
+evtgen[sample] = GetNevents(inDir['MC'][sample])
 
-dirsHT['T1tttt_1200_800'] = ['/']
-xsec_lumi['T1tttt_1200_800'] = [0.1*Lumi]
-inDir['MC']['T1tttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
-evtgen['T1tttt_1200_800']=100322
+sample = 'T1tttt_1200_800'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.085641*Lumi]
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
+evtgen[sample] = GetNevents(inDir['MC'][sample])
 
 from ROOT import TFile
 from glob import glob
@@ -138,7 +144,7 @@ for scene in scenarios:
 			print dirsHT, samp
 			for i in range(len(dirsHT[samp])):
 				entries = evtgen[samp]
-				print xsec_lumi[samp], entries
+				print "cross section x lumi",xsec_lumi[samp], "Events generated", entries
 				f=f+inDir[scene][samp]+treename+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
 			
 			print f,samp,scene
