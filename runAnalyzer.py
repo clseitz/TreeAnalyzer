@@ -6,7 +6,7 @@ from ROOT import gROOT
 # scenarios and samples
 scenarios = ['MC','data']
 samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
-
+treename = 'treeProducerSusySingleLepton'
 Lumi=1 #given in fb^-1
 Lumi=Lumi * 1000
 
@@ -66,12 +66,13 @@ for scene in scenarios:
 
 dirsHT['TTbar']  = ['/']
 xsec_lumi['TTbar'] = [812.8*Lumi] #cross section in pb
-
 #xsec['TTbar'] = scale(Lumi,weights['TTbar'])
 inDir['MC']['TTbar'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-#FIX to do this automatically from the textfile
-evtgen['TTbar']= 25060456
-#os.system("grep 'all' "+inDir['MC']['TTbar']+"/ttHLepSkimmer/events.txt' | awk '{print $3}'")
+# not optimal but it does the trick
+evtgen['TTbar'] = 25060456
+test = os.system("grep 'all' "+inDir['MC']['TTbar']+"/ttHLepSkimmer/events.txt | awk '{print $3}'")
+
+
 
 
 # for HT binned input files use:
@@ -88,8 +89,8 @@ inDir['MC']['T1tttt_1500_100'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt
 
 dirsHT['T1tttt_1200_800'] = ['/']
 xsec_lumi['T1tttt_1200_800'] = [0.1*Lumi]
-inDir['MC']['T1ttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
-evtgen['T1ttt_1200_800']=100322
+inDir['MC']['T1tttt_1200_800'] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
+evtgen['T1tttt_1200_800']=100322
 
 from ROOT import TFile
 from glob import glob
@@ -137,7 +138,9 @@ for scene in scenarios:
 			print dirsHT, samp
 			for i in range(len(dirsHT[samp])):
 				entries = evtgen[samp]
-				f=f+inDir[scene][samp]+"treeProducerSusySingleLepton"+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
+				print xsec_lumi[samp], entries
+				f=f+inDir[scene][samp]+treename+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
+			
 			print f,samp,scene
 			reader(f,scene+'_'+samp)
 
