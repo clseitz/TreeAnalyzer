@@ -2,7 +2,12 @@
 
 using namespace std;
 
-//using namespace std;
+// global Object vectors
+vector<TLorentzVector> goodJet;
+vector<TLorentzVector> goodLep;
+vector<TLorentzVector> goodEl;
+vector<TLorentzVector> goodMu;
+vector<TLorentzVector> vetoLep;
 
 // Object cuts
 Float_t goodEta = 2.4;

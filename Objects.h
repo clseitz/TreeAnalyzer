@@ -1,3 +1,6 @@
+#ifndef OBJECTS_H
+#define OBJECTS_H
+
 #include "NtupleTools3.h"
 
 #include <fstream>
@@ -9,13 +12,18 @@
 #include <TH1F.h>
 #include <TFile.h>
 
-using namespace std;
+// shouldn't be using 'using' in header files
+//using namespace std;
 
 /* Definition of objects:
  * leptons, muons, electrons
  * jets
  */
 
+void GetGoodLeptons(EasyChain * tree);
+void GetGoodJets(EasyChain * tree);
+
+// to be written
 /*
 void GetElectrons(EasyChain * tree);
 void GetMuons(EasyChain * tree);
@@ -27,15 +35,12 @@ void GetGoodMuons(EasyChain * tree);
 void GetJets(EasyChain * tree);
 */
 
-void GetGoodLeptons(EasyChain * tree);
-void GetGoodJets(EasyChain * tree);
-
 // global object variables
-vector<TLorentzVector> goodJet;
-vector<TLorentzVector> goodLep;
-vector<TLorentzVector> goodEl;
-vector<TLorentzVector> goodMu;
-vector<TLorentzVector> vetoLep;
+extern std::vector<TLorentzVector> goodJet;
+extern std::vector<TLorentzVector> goodLep;
+extern std::vector<TLorentzVector> goodEl;
+extern std::vector<TLorentzVector> goodMu;
+extern std::vector<TLorentzVector> vetoLep;
 
 int nLepGood;
 int nMuGood;
@@ -45,3 +50,5 @@ int nJetGood;
 
 Float_t HT40;
 Float_t ST;
+
+#endif
