@@ -142,6 +142,7 @@ def GetEntries(dirname):
 
 # do it
 for scene in scenarios:
+
         for samp in samples:
                 if do[scene][samp]:
                         f=''
@@ -150,6 +151,7 @@ for scene in scenarios:
                                 entries = evtgen[samp]
                                 print "cross section x lumi",xsec_lumi[samp], "Events generated", entries
                                 f=f+inDir[scene][samp]+treename+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
-                        print f,samp,scene
 
+                        print f,samp,scene
                         reader(f,scene+'_'+samp)
+
