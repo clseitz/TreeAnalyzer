@@ -5,7 +5,8 @@ from ROOT import gROOT
 
 # scenarios and samples
 scenarios = ['MC','data']
-samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
+#samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
+samples   = ['TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800']
 treename = 'treeProducerSusySingleLepton'
 Lumi = 1 #given in fb^-1
 Lumi = Lumi * 1000
@@ -45,6 +46,9 @@ if len(sys.argv)>1:
                 gROOT.LoadMacro('Objects.C+')
                 gROOT.LoadMacro('TreeAnalyzer_ext.C+')
                 from ROOT import TreeAnalyzer_ext as reader
+        elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
+                gROOT.LoadMacro('TreeAnalyzer_BKG.C+')
+                from ROOT import TreeAnalyzer as reader
         else:
                 help()
 else:
@@ -78,28 +82,37 @@ for scene in scenarios:
 
 sample = 'TTbar'
 dirsHT[sample]  = ['/']
-xsec_lumi[sample] = [812.8*Lumi] #cross section in pb
-#xsec['TTbar'] = scale(Lumi,weights['TTbar'])
-inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+sample = 'TTbar_SinLep'
+dirsHT[sample]  = ['/']
+xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+sample = 'TTbar_DiLep'
+dirsHT[sample]  = ['/']
+xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
+#inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
 evtgen[sample]  =  GetNevents(inDir['MC'][sample])
 
 # for HT binned input files use:
 #dirsHT['DiBoson']  = ['0-300/','300-700/','700-1300/','1300-2100/','2100-100000/']
 #xsec_lumi['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
 #xsec_lumi['DiBoson'] = scale(Lumi,weights['DiBoson'])
-#inDir['MC']['DiBoson'] = '/afs/desy.de/user/t/trippk/dust/AN_PAS_TP/DELPHES/nTUPLER/batch/1st_Output/PhaseII_140PU_ProdJul28/diboson/'
 
 ## TP
 sample = 'T1tttt_1500_100'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.0141903*Lumi]
-inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_6_PU_S14_POSTLS170/'
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl1500_mLSP100_PU_S14_POSTLS170/'
 evtgen[sample] = GetNevents(inDir['MC'][sample])
 
 sample = 'T1tttt_1200_800'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.085641*Lumi]
-inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/T1tttt/T1tttt2J_7_PU_S14_POSTLS170/'
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170/'
 evtgen[sample] = GetNevents(inDir['MC'][sample])
 
 from ROOT import TFile
