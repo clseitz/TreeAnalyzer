@@ -35,6 +35,9 @@ def GetNevents(loc):
         return float(theInts[0])
 
 # choose the analysis and a sample
+
+#gROOT.LoadMacro('Objects.C+')
+
 if len(sys.argv)>1:
         if sys.argv[1]=='SingleS_P':  # single lepton testing version
                 gROOT.LoadMacro('readerSingleS_P.C+')
@@ -42,9 +45,13 @@ if len(sys.argv)>1:
         elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
                 gROOT.LoadMacro('TreeAnalyzer.C+')
                 from ROOT import TreeAnalyzer as reader
-        elif sys.argv[1]=='TreeAnalyzer_ext':  # single lepton testing version
+        elif sys.argv[1]=='TreeAnalyzer_ext':  # test external object definitions
                 gROOT.LoadMacro('Objects.C+')
                 gROOT.LoadMacro('TreeAnalyzer_ext.C+')
+                from ROOT import TreeAnalyzer_ext as reader
+        elif sys.argv[1]=='SingleLeptCMSana':  # single lepton CMS artur
+                gROOT.LoadMacro('Objects.C+')
+                gROOT.LoadMacro('SingleLeptCMSana.C+')
                 from ROOT import TreeAnalyzer_ext as reader
         elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
                 gROOT.LoadMacro('TreeAnalyzer_BKG.C+')
