@@ -147,8 +147,9 @@ void TreeAnalyzer_ext(TString list, TString outname,bool useW=true){
 //	  Float_t ST=0;
 	  ST=0;
 
-	  GetGoodLeptons(tree);
-	  GetGoodJets(tree);
+//	  GetGoodLeptons(tree);
+	  GetLeptons(tree);
+	  GetJets(tree);
 
 	  Float_t MET = tree->Get(MET,"met_pt");
 	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();

@@ -102,6 +102,7 @@ void GetLeptons(EasyChain * tree){
                     if(LepGood_relIso03[ilep] < goodMu_relIso03){
 //			isGoodMu = true;
 
+                        goodLep.push_back(dummyLep);
                         goodMu.push_back(dummyLep);
                         nMuGood++;
 
@@ -120,6 +121,7 @@ void GetLeptons(EasyChain * tree){
                 if(LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
 
+		    goodLep.push_back(dummyLep);
                     goodEl.push_back(dummyLep);
                     nElGood++;
 
@@ -138,11 +140,14 @@ void GetLeptons(EasyChain * tree){
 	}
     }
 
+    nLepGood = nMuGood + nElGood;
+//    nLepVeto += nElVeto + nMuVeto; // add up veto leptons, els and mus
+/*
     cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
     cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
     cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
     cout << "Number of veto leptons = \t" << nLepVeto << endl;
-
+*/
 }
 
 void GetGoodLeptons(EasyChain * tree){
@@ -221,7 +226,8 @@ void GetJets(EasyChain * tree){
         }
     }
 
+/*
     cout << "Get jets summary: total number of jets = \t" << nJet << endl;
-    cout << "Number of good jetss = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
-
+    cout << "Number of good jets = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
+*/
 }
