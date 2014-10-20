@@ -6,8 +6,8 @@ from ROOT import gROOT
 # scenarios and samples
 scenarios = ['MC','data']
 #samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
-samples   = ['TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800']
-treename = 'treeProducerSusySingleLepton'
+samples   = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800']
+treename = 'treeProducerSusySingleLepton/'
 Lumi = 1 #given in fb^-1
 Lumi = Lumi * 1000
 
@@ -48,14 +48,14 @@ if len(sys.argv)>1:
         elif sys.argv[1]=='TreeAnalyzer_ext':  # test external object definitions
                 gROOT.LoadMacro('Objects.C+')
                 gROOT.LoadMacro('TreeAnalyzer_ext.C+')
-                from ROOT import TreeAnalyzer_ext as reader
+                from ROOT import TreeAnalyzer as reader
         elif sys.argv[1]=='SingleLeptCMSana':  # single lepton CMS artur
                 gROOT.LoadMacro('Objects.C+')
                 gROOT.LoadMacro('SingleLeptCMSana.C+')
                 from ROOT import TreeAnalyzer_ext as reader
         elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
                 gROOT.LoadMacro('TreeAnalyzer_BKG.C+')
-                from ROOT import TreeAnalyzer as reader
+                from ROOT import TreeAnalyzer_BKG as reader
         else:
                 help()
 else:
@@ -91,36 +91,44 @@ sample = 'TTbar'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+evtgen[sample]  =  [GetNevents(inDir['MC'][sample])]
 sample = 'TTbar_SinLep'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+evtgen[sample]  =  [GetNevents(inDir['MC'][sample])]
 sample = 'TTbar_DiLep'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
-#inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/TTJet/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
-evtgen[sample]  =  GetNevents(inDir['MC'][sample])
+print (inDir['MC'][sample])
+evtgen[sample]  =  [GetNevents(inDir['MC'][sample])]
 
-# for HT binned input files use:
-#dirsHT['DiBoson']  = ['0-300/','300-700/','700-1300/','1300-2100/','2100-100000/']
-#xsec_lumi['DiBoson'] = [249.97710, 35.23062, 4.13743, 0.41702, 0.04770]
-#xsec_lumi['DiBoson'] = scale(Lumi,weights['DiBoson'])
+sample = 'WJets'
+dirsHT[sample]  = ['100-200/','200-400/','400-600/','600-Inf/']
+xsec_lumi[sample] = [2234.9,580.06,68.38,23.14] 
+xsec_lumi[sample] = scale(Lumi,xsec_lumi[sample])
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/WJets/' 
+print inDir['MC'][sample]
+k=0
+print evtgen
+for HT in dirsHT[sample]:
+	evtgen[sample][k]=GetNevents(inDir['MC'][sample]+HT)
+	print "from func",evtgen[sample][k]
+	k=k+1
 
-## TP
+
 sample = 'T1tttt_1500_100'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.0141903*Lumi]
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl1500_mLSP100_PU_S14_POSTLS170/'
-evtgen[sample] = GetNevents(inDir['MC'][sample])
+evtgen[sample] = [GetNevents(inDir['MC'][sample])]
 
 sample = 'T1tttt_1200_800'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.085641*Lumi]
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170/'
-evtgen[sample] = GetNevents(inDir['MC'][sample])
+evtgen[sample] = [GetNevents(inDir['MC'][sample])]
 
 from ROOT import TFile
 from glob import glob
@@ -137,29 +145,6 @@ def GetTreeName(file):
                 print 'Tree not found in ', file.GetName()
                 exit(0)
 
-def GetEntries(dirname):
-        files = glob(dirname+'/*.root')
-
-        if len(files)<1:
-                print 'GetEntries: there is NO root file in '+dirname
-                exit(0)
-
-        elif len(files)==1:
-                print 'Dirname', dirname, files
-                file=TFile(files[0])
-                treeName =  GetTreeName(file)
-               #tree = file.Get("delphTree")
-               #tree = file.Get("treeProducerSusySingleLepton")
-                tree = file.Get(treeName)
-
-                print 'Going to analyze ', treeName
-                return tree.GetEntries()
-
-        elif len(files)>1:
-                print 'GetEntries: there is more than 1 root file in '+dirname
-                exit(0)
-
-
 # do it
 for scene in scenarios:
 
@@ -168,10 +153,10 @@ for scene in scenarios:
                         f=''
                         print dirsHT, samp
                         for i in range(len(dirsHT[samp])):
-                                entries = evtgen[samp]
+                                entries = evtgen[samp][i]
                                 print "cross section x lumi",xsec_lumi[samp], "Events generated", entries
-                                f=f+inDir[scene][samp]+treename+dirsHT[samp][i]+' '+str(xsec_lumi[samp][i]/entries)+' '
-
+                                f=f+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
+				print "file name to be processed", f
                         print f,samp,scene
                         reader(f,scene+'_'+samp)
 
