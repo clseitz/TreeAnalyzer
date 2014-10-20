@@ -5,3 +5,5 @@
 *pdf
 *root
 *txt
+*.d
+*.so
