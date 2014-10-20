@@ -1,4 +1,4 @@
-#include "NtupleTools3.h"
+#include "../interface/NtupleTools3.h"
 
 #include <fstream>
 #include <iostream>
