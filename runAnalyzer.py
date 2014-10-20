@@ -6,7 +6,7 @@ from ROOT import gROOT
 # scenarios and samples
 scenarios = ['MC','data']
 #samples   = ['TTbar','T1tttt_1500_100','T1tttt_1200_800']
-samples   = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800']
+samples   = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450']
 treename = 'treeProducerSusySingleLepton/'
 Lumi = 1 #given in fb^-1
 Lumi = Lumi * 1000
@@ -129,6 +129,11 @@ sample = 'T1tttt_1200_800'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.085641*Lumi]
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl1200_mLSP800_PU_S14_POSTLS170/'
+evtgen[sample] = [GetNevents(inDir['MC'][sample])]
+sample = 'T1tttt_800_450'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [1.489*Lumi]
+inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/T1tttt/SMS_T1tttt_2J_mGl800_mLSP450_PU_S14_POSTLS170/'
 evtgen[sample] = [GetNevents(inDir['MC'][sample])]
 
 from ROOT import TFile
