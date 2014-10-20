@@ -159,5 +159,5 @@ for scene in scenarios:
                                 f=f+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
 				print "file name to be processed", f
                         print f,samp,scene
-                        #reader(f,scene+'_'+samp)
+                        reader(f,scene+'_'+samp)
 
