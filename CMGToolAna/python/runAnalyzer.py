@@ -37,24 +37,24 @@ def GetNevents(loc):
 # choose the analysis and a sample
 
 #gROOT.LoadMacro('Objects.C+')
-
+srcdir = '../src/'
 if len(sys.argv)>1:
         if sys.argv[1]=='SingleS_P':  # single lepton testing version
-                gROOT.LoadMacro('readerSingleS_P.C+')
+                gROOT.LoadMacro(srcdir+'readerSingleS_P.C+')
                 from ROOT import readerSingleS_P as reader
         elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
-                gROOT.LoadMacro('TreeAnalyzer.C+')
+                gROOT.LoadMacro(srcdir+'TreeAnalyzer.C+')
                 from ROOT import TreeAnalyzer as reader
         elif sys.argv[1]=='TreeAnalyzer_ext':  # test external object definitions
-                gROOT.LoadMacro('Objects.C+')
-                gROOT.LoadMacro('TreeAnalyzer_ext.C+')
+                gROOT.LoadMacro(srcdir+'Objects.C+')
+                gROOT.LoadMacro(srcdir+'TreeAnalyzer_ext.C+')
                 from ROOT import TreeAnalyzer as reader
         elif sys.argv[1]=='SingleLeptCMSana':  # single lepton CMS artur
-                gROOT.LoadMacro('Objects.C+')
-                gROOT.LoadMacro('SingleLeptCMSana.C+')
+                gROOT.LoadMacro(srcdir+'Objects.C+')
+                gROOT.LoadMacro(srcdir+'SingleLeptCMSana.C+')
                 from ROOT import TreeAnalyzer_ext as reader
         elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
-                gROOT.LoadMacro('TreeAnalyzer_BKG.C+')
+                gROOT.LoadMacro(srcdir+'TreeAnalyzer_BKG.C+')
                 from ROOT import TreeAnalyzer_BKG as reader
         else:
                 help()
