@@ -105,6 +105,7 @@ void GetLeptons(EasyChain * tree){
                         goodLep.push_back(dummyLep);
                         goodMu.push_back(dummyLep);
                         nMuGood++;
+			nLepGood++;
 
                         continue;
                     }
@@ -124,6 +125,7 @@ void GetLeptons(EasyChain * tree){
 		    goodLep.push_back(dummyLep);
                     goodEl.push_back(dummyLep);
                     nElGood++;
+		    nLepGood++;
 
                     continue;
                 }
