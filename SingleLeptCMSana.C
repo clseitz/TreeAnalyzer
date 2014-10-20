@@ -159,7 +159,9 @@ void TreeAnalyzer_ext(TString list, TString outname,bool useW=true){
 	  // fill histos
 
 	  Float_t MET = tree->Get(MET,"met_pt");
-	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();
+	  // calc S_T for Muon
+//	  if( nLepGood > 0) ST = MET+goodLep[0].Pt();
+	  if( nMuGood > 0) ST = MET+goodMu[0].Pt();
 
 	  hnJet[CutCount]->Fill(nJetGood,EvWeight);
 	  hnLep[CutCount]->Fill(nLepGood,EvWeight);
@@ -184,6 +186,7 @@ void TreeAnalyzer_ext(TString list, TString outname,bool useW=true){
 	  // 1. Cut
 	  // Require exactly one good lepton and two jets
 	  //
+	  if (nLepGood != 1) continue;
 	  if (nMuGood != 1) continue;
 	  if (nJetGood < 2) continue; //already a njet > 2 cut applied in the ntuple for 25 GeV jets
 
