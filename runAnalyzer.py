@@ -110,6 +110,7 @@ xsec_lumi[sample] = [2234.9,580.06,68.38,23.14]
 xsec_lumi[sample] = scale(Lumi,xsec_lumi[sample])
 inDir['MC'][sample] = '/afs/desy.de/user/s/safarzad/dust/13TeV/ISOTrck/WJets/' 
 print inDir['MC'][sample]
+evtgen[sample] = {}
 k=0
 print evtgen
 for HT in dirsHT[sample]:
@@ -158,5 +159,5 @@ for scene in scenarios:
                                 f=f+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
 				print "file name to be processed", f
                         print f,samp,scene
-                        reader(f,scene+'_'+samp)
+                        #reader(f,scene+'_'+samp)
 
