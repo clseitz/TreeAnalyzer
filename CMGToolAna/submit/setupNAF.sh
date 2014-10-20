@@ -49,7 +49,7 @@ module load root/5.34
 ini ROOT534
 echo $ROOTSYS
 which root
-./runAnalyzer.py XXXX YYYY
+../python/./runAnalyzer.py XXXX YYYY
 echo
 #mv XXXX_*.txt XXXX_*.root ./XXXX
 echo job done at `date`

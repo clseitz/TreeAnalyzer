@@ -5,7 +5,7 @@ ana=$1
 
 echo "checking library - compiling if neccesssary (no error check)"
 root -q -b reader${ana}.C+ > /dev/null 2>&1
-samples="MC_TTbar MC_T1tttt_1500_100 MC_T1tttt_1200_100"
+samples="MC_TTbar"
 dir=$PWD
 
 #mkdir -p $ana
