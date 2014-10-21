@@ -23,14 +23,15 @@
 
 void GetJets(EasyChain * tree);
 void GetLeptons(EasyChain * tree);
+void GetGenLeptons(EasyChain * tree);
 
 // to be written ?
 /*
-void GetElectrons(EasyChain * tree);
-void GetMuons(EasyChain * tree);
-void GetGoodLeptons(EasyChain * tree);
-void GetGoodElectrons(EasyChain * tree);
-void GetGoodMuons(EasyChain * tree);
+  void GetElectrons(EasyChain * tree);
+  void GetMuons(EasyChain * tree);
+  void GetGoodLeptons(EasyChain * tree);
+  void GetGoodElectrons(EasyChain * tree);
+  void GetGoodMuons(EasyChain * tree);
 */
 
 // global object variables
@@ -57,5 +58,10 @@ int nBJetGood;
 
 Float_t HT40;
 Float_t ST;
+
+Int_t ngenTau;
+Int_t ngenLep;
+Int_t ngenLepFromTau;
+
 
 #endif

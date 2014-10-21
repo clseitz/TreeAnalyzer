@@ -49,6 +49,25 @@ Int_t   LepGood_pdgId[arrayN];
 Bool_t  LepGood_tightID[arrayN];
 
 
+
+// Gen particles
+
+Float_t genTau_pt[2]; //[ngenLep]
+Float_t genTau_eta[2]; //[ngenLep]
+Float_t genTau_phi[2]; //[ngenLep]
+Int_t genTau_pdgId[2]; //[ngenLep]
+Float_t genLep_pt[2]; //[ngenLep]
+Float_t genLep_eta[2]; //[ngenLep]
+Float_t genLep_phi[2]; //[ngenLep]
+Int_t genLep_pdgId[2]; //[ngenLep]
+Float_t genLep_charge[2]; //[ngenLep]
+Float_t genLepFromTau_pt[2]; //[ngenLepFromTau]
+Float_t genLepFromTau_eta[2]; //[ngenLepFromTau]
+Float_t genLepFromTau_phi[2]; //[ngenLepFromTau]
+Int_t genLepFromTau_pdgId[2]; //[ngenLepFromTau]
+Float_t genLepFromTau_charge[2]; //[ngenLepFromTau]
+
+
 void GetLeptons(EasyChain * tree){
 
     // clearing objects
@@ -119,7 +138,7 @@ void GetLeptons(EasyChain * tree){
         // Electron cuts
         if(abs(LepGood_pdgId[ilep]) == 11)
             if( dummyLep.Pt() > goodElPt){
-                if(LepGood_tightID[ilep] == goodEl_tightID)
+                if(LepGood_tightID[ilep] == goodEl_tightID){
                     if(LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
 
@@ -134,6 +153,7 @@ void GetLeptons(EasyChain * tree){
                         isVetoEl = true;
                         nElVeto++;
                     }
+                }
             }
 
         // Only non-good El or Mu will pass => veto leptons
@@ -156,9 +176,9 @@ void GetJets(EasyChain * tree){
     goodJet.clear();
     goodBJet.clear();
 
-//    ST=0;
-
+    ST=0;
     HT40=0;
+
     nJetGood = 0;
     nBJetGood = 0;
 
@@ -192,4 +212,29 @@ void GetJets(EasyChain * tree){
   cout << "Get jets summary: total number of jets = \t" << nJet << endl;
   cout << "Number of good jets = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
 */
+}
+
+
+void GetGenLeptons(EasyChain * tree){
+
+    tree->Get(ngenLep,"ngenLep"); //n prompt Lep
+    tree->Get(ngenTau,"ngenTau");// gen Tau
+    tree->Get(ngenLepFromTau,"ngenLepFromTau");// Lep from Tau decay
+    // For Gen Level distributions
+    tree->Get(genLep_pt[0],"genLep_pt");
+    tree->Get(genLep_eta[0],"genLep_eta");
+    tree->Get(genLep_phi[0],"genLep_phi");
+    tree->Get(genLep_pdgId[0],"genLep_pdgId");
+    tree->Get(genLep_charge[0],"genLep_charge");
+    tree->Get(genLepFromTau_pt[0],"genLepFromTau_pt");
+    tree->Get(genLepFromTau_eta[0],"genLepFromTau_eta");
+    tree->Get(genLepFromTau_phi[0],"genLepFromTau_phi");
+    tree->Get(genLepFromTau_charge[0],"genLepFromTau_charge");
+    tree->Get(genLepFromTau_pdgId[0],"genLepFromTau_pdgId");
+    tree->Get(genTau_pt[0],"genTau_pt");
+    tree->Get(genTau_eta[0],"genTau_eta");
+    tree->Get(genTau_phi[0],"genTau_phi");
+    tree->Get(genTau_pdgId[0],"genTau_pdgId");
+
+
 }
