@@ -26,6 +26,7 @@ Float_t goodMu_relIso03 = 0.12;
 Float_t goodLep_relIso03 = 0.15;
 
 Bool_t goodMu_tightID = true;
+Bool_t goodEl_tightID = true;
 
 //jets
 Float_t goodJetPt = 40.0;
@@ -98,55 +99,55 @@ void GetLeptons(EasyChain * tree){
         // Muon cuts
         if(abs(LepGood_pdgId[ilep]) == 13)
             if( dummyLep.Pt() > goodMuPt)
-                if(LepGood_tightID[ilep]){
+                if(LepGood_tightID[ilep] == goodMu_tightID){
                     if(LepGood_relIso03[ilep] < goodMu_relIso03){
-//			isGoodMu = true;
+//                      isGoodMu = true;
 
                         goodLep.push_back(dummyLep);
                         goodMu.push_back(dummyLep);
                         nMuGood++;
-			nLepGood++;
+                        nLepGood++;
 
                         continue;
                     }
                     else{
                         isVetoMu = true;
-			nMuVeto++;
-		    }
-		}
+                        nMuVeto++;
+                    }
+                }
 
         // Electron cuts
         if(abs(LepGood_pdgId[ilep]) == 11)
             if( dummyLep.Pt() > goodElPt){
-//              if(LepGood_tightID[ilep])
-                if(LepGood_relIso03[ilep] < goodEl_relIso03){
+                if(LepGood_tightID[ilep] == goodEl_tightID)
+                    if(LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
 
-		    goodLep.push_back(dummyLep);
-                    goodEl.push_back(dummyLep);
-                    nElGood++;
-		    nLepGood++;
+                        goodLep.push_back(dummyLep);
+                        goodEl.push_back(dummyLep);
+                        nElGood++;
+                        nLepGood++;
 
-                    continue;
-                }
-                else{
-                    isVetoEl = true;
-		    nElVeto++;
-		}
-	    }
+                        continue;
+                    }
+                    else{
+                        isVetoEl = true;
+                        nElVeto++;
+                    }
+            }
 
         // Only non-good El or Mu will pass => veto leptons
-	if(isVetoEl || isVetoMu){
-	    vetoLep.push_back(dummyLep);
-	    nLepVeto++;
-	}
+        if(isVetoEl || isVetoMu){
+            vetoLep.push_back(dummyLep);
+            nLepVeto++;
+        }
     }
 
 /*
-    cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
-    cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
-    cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
-    cout << "Number of veto leptons = \t" << nLepVeto << endl;
+  cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
+  cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
+  cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
+  cout << "Number of veto leptons = \t" << nLepVeto << endl;
 */
 }
 
@@ -179,16 +180,16 @@ void GetJets(EasyChain * tree){
             nJetGood++;
             HT40 = HT40 + dummyJet.Pt();
 
-	    // filling B jets
-	    if(Jet_btagCSV[ijet] > goodJetBtagCSV){
-		goodBJet.push_back(dummyJet);
-		nBJetGood++;
-	    }
+            // filling B jets
+            if(Jet_btagCSV[ijet] > goodJetBtagCSV){
+                goodBJet.push_back(dummyJet);
+                nBJetGood++;
+            }
         }
     }
 
 /*
-    cout << "Get jets summary: total number of jets = \t" << nJet << endl;
-    cout << "Number of good jets = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
+  cout << "Get jets summary: total number of jets = \t" << nJet << endl;
+  cout << "Number of good jets = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
 */
 }
