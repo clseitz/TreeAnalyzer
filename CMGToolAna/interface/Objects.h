@@ -20,19 +20,17 @@
  * jets
  */
 
-void GetGoodLeptons(EasyChain * tree);
+
 void GetJets(EasyChain * tree);
 void GetLeptons(EasyChain * tree);
 
-// to be written
+// to be written ?
 /*
 void GetElectrons(EasyChain * tree);
 void GetMuons(EasyChain * tree);
-
+void GetGoodLeptons(EasyChain * tree);
 void GetGoodElectrons(EasyChain * tree);
 void GetGoodMuons(EasyChain * tree);
-
-void GetJets(EasyChain * tree);
 */
 
 // global object variables

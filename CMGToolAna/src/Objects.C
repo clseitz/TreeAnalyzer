@@ -142,8 +142,6 @@ void GetLeptons(EasyChain * tree){
 	}
     }
 
-    nLepGood = nMuGood + nElGood;
-//    nLepVeto += nElVeto + nMuVeto; // add up veto leptons, els and mus
 /*
     cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
     cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
@@ -152,45 +150,6 @@ void GetLeptons(EasyChain * tree){
 */
 }
 
-void GetGoodLeptons(EasyChain * tree){
-
-    goodLep.clear(); vetoLep.clear();
-    goodEl.clear(); goodMu.clear();
-
-    nLepGood = 0;
-    nMuGood = 0;
-    nElGood = 0;
-
-    int nLep = tree->Get(nLep,"nLepGood");
-    tree->Get(LepGood_pt[0],"LepGood_pt");
-    tree->Get(LepGood_eta[0],"LepGood_eta");
-    tree->Get(LepGood_phi[0],"LepGood_phi");
-    tree->Get(LepGood_mass[0],"LepGood_mass");
-    tree->Get(LepGood_relIso03[0],"LepGood_relIso03");
-    tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
-
-    for(int ilep = 0; ilep < nLep; ilep++){
-
-        TLorentzVector dummyLep;
-        dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
-
-        if(dummyLep.Pt() > vetoLepPt && fabs(dummyLep.Eta()) < goodEta){
-            vetoLep.push_back(dummyLep);
-            if( dummyLep.Pt() > goodLepPt && LepGood_relIso03[ilep] < 0.15){ //TODO: need to adjust isolation
-                goodLep.push_back(dummyLep);
-                if(abs(LepGood_pdgId[ilep]) == 11){
-                    goodEl.push_back(dummyLep);
-                    nElGood++;
-                }
-                if(abs(LepGood_pdgId[ilep]) == 13){
-                    goodMu.push_back(dummyLep);
-                    nMuGood++;
-                }
-                nLepGood++;
-            }
-        }
-    }
-}
 
 void GetJets(EasyChain * tree){
     goodJet.clear();
