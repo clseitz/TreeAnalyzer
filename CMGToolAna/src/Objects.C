@@ -5,12 +5,24 @@ using namespace std;
 // global Object vectors
 vector<TLorentzVector> goodJet;
 vector<TLorentzVector> goodBJet;
+
 vector<TLorentzVector> goodLep;
 vector<TLorentzVector> goodEl;
 vector<TLorentzVector> goodMu;
+
 vector<TLorentzVector> vetoLep;
 vector<TLorentzVector> vetoEl;
 vector<TLorentzVector> vetoMu;
+
+vector<TLorentzVector> genLep;
+vector<TLorentzVector> genEl;
+vector<TLorentzVector> genMu;
+vector<TLorentzVector> genTau;
+
+vector<TLorentzVector> genLepFromTau;
+vector<TLorentzVector> genElFromTau;
+vector<TLorentzVector> genMuFromTau;
+
 
 // Object cuts
 Float_t goodEta = 2.4;
@@ -49,24 +61,26 @@ Int_t   LepGood_pdgId[arrayN];
 Bool_t  LepGood_tightID[arrayN];
 
 
-
 // Gen particles
+Float_t genLep_pt[2]; //[ngenLep]
+Float_t genLep_mass[2]; //[ngenLep]
+Float_t genLep_eta[2]; //[ngenLep]
+Float_t genLep_phi[2]; //[ngenLep]
+Int_t genLep_pdgId[2]; //[ngenLep]
+//Float_t genLep_charge[2]; //[ngenLep]
 
+/*
+// need those?
 Float_t genTau_pt[2]; //[ngenLep]
 Float_t genTau_eta[2]; //[ngenLep]
 Float_t genTau_phi[2]; //[ngenLep]
 Int_t genTau_pdgId[2]; //[ngenLep]
-Float_t genLep_pt[2]; //[ngenLep]
-Float_t genLep_eta[2]; //[ngenLep]
-Float_t genLep_phi[2]; //[ngenLep]
-Int_t genLep_pdgId[2]; //[ngenLep]
-Float_t genLep_charge[2]; //[ngenLep]
 Float_t genLepFromTau_pt[2]; //[ngenLepFromTau]
 Float_t genLepFromTau_eta[2]; //[ngenLepFromTau]
 Float_t genLepFromTau_phi[2]; //[ngenLepFromTau]
 Int_t genLepFromTau_pdgId[2]; //[ngenLepFromTau]
 Float_t genLepFromTau_charge[2]; //[ngenLepFromTau]
-
+*/
 
 void GetLeptons(EasyChain * tree){
 
@@ -171,13 +185,128 @@ void GetLeptons(EasyChain * tree){
 */
 }
 
+void GetGenLeptons(EasyChain * tree){
+
+    // clearing objects
+    genLep.clear();
+    nGenLep = 0;
+
+    // filling objects from tree
+    tree->Get(nGenLep,"ngenLep"); //n prompt Lep
+    tree->Get(genLep_pt[0],"genLep_pt");
+    tree->Get(genLep_mass[0],"genLep_mass");
+    tree->Get(genLep_eta[0],"genLep_eta");
+    tree->Get(genLep_phi[0],"genLep_phi");
+    tree->Get(genLep_pdgId[0],"genLep_pdgId");
+
+/*
+    // why?
+    tree->Get(genLep_charge[0],"genLep_charge");
+*/
+
+    for(int ilep = 0; ilep < nGenLep; ilep++){
+
+        TLorentzVector dummyLep;
+        dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
+
+	genLep.push_back(dummyLep);
+//	nGenLep++;
+
+        // Muon cuts
+        if(abs(genLep_pdgId[ilep]) == 13){
+
+            genMu.push_back(dummyLep);
+//            nGenMu++;
+
+            continue;
+        }
+
+        // Electron cuts
+        if(abs(genLep_pdgId[ilep]) == 11){
+
+            genEl.push_back(dummyLep);
+//            nGenEl++;
+
+            continue;
+        }
+    }
+}
+
+
+void GetGenLeptonsFromTau(EasyChain * tree){
+
+    // clearing objects
+    genLepFromTau.clear();
+    genMuFromTau.clear();
+    genElFromTau.clear();
+
+    nGenLepFromTau = 0;
+
+    // filling objects from tree
+    tree->Get(nGenLepFromTau,"ngenLepFromTau");// Lep from Tau decay
+
+    tree->Get(genLep_pt[0],"genLepFromTau_pt");
+    tree->Get(genLep_mass[0],"genLepFromTau_mass");
+    tree->Get(genLep_eta[0],"genLepFromTau_eta");
+    tree->Get(genLep_phi[0],"genLepFromTau_phi");
+    tree->Get(genLep_pdgId[0],"genLepFromTau_pdgId");
+
+    for(int ilep = 0; ilep < nGenLepFromTau; ilep++){
+
+        TLorentzVector dummyLep;
+        dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
+
+	genLepFromTau.push_back(dummyLep);
+//	nGenLepFromTau++;
+
+// TO BE enhanced
+
+        if(abs(genLep_pdgId[ilep]) == 13){
+	    genMuFromTau.push_back(dummyLep);
+//            nGenMu++;
+            continue;
+        }
+
+        if(abs(genLep_pdgId[ilep]) == 11){
+	    genElFromTau.push_back(dummyLep);
+//            nGenEl++;
+            continue;
+        }
+    }
+}
+
+void GetGenTaus(EasyChain * tree){
+
+    // clearing objects
+    genTau.clear();
+    nGenTau = 0;
+
+    // filling objects from tree
+    tree->Get(nGenTau,"ngenTau");// gen Tau
+    tree->Get(genLep_pt[0],"genTau_pt");
+    tree->Get(genLep_eta[0],"genTau_eta");
+    tree->Get(genLep_phi[0],"genTau_phi");
+    tree->Get(genLep_pdgId[0],"genTau_pdgId");
+    tree->Get(genLep_mass[0],"genTau_mass");
+
+    for(int ilep = 0; ilep < nGenTau; ilep++){
+
+        TLorentzVector dummyLep;
+        dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
+
+        if(abs(genLep_pdgId[ilep]) == 15){
+            genTau.push_back(dummyLep);
+//            nGenTau++;
+        }
+    }
+}
 
 void GetJets(EasyChain * tree){
     goodJet.clear();
     goodBJet.clear();
 
-    ST=0;
-    HT40=0;
+    ST = 0;
+    HT40 = 0;
 
     nJetGood = 0;
     nBJetGood = 0;
@@ -214,27 +343,3 @@ void GetJets(EasyChain * tree){
 */
 }
 
-
-void GetGenLeptons(EasyChain * tree){
-
-    tree->Get(ngenLep,"ngenLep"); //n prompt Lep
-    tree->Get(ngenTau,"ngenTau");// gen Tau
-    tree->Get(ngenLepFromTau,"ngenLepFromTau");// Lep from Tau decay
-    // For Gen Level distributions
-    tree->Get(genLep_pt[0],"genLep_pt");
-    tree->Get(genLep_eta[0],"genLep_eta");
-    tree->Get(genLep_phi[0],"genLep_phi");
-    tree->Get(genLep_pdgId[0],"genLep_pdgId");
-    tree->Get(genLep_charge[0],"genLep_charge");
-    tree->Get(genLepFromTau_pt[0],"genLepFromTau_pt");
-    tree->Get(genLepFromTau_eta[0],"genLepFromTau_eta");
-    tree->Get(genLepFromTau_phi[0],"genLepFromTau_phi");
-    tree->Get(genLepFromTau_charge[0],"genLepFromTau_charge");
-    tree->Get(genLepFromTau_pdgId[0],"genLepFromTau_pdgId");
-    tree->Get(genTau_pt[0],"genTau_pt");
-    tree->Get(genTau_eta[0],"genTau_eta");
-    tree->Get(genTau_phi[0],"genTau_phi");
-    tree->Get(genTau_pdgId[0],"genTau_pdgId");
-
-
-}
