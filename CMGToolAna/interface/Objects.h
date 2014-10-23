@@ -22,6 +22,9 @@
 
 
 void GetJets(EasyChain * tree);
+void GetMET(EasyChain * tree);
+void GetGenMET(EasyChain * tree);
+
 void GetLeptons(EasyChain * tree);
 void GetGenLeptons(EasyChain * tree);
 void GetGenLeptonsFromTau(EasyChain * tree);
@@ -39,6 +42,10 @@ void GetGenTaus(EasyChain * tree);
 // global object variables
 extern std::vector<TLorentzVector> goodJet;
 extern std::vector<TLorentzVector> goodBJet;
+
+extern TLorentzVector MET;
+extern TLorentzVector genMET;
+extern TLorentzVector METnoPU;
 
 extern std::vector<TLorentzVector> goodLep;
 extern std::vector<TLorentzVector> goodEl;
@@ -70,11 +77,13 @@ Int_t nMuVeto;
 Int_t nJetGood;
 Int_t nBJetGood;
 
-Float_t HT40;
-Float_t ST;
-
 Int_t nGenTau;
 Int_t nGenLep;
 Int_t nGenLepFromTau;
+
+// global variables
+
+Float_t HT40;
+Float_t ST;
 
 #endif

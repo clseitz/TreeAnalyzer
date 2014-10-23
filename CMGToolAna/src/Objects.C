@@ -6,6 +6,10 @@ using namespace std;
 vector<TLorentzVector> goodJet;
 vector<TLorentzVector> goodBJet;
 
+TLorentzVector MET;
+TLorentzVector genMET;
+TLorentzVector METnoPU;
+
 vector<TLorentzVector> goodLep;
 vector<TLorentzVector> goodEl;
 vector<TLorentzVector> goodMu;
@@ -60,7 +64,6 @@ Float_t LepGood_relIso03[arrayN];
 Int_t   LepGood_pdgId[arrayN];
 Bool_t  LepGood_tightID[arrayN];
 
-
 // Gen particles
 Float_t genLep_pt[2]; //[ngenLep]
 Float_t genLep_mass[2]; //[ngenLep]
@@ -68,6 +71,18 @@ Float_t genLep_eta[2]; //[ngenLep]
 Float_t genLep_phi[2]; //[ngenLep]
 Int_t genLep_pdgId[2]; //[ngenLep]
 //Float_t genLep_charge[2]; //[ngenLep]
+
+// MET
+Float_t met_eta;
+Float_t met_phi;
+Float_t met_pt;
+Float_t met_mass;
+
+/*
+  Float_t MET_genpt;
+  Float_t met_genet;
+  Float_t met_genphi;
+*/
 
 /*
 // need those?
@@ -200,8 +215,8 @@ void GetGenLeptons(EasyChain * tree){
     tree->Get(genLep_pdgId[0],"genLep_pdgId");
 
 /*
-    // why?
-    tree->Get(genLep_charge[0],"genLep_charge");
+// why?
+tree->Get(genLep_charge[0],"genLep_charge");
 */
 
     for(int ilep = 0; ilep < nGenLep; ilep++){
@@ -209,8 +224,8 @@ void GetGenLeptons(EasyChain * tree){
         TLorentzVector dummyLep;
         dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
 
-	genLep.push_back(dummyLep);
-//	nGenLep++;
+        genLep.push_back(dummyLep);
+//      nGenLep++;
 
         // Muon cuts
         if(abs(genLep_pdgId[ilep]) == 13){
@@ -256,19 +271,19 @@ void GetGenLeptonsFromTau(EasyChain * tree){
         TLorentzVector dummyLep;
         dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
 
-	genLepFromTau.push_back(dummyLep);
-//	nGenLepFromTau++;
+        genLepFromTau.push_back(dummyLep);
+//      nGenLepFromTau++;
 
 // TO BE enhanced
 
         if(abs(genLep_pdgId[ilep]) == 13){
-	    genMuFromTau.push_back(dummyLep);
+            genMuFromTau.push_back(dummyLep);
 //            nGenMu++;
             continue;
         }
 
         if(abs(genLep_pdgId[ilep]) == 11){
-	    genElFromTau.push_back(dummyLep);
+            genElFromTau.push_back(dummyLep);
 //            nGenEl++;
             continue;
         }
@@ -343,3 +358,35 @@ void GetJets(EasyChain * tree){
 */
 }
 
+void GetMET(EasyChain * tree){
+    MET.SetPtEtaPhiM(0,0,0,0);
+
+    tree->Get(met_pt,"met_pt");
+    tree->Get(met_eta,"met_eta");
+    tree->Get(met_phi,"met_phi");
+    tree->Get(met_mass,"met_mass");
+
+    MET.SetPtEtaPhiM(met_pt,met_eta,met_phi,met_mass);
+}
+
+void GetGenMET(EasyChain * tree){
+    genMET.SetPtEtaPhiM(0,0,0,0);
+
+    tree->Get(met_pt,"met_genPt");
+    tree->Get(met_eta,"met_genEta");
+    tree->Get(met_phi,"met_genPhi");
+    tree->Get(met_mass,"met_sumEt");
+
+    genMET.SetPtEtaPhiM(met_pt,met_eta,met_phi,met_mass);
+}
+
+void GetMETnoPU(EasyChain * tree){
+    METnoPU.SetPtEtaPhiM(0,0,0,0);
+
+    tree->Get(met_pt,"metNoPU_pt");
+    tree->Get(met_eta,"metNoPU_eta");
+    tree->Get(met_phi,"metNoPU_phi");
+    tree->Get(met_mass,"metNoPU_mass");
+
+    METnoPU.SetPtEtaPhiM(met_pt,met_eta,met_phi,met_mass);
+}
