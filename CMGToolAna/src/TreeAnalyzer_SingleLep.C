@@ -208,37 +208,37 @@ void SetupHists(int CutNumber){
 void FillMainHists(int CutIndex, float EvWeight, bool FillBJets = true){
 //    cout << "Filling " << CutIndex << endl;
 
-  hnJet[CutIndex]->Fill(nJetGood,EvWeight);
-  hnLep[CutIndex]->Fill(nLepGood,EvWeight);
-  hnMu[CutIndex]->Fill(nMuGood,EvWeight);
-  hnEl[CutIndex]->Fill(nElGood,EvWeight);
+    hnJet[CutIndex]->Fill(nJetGood,EvWeight);
+    hnLep[CutIndex]->Fill(nLepGood,EvWeight);
+    hnMu[CutIndex]->Fill(nMuGood,EvWeight);
+    hnEl[CutIndex]->Fill(nElGood,EvWeight);
 
-  if (nJetGood > 0) h0JetpT[CutIndex]->Fill(goodJet[0].Pt(),EvWeight);
-  if (nJetGood > 1) h1JetpT[CutIndex]->Fill(goodJet[1].Pt(),EvWeight);
-  if (nJetGood > 2) h2JetpT[CutIndex]->Fill(goodJet[2].Pt(),EvWeight);
-  if (nJetGood > 3) h3JetpT[CutIndex]->Fill(goodJet[3].Pt(),EvWeight);
+    if (nJetGood > 0) h0JetpT[CutIndex]->Fill(goodJet[0].Pt(),EvWeight);
+    if (nJetGood > 1) h1JetpT[CutIndex]->Fill(goodJet[1].Pt(),EvWeight);
+    if (nJetGood > 2) h2JetpT[CutIndex]->Fill(goodJet[2].Pt(),EvWeight);
+    if (nJetGood > 3) h3JetpT[CutIndex]->Fill(goodJet[3].Pt(),EvWeight);
 
-  if(FillBJets){
-  hnBJet[2]->Fill(nBJetGood,EvWeight);
+    if(FillBJets){
+        hnBJet[CutIndex]->Fill(nBJetGood,EvWeight);
 
-  if (nBJetGood > 0) h0BJetpT[CutIndex]->Fill(goodBJet[0].Pt(),EvWeight);
-  if (nBJetGood > 1) h1BJetpT[CutIndex]->Fill(goodBJet[1].Pt(),EvWeight);
-  if (nBJetGood > 2) h2BJetpT[CutIndex]->Fill(goodBJet[2].Pt(),EvWeight);
-  if (nBJetGood > 3) h3BJetpT[CutIndex]->Fill(goodBJet[3].Pt(),EvWeight);
-  }
+        if (nBJetGood > 0) h0BJetpT[CutIndex]->Fill(goodBJet[0].Pt(),EvWeight);
+        if (nBJetGood > 1) h1BJetpT[CutIndex]->Fill(goodBJet[1].Pt(),EvWeight);
+        if (nBJetGood > 2) h2BJetpT[CutIndex]->Fill(goodBJet[2].Pt(),EvWeight);
+        if (nBJetGood > 3) h3BJetpT[CutIndex]->Fill(goodBJet[3].Pt(),EvWeight);
+    }
 
-  if (nLepGood > 0) hLeppt[CutIndex]->Fill(goodLep[0].Pt(),EvWeight);
-  if (nMuGood > 0) hMupt[CutIndex]->Fill(goodMu[0].Pt(),EvWeight);
-  if (nElGood > 0) hElpt[CutIndex]->Fill(goodEl[0].Pt(),EvWeight);
+    if (nLepGood > 0) hLeppt[CutIndex]->Fill(goodLep[0].Pt(),EvWeight);
+    if (nMuGood > 0) hMupt[CutIndex]->Fill(goodMu[0].Pt(),EvWeight);
+    if (nElGood > 0) hElpt[CutIndex]->Fill(goodEl[0].Pt(),EvWeight);
 
-  hMET[CutIndex]->Fill(MET.Pt(),EvWeight);
-  hHT[CutIndex]->Fill(HT40,EvWeight);
-  hST[CutIndex]->Fill(ST,EvWeight);
+    hMET[CutIndex]->Fill(MET.Pt(),EvWeight);
+    hHT[CutIndex]->Fill(HT40,EvWeight);
+    hST[CutIndex]->Fill(ST,EvWeight);
 
-  hnGenLep[CutIndex]->Fill(nGenLep,EvWeight);
-  hnGenTau[CutIndex]->Fill(nGenTau,EvWeight);
-  hnGenLepFromTau[CutIndex]->Fill(nGenLepFromTau,EvWeight);
-  }
+    hnGenLep[CutIndex]->Fill(nGenLep,EvWeight);
+    hnGenTau[CutIndex]->Fill(nGenTau,EvWeight);
+    hnGenLepFromTau[CutIndex]->Fill(nGenLepFromTau,EvWeight);
+}
 
 void TreeAnalyzer(TString list, TString outname,bool useW=true){
 
@@ -364,7 +364,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
         float Wphi = WBos.Phi();
         float MT = sqrt(pow((goodMu[0].Et()+MET.Et()),2)-pow((goodMu[0].Px()+MET.Px()),2)-pow((goodMu[0].Py()+MET.Py()),2));
 
-//	cout << nMuGood << "\t" << MET.Pt() << endl;
+//cout << nMuGood << "\t" << MET.Pt() << endl;
 
         hWpT[iCut]->Fill(Wpt,EvWeight);
         hdPhiWLep[iCut]->Fill(fabs(DelPhiWlep),EvWeight);
