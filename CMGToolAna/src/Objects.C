@@ -126,6 +126,8 @@ void GetLeptons(EasyChain * tree){
     tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
     tree->Get(LepGood_tightID[0],"LepGood_tightId");
 
+        bool isVetoMu = false;
+        bool isVetoEl = false;
     for(int ilep = 0; ilep < nLep; ilep++){
 
         TLorentzVector dummyLep;
@@ -137,26 +139,19 @@ void GetLeptons(EasyChain * tree){
   bool isGoodLep = false;
   bool isVetoLep = false;
 */
-        bool isVetoMu = false;
-        bool isVetoEl = false;
 
         // common cuts for all leptons (good and veto leps pass)
-        if(dummyLep.Pt() < vetoLepPt || fabs(dummyLep.Eta()) > goodEta)
+        if(dummyLep.Pt() <= vetoLepPt || fabs(dummyLep.Eta()) > goodEta)
             continue;
-
         // Muon cuts
-        if(abs(LepGood_pdgId[ilep]) == 13)
-            if( dummyLep.Pt() > goodMuPt)
-                if(LepGood_tightID[ilep] == goodMu_tightID){
-                    if(LepGood_relIso03[ilep] < goodMu_relIso03){
-//                      isGoodMu = true;
-
+        if(abs(LepGood_pdgId[ilep]) == 13){
+            if( dummyLep.Pt() > goodMuPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodMu_relIso03){
                         goodLep.push_back(dummyLep);
                         goodMu.push_back(dummyLep);
                         nMuGood++;
                         nLepGood++;
 
-                        continue;
+                        //continue;
                     }
                     else{
                         isVetoMu = true;
@@ -165,24 +160,21 @@ void GetLeptons(EasyChain * tree){
                 }
 
         // Electron cuts
-        if(abs(LepGood_pdgId[ilep]) == 11)
-            if( dummyLep.Pt() > goodElPt){
-                if(LepGood_tightID[ilep] == goodEl_tightID){
-                    if(LepGood_relIso03[ilep] < goodEl_relIso03){
+        if(abs(LepGood_pdgId[ilep]) == 11){
+            if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
-
                         goodLep.push_back(dummyLep);
                         goodEl.push_back(dummyLep);
                         nElGood++;
                         nLepGood++;
 
-                        continue;
+                       // continue;
                     }
                     else{
                         isVetoEl = true;
                         nElVeto++;
                     }
-                }
+                
             }
 
         // Only non-good El or Mu will pass => veto leptons
