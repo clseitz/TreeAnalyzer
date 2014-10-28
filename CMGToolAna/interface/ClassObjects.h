@@ -23,6 +23,23 @@ class ObjectChain: EasyChain {
 // Object classes
 
 // common object variable class ~ simple TLorentzVector -> inherit from TLV??
+class ParticleObject: public TLorentzVector{
+//private:
+//    ParticleObject() {}
+
+public:
+// inherit baseclass constructors (C++11)
+    using TLorentzVector::TLorentzVector;
+    ParticleObject() {}
+// conflict with default constructor?
+    ParticleObject(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
+	SetPtEtaPhiM(pt,eta,phi,mass);
+    }
+
+// common variables for all obejcts, except TLV
+};
+
+/*
 class ParticleObject{
 
 private:
@@ -32,47 +49,62 @@ private:
 public:
     TLorentzVector vect;
 
-    void SetVect(double pt, double eta, double phi, double mass){
+    void SetVect(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
 	vect.SetPtEtaPhiM(pt,eta,phi,mass);
     }
 
 // for fast access to kinematic variables
-    double Pt(){ return vect.Pt() }
-    double Eta(){ return vect.Eta() }
-    double Phi(){ return vect.Phi() }
+    Double_t Pt(){ return vect.Pt() }
+    Double_t Eta(){ return vect.Eta() }
+    Double_t Phi(){ return vect.Phi() }
 
 };
 
-ParticleObject::ParticleObject(double pt, double eta, double phi, double mass){
+// constuctor as TLV SetPtEtaPhiM
+ParticleObject::ParticleObject(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
     SetVect(pt,eta,phi,mass);
 }
 
+*/
+
 // Lepton
 class Lepton: public ParticleObject{
-
 public:
+    using ParticleObject::ParticleObject;
+
     int pdgID;
-    double relIso03;
+    Double_t relIso03;
     bool tightID;
     int charge;
 };
 
-// Jet
-class Jet: ParticleObject{
 
+// Generator Lepton
+class GenLepton: public ParticleObject{
+public:
+    using ParticleObject::ParticleObject;
+
+    int status;
+};
+
+// Jet
+class Jet: public ParticleObject{
 private:
-// determine btag in constructor
-    Jet() { if(btagCSV > 0.676) btag = true; }
+// determine btag in constructor?
+//    Jet() { if(btagCSV > 0.676) btag = true; }
 
 public:
     bool btag;
-    double btagCSV;
+    Double_t btagCSV;
 };
 
 
 // MET
-class MET: ParticleObject{
+class MET: public ParticleObject{
+public:
 
+//    Double_t met(){ return TLorentzVector::Pt() }
+    Double_t met(){ return Pt(); }
 };
 
 // non class objects
@@ -101,29 +133,29 @@ void GetGenTaus(EasyChain * tree);
 */
 
 // global object variables
-extern std::vector<TLorentzVector> goodJet;
-extern std::vector<TLorentzVector> goodBJet;
+extern std::vector<Jet> goodJet;
+extern std::vector<Jet> goodBJet;
 
 extern TLorentzVector MET;
 extern TLorentzVector genMET;
 extern TLorentzVector METnoPU;
 
-extern std::vector<TLorentzVector> goodLep;
-extern std::vector<TLorentzVector> goodEl;
-extern std::vector<TLorentzVector> goodMu;
+extern std::vector<Lepton> goodLep;
+extern std::vector<Lepton> goodEl;
+extern std::vector<Lepton> goodMu;
 
-extern std::vector<TLorentzVector> vetoLep;
-extern std::vector<TLorentzVector> vetoEl;
-extern std::vector<TLorentzVector> vetoMu;
+extern std::vector<Lepton> vetoLep;
+extern std::vector<Lepton> vetoEl;
+extern std::vector<Lepton> vetoMu;
 
-extern std::vector<TLorentzVector> genLep;
-extern std::vector<TLorentzVector> genEl;
-extern std::vector<TLorentzVector> genMu;
-extern std::vector<TLorentzVector> genTau;
+extern std::vector<GenLepton> genLep;
+extern std::vector<GenLepton> genEl;
+extern std::vector<GenLepton> genMu;
+extern std::vector<GenLepton> genTau;
 
-extern std::vector<TLorentzVector> genLepFromTau;
-extern std::vector<TLorentzVector> genElFromTau;
-extern std::vector<TLorentzVector> genMuFromTau;
+extern std::vector<GenLepton> genLepFromTau;
+extern std::vector<GenLepton> genElFromTau;
+extern std::vector<GenLepton> genMuFromTau;
 
 // objects number can be aslo detemined as object.size()
 

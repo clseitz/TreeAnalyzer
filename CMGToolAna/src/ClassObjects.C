@@ -2,32 +2,34 @@
 
 using namespace std;
 
-// global Object vectors
-vector<TLorentzVector> goodJet;
-vector<TLorentzVector> goodBJet;
+// global Objects
+vector<Jet> goodJet;
+vector<Jet> goodBJet;
 
 TLorentzVector MET;
 TLorentzVector genMET;
 TLorentzVector METnoPU;
 
-vector<TLorentzVector> goodLep;
-vector<TLorentzVector> goodEl;
-vector<TLorentzVector> goodMu;
+vector<Lepton> goodLep;
+vector<Lepton> goodEl;
+vector<Lepton> goodMu;
 
-vector<TLorentzVector> vetoLep;
-vector<TLorentzVector> vetoEl;
-vector<TLorentzVector> vetoMu;
+vector<Lepton> vetoLep;
+vector<Lepton> vetoEl;
+vector<Lepton> vetoMu;
 
-vector<TLorentzVector> genLep;
-vector<TLorentzVector> genEl;
-vector<TLorentzVector> genMu;
-vector<TLorentzVector> genTau;
+vector<GenLepton> genLep;
+vector<GenLepton> genEl;
+vector<GenLepton> genMu;
+vector<GenLepton> genTau;
 
-vector<TLorentzVector> genLepFromTau;
-vector<TLorentzVector> genElFromTau;
-vector<TLorentzVector> genMuFromTau;
+vector<GenLepton> genLepFromTau;
+vector<GenLepton> genElFromTau;
+vector<GenLepton> genMuFromTau;
 
-
+///////////////////////////////////
+///////////////////////////////////
+///////////////////////////////////
 // Object cuts
 Float_t goodEta = 2.4;
 
@@ -47,6 +49,10 @@ Bool_t goodEl_tightID = true;
 //jets
 Float_t goodJetPt = 40.0;
 Float_t goodJetBtagCSV = 0.679;
+
+///////////////////////////////////
+///////////////////////////////////
+///////////////////////////////////
 
 // variables for tree
 const int arrayN = 50;
@@ -78,25 +84,6 @@ Float_t met_phi;
 Float_t met_pt;
 Float_t met_mass;
 
-/*
-  Float_t MET_genpt;
-  Float_t met_genet;
-  Float_t met_genphi;
-*/
-
-/*
-// need those?
-Float_t genTau_pt[2]; //[ngenLep]
-Float_t genTau_eta[2]; //[ngenLep]
-Float_t genTau_phi[2]; //[ngenLep]
-Int_t genTau_pdgId[2]; //[ngenLep]
-Float_t genLepFromTau_pt[2]; //[ngenLepFromTau]
-Float_t genLepFromTau_eta[2]; //[ngenLepFromTau]
-Float_t genLepFromTau_phi[2]; //[ngenLepFromTau]
-Int_t genLepFromTau_pdgId[2]; //[ngenLepFromTau]
-Float_t genLepFromTau_charge[2]; //[ngenLepFromTau]
-*/
-
 void GetLeptons(EasyChain * tree){
 
     // clearing objects
@@ -126,12 +113,13 @@ void GetLeptons(EasyChain * tree){
     tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
     tree->Get(LepGood_tightID[0],"LepGood_tightId");
 
-	bool isVetoMu = false;
-	bool isVetoEl = false;
     for(int ilep = 0; ilep < nLep; ilep++){
 
-	TLorentzVector dummyLep;
+	Lepton dummyLep;
 	dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
+	dummyLep.pdgID = LepGood_pdgId[ilep];
+	dummyLep.tightID = LepGood_tightID[ilep];
+	dummyLep.relIso03 = LepGood_relIso03[ilep];
 
 /*
   bool isGoodMu = false;
@@ -139,6 +127,8 @@ void GetLeptons(EasyChain * tree){
   bool isGoodLep = false;
   bool isVetoLep = false;
 */
+	bool isVetoMu = false;
+	bool isVetoEl = false;
 
 	// common cuts for all leptons (good and veto leps pass)
 	if(dummyLep.Pt() <= vetoLepPt || fabs(dummyLep.Eta()) > goodEta)
@@ -213,7 +203,7 @@ tree->Get(genLep_charge[0],"genLep_charge");
 
     for(int ilep = 0; ilep < nGenLep; ilep++){
 
-	TLorentzVector dummyLep;
+	GenLepton dummyLep;
 	dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
 
 	genLep.push_back(dummyLep);
@@ -260,7 +250,7 @@ void GetGenLeptonsFromTau(EasyChain * tree){
 
     for(int ilep = 0; ilep < nGenLepFromTau; ilep++){
 
-	TLorentzVector dummyLep;
+	GenLepton dummyLep;
 	dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
 
 	genLepFromTau.push_back(dummyLep);
@@ -298,7 +288,7 @@ void GetGenTaus(EasyChain * tree){
 
     for(int ilep = 0; ilep < nGenTau; ilep++){
 
-	TLorentzVector dummyLep;
+	GenLepton dummyLep;
 	dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
 
 	if(abs(genLep_pdgId[ilep]) == 15){
@@ -327,7 +317,7 @@ void GetJets(EasyChain * tree){
 
     for(int ijet = 0; ijet < nJet; ijet++)
     {
-	TLorentzVector dummyJet;
+	Jet dummyJet;
 	dummyJet.SetPtEtaPhiM(Jet_pt[ijet],Jet_eta[ijet],Jet_phi[ijet],Jet_mass[ijet]);
 	//put pt, eta, cuts and other stuff
 	//jet are already cleaned from all loose leptons that are in LepGood
