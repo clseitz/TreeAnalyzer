@@ -76,7 +76,7 @@ Float_t genLep_mass[2]; //[ngenLep]
 Float_t genLep_eta[2]; //[ngenLep]
 Float_t genLep_phi[2]; //[ngenLep]
 Int_t genLep_pdgId[2]; //[ngenLep]
-//Float_t genLep_charge[2]; //[ngenLep]
+Float_t genLep_charge[2]; //[ngenLep]
 
 // MET
 Float_t met_eta;
@@ -195,16 +195,14 @@ void GetGenLeptons(EasyChain * tree){
     tree->Get(genLep_eta[0],"genLep_eta");
     tree->Get(genLep_phi[0],"genLep_phi");
     tree->Get(genLep_pdgId[0],"genLep_pdgId");
-
-/*
-// why?
-tree->Get(genLep_charge[0],"genLep_charge");
-*/
+    tree->Get(genLep_charge[0],"genLep_charge");
 
     for(int ilep = 0; ilep < nGenLep; ilep++){
 
 	GenLepton dummyLep;
 	dummyLep.SetPtEtaPhiM(genLep_pt[ilep],genLep_eta[ilep],genLep_phi[ilep],genLep_mass[ilep]);
+	dummyLep.pdgID = genLep_pdgId[ilep];
+	dummyLep.charge = genLep_charge[ilep];
 
 	genLep.push_back(dummyLep);
 //      nGenLep++;

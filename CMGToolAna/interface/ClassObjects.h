@@ -84,6 +84,8 @@ class GenLepton: public ParticleObject{
 public:
     using ParticleObject::ParticleObject;
 
+    int pdgID;
+    int charge;
     int status;
 };
 
