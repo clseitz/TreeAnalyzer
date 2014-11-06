@@ -282,8 +282,8 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
     SetupHists(CutNumb);
 
     /////////////   event loop   //////////////////////
-    for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
-//    for(int entry=0; entry <  1000; entry+=1){
+//    for(int entry=0; entry <  Nevents/*min(100000,Nevents)*/; entry+=1){
+    for(int entry=0; entry <  100000; entry+=1){
 
         // Reset Cut counter
         iCut = 0;
@@ -344,7 +344,11 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
 
         // Fill special histos
 
-        //float DelPhiMetMu = TMath::ACos(TMath::Cos(MET.Phi() - goodMu[0].Phi()));
+        TLorentzVector WBos = MET + goodMu[0];
+	float DelPhiWlep = fabs(WBos.DeltaPhi(goodLep[0]));
+	float DelPhiMetMu =  fabs(MET.DeltaPhi(goodMu[0]));
+
+/*
         float DelPhiMetMu = fabs(MET.Phi() - goodMu[0].Phi());
         if (DelPhiMetMu > acos(-1.0)) DelPhiMetMu -= 2*acos(-1.0);
 
@@ -359,6 +363,7 @@ void TreeAnalyzer(TString list, TString outname,bool useW=true){
             DelPhiWlep -= 2*TMath::Pi();
         if (DelPhiWlep <= -TMath::Pi())
             DelPhiWlep += 2*TMath::Pi();
+*/
 
         float Wpt = WBos.Pt();
         float Wphi = WBos.Phi();
