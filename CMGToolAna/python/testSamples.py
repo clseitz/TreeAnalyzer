@@ -4,24 +4,25 @@ import sys
 import os
 from glob import glob
 from sys import exit
-from operator import mul
 
 from ROOT import gROOT
 from ROOT import TFile
 
-import samples
+from samples import *
+#import samples
+#SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450','T1tttt_1300_100']
 
 def help():
     print 'First argument analysis:'
-    print './runreader.py   SingleS TYPE_SAMPLE'
+    print './runreader.py Analyzer TYPE_SAMPLE'
     print ' TYPE = MC, data'
     print ' SAMPLE = ',
-    for sample in samples:
-        print sample,
-        sys.exit(0)
 
-def scale(fac,list):
-    return map(mul,len(list)*[fac],list)
+#    for sample in SAMPLES:
+#        sample,
+    print SAMPLES
+
+    sys.exit(0)
 
 def GetNevents(loc):
     EvtFile = open(loc+"/ttHLepSkimmer/events.txt", "r")
@@ -30,7 +31,7 @@ def GetNevents(loc):
         if val.isdigit():
             theInts.append(val)
         EvtFile.close()
-        return float(theInts[0])
+    return float(theInts[0])
 
 def GetTreeName(file):
     keylist = file.GetListOfKeys()
@@ -44,24 +45,38 @@ def GetTreeName(file):
         exit(0)
 
 # choose the analysis and a sample
-
-#gROOT.LoadMacro('Objects.C+')
 srcdir = '../src/'
 
 #gROOT.LoadMacro(srcdir+'Objects.C+')
 
 if len(sys.argv)>1:
-	if sys.argv[1]=='testSamples':
-		print 'Testing samples file'
-	else:
-		help()
+    if sys.argv[1]=='testSamples':
+        print 'Testing samples file'
+    elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
+        print 'Using Single'
+        gROOT.LoadMacro(srcdir+'ClassObjects.C+')
+        gROOT.LoadMacro(srcdir+'TreeAnalyzer_SingleLep.C+')
+        from ROOT import TreeAnalyzer as reader
+    else:
+        help()
 else:
     help()
+
+foundFlag=False
+for e in sys.argv:
+    for scene in scenarios:
+        for samp in SAMPLES:
+            if e==scene+'_'+samp:
+                evtgen[samp] = [GetNevents(inDir[scene][samp])]
+                do[scene][samp] = 1
+                foundFlag=True
+
+if not foundFlag: help()
 
 # do it
 for scene in scenarios:
 
-    for samp in samples:
+    for samp in SAMPLES:
         if do[scene][samp]:
             f=''
             print dirsHT, samp
