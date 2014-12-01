@@ -8,7 +8,8 @@ from sys import exit
 from ROOT import gROOT
 from ROOT import TFile
 
-from samples import *
+from EOSsamples import *
+#from DESYsamples import *
 #import samples
 #SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450','T1tttt_1300_100']
 
@@ -25,7 +26,7 @@ def help():
     sys.exit(0)
 
 def GetNevents(loc):
-    EvtFile = open(loc+"/ttHLepSkimmer/events.txt", "r")
+    EvtFile = open(loc+"ttHLepSkimmer/events.txt", "r")
     theInts = []
     for val in EvtFile.read().split():
         if val.isdigit():
