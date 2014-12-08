@@ -8,19 +8,16 @@ from sys import exit
 from ROOT import gROOT
 from ROOT import TFile
 
-from EOSsamples import *
-#from DESYsamples import *
-#import samples
-#SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450','T1tttt_1300_100']
+# default samples location
+locSamp = 'DESY'
 
 def help():
     print 'First argument analysis:'
-    print './runreader.py Analyzer TYPE_SAMPLE'
+    print './runreader.py Analyzer TYPE_SAMPLE [Location (%s)]' % locSamp
     print ' TYPE = MC, data'
     print ' SAMPLE = ',
 
-#    for sample in SAMPLES:
-#        sample,
+    from DESYsamples import SAMPLES
     print SAMPLES
 
     sys.exit(0)
@@ -48,16 +45,26 @@ def GetTreeName(file):
 # choose the analysis and a sample
 srcdir = '../src/'
 
-#gROOT.LoadMacro(srcdir+'Objects.C+')
-
 if len(sys.argv)>1:
     if sys.argv[1]=='testSamples':
         print 'Testing samples file'
+
+    if sys.argv[1]=='SingleS_P':  # single lepton testing version
+        gROOT.LoadMacro(srcdir+'readerSingleS_P.C+')
+        from ROOT import readerSingleS_P as reader
     elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
-        print 'Using Single'
         gROOT.LoadMacro(srcdir+'ClassObjects.C+')
         gROOT.LoadMacro(srcdir+'TreeAnalyzer_SingleLep.C+')
         from ROOT import TreeAnalyzer as reader
+    elif sys.argv[1]=='TreeAnalyzer_ext':  # test external object definitions
+        gROOT.LoadMacro(srcdir+'TreeAnalyzer_ext.C+')
+        from ROOT import TreeAnalyzer as reader
+    elif sys.argv[1]=='SingleLeptCMSana':  # single lepton CMS artur
+        gROOT.LoadMacro(srcdir+'SingleLeptCMSana.C+')
+        from ROOT import TreeAnalyzer_ext as reader
+    elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
+        gROOT.LoadMacro(srcdir+'TreeAnalyzer_BKG.C+')
+        from ROOT import TreeAnalyzer_BKG as reader
     elif sys.argv[1]=='TreeOutput':  # test tree output
         gROOT.LoadMacro(srcdir+'ClassObjects.C+')
         gROOT.LoadMacro(srcdir+'TreeOutput.C+')
@@ -67,29 +74,37 @@ if len(sys.argv)>1:
 else:
     help()
 
+# check sample location in sys.argv
+if 'EOS' in sys.argv:
+    from EOSsamples import *
+else:
+    from DESYsamples import *
+
+# fill sample dictionaries
 foundFlag=False
-for e in sys.argv:
+
+# loop over the samples in the arguments
+for arg in sys.argv:
     for scene in scenarios:
         for samp in SAMPLES:
-            if e==scene+'_'+samp:
-                evtgen[samp] = [GetNevents(inDir[scene][samp])]
-                do[scene][samp] = 1
+            if arg == scene+'_'+samp:
                 foundFlag=True
+                fileNames=''
+                print 'Sample', scene,  samp, inDir[scene][samp]
+
+                # loop over HTbins (if any)
+                for i,HT in enumerate(dirsHT[samp]):
+                    if len(dirsHT[samp]) > 1:
+                        print 'HTbin', HT
+
+                    # Get sample directory
+                    sampDir = inDir[scene][samp]+HT
+                    # Calculate number of events
+                    entries = GetNevents(sampDir)
+                    print "cross section x lumi", xsec_lumi[samp][i], "Events generated", entries
+                    fileNames=fileNames+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
+                    print "file name to be processed", fileNames
+                    print fileNames,samp,scene
+                    reader(fileNames,scene+'_'+samp)
 
 if not foundFlag: help()
-
-# do it
-for scene in scenarios:
-
-    for samp in SAMPLES:
-        if do[scene][samp]:
-            f=''
-            print dirsHT, samp
-            for i in range(len(dirsHT[samp])):
-                entries = evtgen[samp][i]
-                print "cross section x lumi",xsec_lumi[samp], "Events generated", entries
-                f=f+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
-                print "file name to be processed", f
-                print f,samp,scene
-                reader(f,scene+'_'+samp)
-
