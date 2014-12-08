@@ -1,10 +1,11 @@
+#ifndef NtupleTools3_h
+#define NtupleTools3_h
 //---NtupleTools----------
 //   Version 3.0
 //   Original version by Dirk Kruecker
 //   dirk.kruecker@desy.de
 
-#ifndef NtupleTools3_h
-#define NtupleTools3_h
+
 
 #ifdef __GNUC__
 // only visible for the gnu pre-compiler
@@ -79,82 +80,41 @@ typedef ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float>  >     XYZPo
 #pragma link C++ class ROOT::Math::PtEtaPhiM4D<float>+;
 #endif
 
-//namespace ROOT {
-#ifndef __CINT__ 
-// following functions should not be processed by rootcint
-//---------- simple progress counter and timer -----------------------------
-void progress(ostream& os=cout,const TString& pref="",const TString& postf="")
-#ifndef __NTHEADER___
-{
-        static int cnt(0),step(1),next(1);
-        cnt++;
-        if(cnt==next){
-                os<<pref<<cnt<<postf<<endl;
-                next+=step;
-        }
-        if((cnt+1)/step==10)step*=10;
-}
-#endif
-;
-void progressT(int flush=0,ostream& os=cout)
-#ifndef __NTHEADER___
-{
-	static TStopwatch timer;
-        static int cnt(0),step(1),next(1);
-	if(cnt==0) timer.Start();
-        cnt++;
-        if(cnt==next||flush==1){
-        	timer.Stop();
-                os<<setw(10)<<left<<cnt
-                  <<" time (time/evt) - real: "
-                  <<setw(10)<<timer.RealTime()
-                  <<"("<<setw(10)<<timer.RealTime()/step
-                  <<"), \tCPU: "<<setw(10)<<timer.CpuTime()
-                  <<"("<<setw(10)<<timer.CpuTime()/step<<")"<<endl;
-                timer.Start(false);
-                next+=step;
-        }
-        if((cnt+1)/step==10)step*=10;
-}
-#endif
-;
-void timer(ostream& os=cout,int stp=10)
-#ifndef __NTHEADER___
-{
-	static TStopwatch timer;
-        static int cnt(0),step(stp),next(stp);
-	if(cnt==0) timer.Start();
-        cnt++;
-        if(cnt==next){
-        	timer.Stop();
-                os<<"Evts: "<<setw(10)<<right<<cnt
-                  <<" | time [sec] - real: "
-                  <<left<<setprecision(4)<<setw(10)<<timer.RealTime()
-                  <<" \tCPU: "<<setw(10)<<left<<setprecision(4)<<timer.CpuTime()<<endl;
-                timer.Start(false);
-                next+=step;
-        }
-        if((cnt+1)/step==10)step*=10;
-}
-#endif
-;
+class EasyChain: public TChain {
+public:
+	EasyChain(const char* tname) : TChain(tname), localEntry(0), localMax(0), off(0), dcache(false) {
+		fileWeight=0;
+	};
 
-//---------- file handling -----------------------------
-int GetResult(vector<string>& out, const TString& command,bool nodup)
-#ifndef __NTHEADER___
-{
-	TString line;
-	FILE* pipe= gSystem->OpenPipe(command,"r");
-	if(!pipe){
-		cerr<<"Did not work: "<<command<<endl;
-	} else {
-		while (line.Gets(pipe)) if(line!="") {
-			out.push_back(string(line));
-		}
-		gSystem->ClosePipe(pipe);
+	// here all kinds of variables can be load from the chain
+	// e.g.: vector<LorentzV>* electrons = tree->Get(&electrons,"electronP4Pat");
+	//       electron->size()
+  string file_base(const string& nam)
+  {
+    int dot=nam.rfind(".");
+    int slash=nam.rfind("/")+1;
+    return nam.substr(slash,dot-slash);
+  };
+  TString file_base(const TString& nam)
+  {
+    const string namstr(nam.Data());
+    return file_base(namstr).c_str();
+  };
+
+ int GetResult(vector<string>& out, const TString& command,bool nodup)
+  {
+    TString line;
+    FILE* pipe= gSystem->OpenPipe(command,"r");
+    if(!pipe){
+      cerr<<"Did not work: "<<command<<endl;
+    } else {
+      while (line.Gets(pipe)) if(line!="") {
+	  out.push_back(string(line));
 	}
-	if(nodup){
-		map<string, pair<unsigned,string> > singleOut;
+      gSystem->ClosePipe(pipe);
+    }
+    if(nodup){
+      map<string, pair<unsigned,string> > singleOut;
 		map<string, pair<unsigned,string> >::iterator it;
 		unsigned i;
 		for(i=0;i<out.size();i++){
@@ -181,109 +141,10 @@ int GetResult(vector<string>& out, const TString& command,bool nodup)
 	}
 	return out.size();
 }
-#endif
-;
-//AllRootFilesIn(dir,tree)           // any 'ls'-able directory
-//AllRootFilesIn(dir,tree,10)        // any 'ls'-able directory, first 10 files
-//AllRootFilesIn(dir,tree,"dcls")    // dcache -  needs proxy & dctools !
-//AllRootFilesIn(dir,tree,"dcls",10) //first 10 files in dir
-int AllRootFilesIn(const TString& dir,TChain* chain,const TString& LScommand,int max,bool nodup=false)
-#ifndef __NTHEADER___
-{
-	vector<string> files;
-	int n=0;
-	if(LScommand=="dcls"){
-		n=GetResult(files,"dcls "+dir+" | grep \"\\.root\" ",nodup);
-		n=n>max?max:n;
-//old		const string dcache_gate="dcap://dcache-ses-cms.desy.de:22125/";
-		const string dcache_gate="dcap://dcache-cms-dcap.desy.de:22125/";
-		for(int i=0;i<n;++i) chain->Add((dcache_gate+dir+"/"+files[i]));
-	} else if(LScommand=="rfdir") {
-		n=GetResult(files,LScommand+" "+dir+" | grep \"\\.root\" | awk \'{print $9}\' ",nodup);	
-		n=n>max?max:n;
-		for(int i=0;i<n;++i) chain->Add(("rfio:"+dir+"/"+files[i]));
-	} else {
-		n=GetResult(files,LScommand+" "+dir+" | grep \"\\.root\"",nodup);
-		n=n>max?max:n;
-		for(int i=0;i<n;++i) chain->Add((dir+"/"+files[i]));
-	}
-	return n;
-}
-#endif
-;
-// no duplicate check
-int AllRootFilesIn(const TString& dir,TChain* chain)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,"ls",1000,false);
-}
-#endif
-;
-int AllRootFilesIn(const TString& dir,TChain* chain,const TString& LScommand)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,LScommand,1000,false);
-}
-#endif
-;
-int AllRootFilesIn(const TString& dir,TChain* chain,int max)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,"ls",max,false);
-}
-#endif
-;
-// duplicate check
-int AllRootFilesNoDup(const TString& dir,TChain* chain)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,"ls",1000,true);
-}
-#endif
-;
-int AllRootFilesNoDup(const TString& dir,TChain* chain,const TString& LScommand)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,LScommand,1000,true);
-}
-#endif
-;
-int AllRootFilesNoDup(const TString& dir,TChain* chain,int max)
-#ifndef __NTHEADER___
-{
-	return AllRootFilesIn(dir,chain,"ls",max,true);
-}
-#endif
-;
-string file_base(const string& nam)
-#ifndef __NTHEADER___
-{
-	int dot=nam.rfind(".");
-	int slash=nam.rfind("/")+1;
-	return nam.substr(slash,dot-slash);
-}
-#endif
-;
-TString file_base(const TString& nam)
-#ifndef __NTHEADER___
-{
-	const string namstr(nam.Data());
-	return file_base(namstr).c_str();
-}
-#endif
-;
-#endif
-//---------- chain and tree handling -----------------------------
-// inline is redundant since this is a header files
-class EasyChain: public TChain {
-public:
-	EasyChain(const char* tname) : TChain(tname), localEntry(0), localMax(0), off(0), dcache(false) {
-		fileWeight=0;
-	};
 
-	// here all kinds of variables can be load from the chain
-	// e.g.: vector<LorentzV>* electrons = tree->Get(&electrons,"electronP4Pat");
-	//       electron->size()
+;
+
+
 	template<typename T>
 	inline T* Get(T** ppt, const char* name){
 	
