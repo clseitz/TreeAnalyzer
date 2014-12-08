@@ -316,24 +316,16 @@ char hNAME[99];
   cout<<"start with normal histograms"<<endl;
   for(int cj = 0; cj < CutNumb; cj++)
     {
-      cout<<CutList[cj]<<" "<<cj<<endl;
       outf->cd();
       //outf->mkdir(CutList[cj]);
       //outf->cd(CutList[cj]);
       h0JetpT[cj]->Write();
-      cout<<CutList[cj]<<" 1 "<<cj<<endl;
       hnJet[cj]->Write();
-      cout<<CutList[cj]<<" 2 "<<cj<<endl;
       hnBJet[cj]->Write();
-      cout<<CutList[cj]<<" 3 "<<cj<<endl;
       hnLep[cj]->Write();
-      cout<<CutList[cj]<<" 4 "<<cj<<endl;
       hLeppt[cj]->Write();
-      cout<<CutList[cj]<<" 5 "<<cj<<endl;
       hLepeta[cj]->Write();
-      cout<<CutList[cj]<<" 6 "<<cj<<endl;
       hMET[cj]->Write();
-      cout<<CutList[cj]<<" 7 "<<cj<<endl;
 
     }
   cout<<"done with normal histograms"<<endl;
