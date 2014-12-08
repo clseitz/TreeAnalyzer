@@ -189,11 +189,7 @@ char hNAME[99];
 
    // Define ST (needs to fixed for general use)
 
-   if( Obj.nMuGood > 0){
-     cout<<"before "<<Obj.ST<<endl;
-     cout<<"bla "<<Obj.MET.Pt()+Obj.goodMu[0].Pt()<<endl;
-     Obj.ST = Obj.MET.Pt()+Obj.goodMu[0].Pt();
-   }
+
    // Fill main histograms
    FillMainHists(iCut, EvWeight);    
    
