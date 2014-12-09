@@ -168,11 +168,13 @@ int main (int argc, char* argv[]){
     string outnameStr = (string)outname;
     string TTbarModes[2] = {"MC_TTbar_DiLep","MC_TTbar_SinLep"};
 
+    cout << "Starting event loop" << endl;
+
     for(int entry=0; entry < Nevents/*min(1000000,Nevents)*/; entry+=1){
 
-        if (entry % 10000 == 0) {
-            printf("\n=================Processing entry: %i\n", entry);
-        }
+        if (entry % 10000 == 0)
+            cout << "================= Processing entry: " << entry << '\r' << flush;
+
         //lumi calcualtion done in runAnalyzer.py (fb and pb)
         Float_t fw = tree->GetEntryW(entry);
         float EvWeight = 1;
@@ -289,6 +291,8 @@ int main (int argc, char* argv[]){
         iCFCounter[iCut]++;
         iCut++;
     }
+
+    cout << endl << "Finished event loop" << endl;
 
     //write out cutflow
     ofstream tfile;
