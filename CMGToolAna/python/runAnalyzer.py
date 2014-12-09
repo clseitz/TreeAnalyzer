@@ -44,7 +44,7 @@ def GetTreeName(file):
 
 # choose the analysis and a sample
 srcdir = '../src/'
-
+exe = ' '
 if len(sys.argv)>1:
     if sys.argv[1]=='testSamples':
         print 'Testing samples file'
@@ -69,6 +69,8 @@ if len(sys.argv)>1:
         gROOT.LoadMacro(srcdir+'ClassObjects.C+')
         gROOT.LoadMacro(srcdir+'TreeOutput.C+')
         from ROOT import TreeWriter as reader
+    elif sys.argv[1]=='TreeAnalyzer_example':  # test external object definitions
+        exe = 'TreeAnalyzer_example'
     else:
         help()
 else:
@@ -102,9 +104,16 @@ for arg in sys.argv:
                     # Calculate number of events
                     entries = GetNevents(sampDir)
                     print "cross section x lumi", xsec_lumi[samp][i], "Events generated", entries
-                    fileNames=fileNames+inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
-                    print "file name to be processed", fileNames
-                    print fileNames,samp,scene
-                    reader(fileNames,scene+'_'+samp)
+                    fileNames+=inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
+
+				# process
+				print "file name to be processed", fileNames
+				print fileNames,samp,scene
+				if exe == ' ':
+					print fileNames,samp,scene
+					reader(fileNames,scene+'_'+samp)
+				else:
+					print([".././"+exe, fileNames,scene+'_'+samp])
+					os.system(".././"+exe+" "+fileNames+" "+scene+'_'+samp)
 
 if not foundFlag: help()
