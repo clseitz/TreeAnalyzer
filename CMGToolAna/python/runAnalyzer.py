@@ -95,14 +95,14 @@ for arg in sys.argv:
                     print "cross section x lumi", xsec_lumi[samp][i], "Events generated", entries
                     fileNames+=inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
 
-				# process
-				print "file name to be processed", fileNames
-				print fileNames,samp,scene
-				if exe == ' ':
-					print fileNames,samp,scene
-					reader(fileNames,scene+'_'+samp)
-				else:
-					print([".././"+exe, fileNames,scene+'_'+samp])
-					os.system(".././"+exe+" "+fileNames+" "+scene+'_'+samp)
+                # process
+                print "file name to be processed", fileNames
+                print fileNames,samp,scene
+                if exe == ' ':
+                    print fileNames,samp,scene
+                    reader(fileNames,scene+'_'+samp)
+                else:
+                    print([".././"+exe, fileNames,scene+'_'+samp])
+                    os.system(".././"+exe+" "+fileNames+" "+scene+'_'+samp)
 
 if not foundFlag: help()
