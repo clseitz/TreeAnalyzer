@@ -209,14 +209,11 @@ int main (int argc, char* argv[]){
         FillMainHists(iCut, EvWeight);
 
         //Calculation of special variables, to be moved to external class
-        float DelPhiMetMu = fabs(Obj.MET.Phi() - Obj.goodMu[0].Phi());
-        if (DelPhiMetMu > acos(-1.0)) DelPhiMetMu -= 2*acos(-1.0);
+
         TLorentzVector WBos = Obj.MET + Obj.goodMu[0];
-        float DelPhiWlep = (WBos.Phi() - Obj.goodMu[0].Phi());
-        if (DelPhiWlep > TMath::Pi())
-            DelPhiWlep -= 2*TMath::Pi();
-        if (DelPhiWlep <= -TMath::Pi())
-            DelPhiWlep += 2*TMath::Pi();
+	float DelPhiWlep = fabs(WBos.DeltaPhi(Obj.goodLep[0]));
+	float DelPhiMetMu =  fabs(Obj.MET.DeltaPhi(Obj.goodMu[0]));
+
         float Wpt = WBos.Pt();
         float Wphi = WBos.Phi();
         float MT = sqrt(pow((Obj.goodMu[0].Et()+Obj.MET.Et()),2)-
