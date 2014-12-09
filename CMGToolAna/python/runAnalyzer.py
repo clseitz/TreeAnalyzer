@@ -46,30 +46,19 @@ def GetTreeName(file):
 srcdir = '../src/'
 exe = ' '
 if len(sys.argv)>1:
-    if sys.argv[1]=='testSamples':
-        print 'Testing samples file'
-
-    if sys.argv[1]=='SingleS_P':  # single lepton testing version
-        gROOT.LoadMacro(srcdir+'readerSingleS_P.C+')
-        from ROOT import readerSingleS_P as reader
-    elif sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
+    if sys.argv[1]=='TreeAnalyzer':  # single lepton testing version
         gROOT.LoadMacro(srcdir+'ClassObjects.C+')
         gROOT.LoadMacro(srcdir+'TreeAnalyzer_SingleLep.C+')
         from ROOT import TreeAnalyzer as reader
-    elif sys.argv[1]=='TreeAnalyzer_ext':  # test external object definitions
-        gROOT.LoadMacro(srcdir+'TreeAnalyzer_ext.C+')
+    elif sys.argv[1]=='TreeAnalyzer_SingleLep':  # single lepton testing version
+        gROOT.LoadMacro(srcdir+'ClassObjects.C+')
+        gROOT.LoadMacro(srcdir+'TreeAnalyzer_SingleLep.C+')
         from ROOT import TreeAnalyzer as reader
-    elif sys.argv[1]=='SingleLeptCMSana':  # single lepton CMS artur
-        gROOT.LoadMacro(srcdir+'SingleLeptCMSana.C+')
-        from ROOT import TreeAnalyzer_ext as reader
-    elif sys.argv[1]=='TreeAnalyzer_BKG':  # single lepton testing version
-        gROOT.LoadMacro(srcdir+'TreeAnalyzer_BKG.C+')
-        from ROOT import TreeAnalyzer_BKG as reader
-    elif sys.argv[1]=='TreeOutput':  # test tree output
+    elif sys.argv[1]=='TreeOutput':  # write variables to a tree
         gROOT.LoadMacro(srcdir+'ClassObjects.C+')
         gROOT.LoadMacro(srcdir+'TreeOutput.C+')
         from ROOT import TreeWriter as reader
-    elif sys.argv[1]=='TreeAnalyzer_example':  # test external object definitions
+    elif sys.argv[1]=='TreeAnalyzer_example':  # example with compiled executable
         exe = 'TreeAnalyzer_example'
     else:
         help()
