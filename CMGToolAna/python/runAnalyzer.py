@@ -97,7 +97,7 @@ for arg in sys.argv:
 
                 # process
                 print "file name to be processed", fileNames
-                print fileNames,samp,scene
+                print "Sample:", samp,scene
                 if exe == ' ':
                     print fileNames,samp,scene
                     reader(fileNames,scene+'_'+samp)
