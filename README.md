@@ -16,9 +16,9 @@ Makefile: The variable CODE needs the name of the analyzer in the
 	  src directory that should be compiled (i.e.: TreeAnalzyer_example).
 
 How to get code to run:
-make
-cd python
-./runAnalyzer.py TreeAnalyzer_example MC_TTbar
+* make
+* cd python
+* ./runAnalyzer.py TreeAnalyzer_example MC_TTbar
 
 
 -------------------------------------------------------------------------------
