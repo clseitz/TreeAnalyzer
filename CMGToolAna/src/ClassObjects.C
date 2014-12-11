@@ -49,6 +49,7 @@ Float_t genPart_eta[arrayN];
 Float_t genPart_phi[arrayN];
 Int_t genPart_pdgId[arrayN];
 Int_t genPart_motherId[arrayN];
+Int_t genPart_grandmaId[arrayN];
 
 
 // MET
@@ -281,6 +282,7 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     tree->Get(genPart_phi[0],"GenP6StatusThree_phi");
     tree->Get(genPart_pdgId[0],"GenP6StatusThree_pdgId");
     tree->Get(genPart_motherId[0],"GenP6StatusThree_motherId");
+    tree->Get(genPart_grandmaId[0],"GenP6StatusThree_grandmaId");
 
     for(int ipart = 0; ipart < nGenPart; ipart++){
 
@@ -288,6 +290,7 @@ void GetObjects::GetGenParticles(EasyChain * tree){
 	dummyPart.SetPtEtaPhiM(genPart_pt[ipart], genPart_eta[ipart], genPart_phi[ipart], genPart_mass[ipart]);
 	dummyPart.pdgid = genPart_pdgId[ipart];
 	dummyPart.motherid = genPart_motherId[ipart];
+	dummyPart.grandmaid = genPart_grandmaId[ipart];
 
 	genPart.push_back(dummyPart);
 

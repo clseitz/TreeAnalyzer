@@ -94,6 +94,7 @@ public:
 
     int pdgid;
     int motherid;
+    int grandmaid;
 };
 
 // Jet
