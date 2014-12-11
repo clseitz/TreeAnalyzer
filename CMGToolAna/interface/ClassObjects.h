@@ -87,6 +87,15 @@ public:
     int status;
 };
 
+// a bit more generic, generator partices
+class GenParticle: public ParticleObject{
+public:
+    using ParticleObject::ParticleObject;
+
+    int pdgid;
+    int motherid;
+};
+
 // Jet
 class Jet: public ParticleObject{
 private:
@@ -116,6 +125,7 @@ class GetObjects{
   void GetMETnoPU(EasyChain * tree);
   void GetLeptons(EasyChain * tree);
   void GetGenLeptons(EasyChain * tree);
+  void GetGenParticles(EasyChain * tree);
   void GetGenLeptonsFromTau(EasyChain * tree);
   void GetGenTaus(EasyChain * tree);
   void GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET);
@@ -139,11 +149,12 @@ class GetObjects{
    std::vector<GenLepton> genEl;
    std::vector<GenLepton> genMu;
    std::vector<GenLepton> genTau;
-  
+
    std::vector<GenLepton> genLepFromTau;
    std::vector<GenLepton> genElFromTau;
    std::vector<GenLepton> genMuFromTau;
-  
+
+   std::vector<GenParticle> genPart;    
   // objects number can be aslo detemined as object.size()
   
    Int_t nLepGood;
@@ -159,6 +170,7 @@ class GetObjects{
   
    Int_t nGenTau;
    Int_t nGenLep;
+   Int_t nGenPart;
    Int_t nGenLepFromTau;
    
    float HT40;

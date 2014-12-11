@@ -42,7 +42,14 @@ Float_t genLep_mass[2]; //[ngenLep]
 Float_t genLep_eta[2]; //[ngenLep]
 Float_t genLep_phi[2]; //[ngenLep]
 Int_t genLep_pdgId[2]; //[ngenLep]
-//Float_t genLep_charge[2]; //[ngenLep]
+
+Float_t genPart_pt[arrayN];
+Float_t genPart_mass[arrayN];
+Float_t genPart_eta[arrayN];
+Float_t genPart_phi[arrayN];
+Int_t genPart_pdgId[arrayN];
+Int_t genPart_motherId[arrayN];
+
 
 // MET
 Float_t met_eta;
@@ -263,7 +270,29 @@ void GetObjects::GetGenTaus(EasyChain * tree){
 	}
     }
 }
+void GetObjects::GetGenParticles(EasyChain * tree){
+    genPart.clear();
+    nGenPart = 0;
+    // filling objects from tree
+    tree->Get(nGenPart,"nGenP6StatusThree"); //n prompt Lep
+    tree->Get(genPart_pt[0],"GenP6StatusThree_pt");
+    tree->Get(genPart_mass[0],"GenP6StatusThree_mass");
+    tree->Get(genPart_eta[0],"GenP6StatusThree_eta");
+    tree->Get(genPart_phi[0],"GenP6StatusThree_phi");
+    tree->Get(genPart_pdgId[0],"GenP6StatusThree_pdgId");
+    tree->Get(genPart_motherId[0],"GenP6StatusThree_motherId");
 
+    for(int ipart = 0; ipart < nGenPart; ipart++){
+
+	GenParticle dummyPart;
+	dummyPart.SetPtEtaPhiM(genPart_pt[ipart], genPart_eta[ipart], genPart_phi[ipart], genPart_mass[ipart]);
+	dummyPart.pdgid = genPart_pdgId[ipart];
+	dummyPart.motherid = genPart_motherId[ipart];
+
+	genPart.push_back(dummyPart);
+
+    }
+}
 void GetObjects::GetJets(EasyChain * tree){
     goodJet.clear();
     goodBJet.clear();
