@@ -31,12 +31,12 @@ inDir['MC'][sample] = base+'TTJets'
 sample = 'TTbar_SinLep'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
-inDir['MC'][sample] = base+'TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+inDir['MC'][sample] = base+'TTJets/'
 ##################################
 sample = 'TTbar_DiLep'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
-inDir['MC'][sample] = base+'TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+inDir['MC'][sample] = base+'TTJets/'
 ##################################
 sample = 'WJets'
 dirsHT[sample]  = ['100-200/','200-400/','400-600/','600-Inf/']
