@@ -13,6 +13,7 @@
 using namespace std;
 // instance of the Objects class with functionality defined in ClassObjects.C
 GetObjects Obj;
+bool debug = false;
 const int CutNumb = 26; // number of Cuts
 const char * CutList[CutNumb] = {"noCut",
                                  "== 1 Mu", "6Jet","HT>500","ST>250",
@@ -148,7 +149,7 @@ int main (int argc, char* argv[]){
     }
 
 
-    EasyChain* tree = new EasyChain("treeProducerSusySingleLepton");
+    EasyChain* tree = new EasyChain("tree");
     for(unsigned i=0;i<files.size();i++){
         tree->AddSmartW(files[i],weights[i]);
         cout<<"add: "<<files[i]<<" "<<weights[i]<<endl;
@@ -164,7 +165,7 @@ int main (int argc, char* argv[]){
         iCFCounter[i] = 0;
     }
 
-    bool Debug = false;
+
     string outnameStr = (string)outname;
     string TTbarModes[2] = {"MC_TTbar_DiLep","MC_TTbar_SinLep"};
 
@@ -172,21 +173,30 @@ int main (int argc, char* argv[]){
 
     for(int entry=0; entry < Nevents/*min(1000000,Nevents)*/; entry+=1){
 
-        if (entry % 10000 == 0)
-            cout << "================= Processing entry: " << entry << '\r' << flush;
+      if (entry % 1000 == 0)
+                cout << "================= Processing entry: " << entry << '\r' << flush;
 
         //lumi calcualtion done in runAnalyzer.py (fb and pb)
-        Float_t fw = tree->GetEntryW(entry);
-        float EvWeight = 1;
-        EvWeight *= fw ;
+    Float_t fw = tree->GetEntryW(entry);
+    Float_t EvWeight = 1.0;
+    EvWeight *= fw ;
 
         iCut = 0;
+
         //get all objects
+    if(debug) cout<<"GetLeptons" <<endl;
         Obj.GetLeptons(tree);
+	if(debug) cout<<" GetJets"<<endl;
         Obj.GetJets(tree);
+	if(debug) cout<<" GetFatJets"<<endl;
+        Obj.GetFatJets(tree);
+	if(debug) cout<<" GetGenLeptons"<<endl;
         Obj.GetGenLeptons(tree);
+	if(debug) cout<<" GetMET"<<endl;
         Obj.GetMET(tree);
+	if(debug) cout<<" GetGenMET"<<endl;
         Obj.GetGenMET(tree);
+	if(debug) cout<<" GetKinVariables"<<endl;
         Obj.GetKinVariables(Obj.goodLep,Obj.goodJet,Obj.MET);
 
         // Define ST (needs to fixed for general use)

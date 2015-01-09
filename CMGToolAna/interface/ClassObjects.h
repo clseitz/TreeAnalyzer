@@ -72,10 +72,10 @@ class Lepton: public ParticleObject{
 public:
     using ParticleObject::ParticleObject;
 
-    int pdgID;
-    float relIso03;
-    int tightID;
-    int charge;
+    Int_t pdgID;
+    Double_t relIso03;
+    Int_t tightID;
+    Int_t charge;
 };
 
 
@@ -98,14 +98,33 @@ public:
 };
 
 // Jet
-class Jet: public ParticleObject{
+class FatJet: public ParticleObject{
 private:
 // determine btag in constructor?
 //    Jet() { if(btagCSV > 0.676) btag = true; }
 
 public:
+  Double_t prunedMass;
+  Double_t trimmedMass;
+  Double_t filteredMass;
+  Double_t  tau1;
+  Double_t tau2;
+  Double_t tau3;
+  Double_t topMass;
+  Double_t minMass; 
+  Double_t nSubJets;
+
+  bool topTagged;
+
+
+};
+
+
+class Jet: public ParticleObject{
+private:
+public:
     bool btag;
-    float btagCSV;
+    Double_t btagCSV;
 };
 
 
@@ -120,6 +139,7 @@ public:
 class GetObjects{                                                                                              
  public:                                                                       
   void GetJets(EasyChain * tree);
+  void GetFatJets(EasyChain * tree);
   void GetMET(EasyChain * tree);
   void GetGenMET(EasyChain * tree);
 
@@ -133,6 +153,7 @@ class GetObjects{
 
    std::vector<Jet> goodJet;
    std::vector<Jet> goodBJet;
+   std::vector<FatJet> goodFatJet;
   
    TLorentzVector MET;
    TLorentzVector genMET;
@@ -167,6 +188,7 @@ class GetObjects{
    Int_t nMuVeto;
   
    Int_t nJetGood;
+   Int_t nFatJetGood;
    Int_t nBJetGood;
   
    Int_t nGenTau;
@@ -174,8 +196,8 @@ class GetObjects{
    Int_t nGenPart;
    Int_t nGenLepFromTau;
    
-   float HT40;
-   float ST;  
+   Double_t HT40;
+   Double_t ST;  
 
 };
 
