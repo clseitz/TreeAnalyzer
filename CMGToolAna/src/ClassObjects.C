@@ -4,59 +4,82 @@ using namespace std;
     // global object variables
 
 
-Float_t goodEta = 2.4;
+Double_t goodEta = 2.4;
 
 //leptons
-Float_t goodElPt = 20.0;
-Float_t goodMuPt = 20.0;
-Float_t goodLepPt = 20.0;
-Float_t vetoLepPt = 10.0;
+Double_t goodElPt = 20.0;
+Double_t goodMuPt = 20.0;
+Double_t goodLepPt = 20.0;
+Double_t vetoLepPt = 10.0;
 
-Float_t goodEl_relIso03 = 0.14;
-Float_t goodMu_relIso03 = 0.12;
-Float_t goodLep_relIso03 = 0.15;
+Double_t goodEl_relIso03 = 0.14;
+Double_t goodMu_relIso03 = 0.12;
+Double_t goodLep_relIso03 = 0.15;
 
 //jets
-Float_t goodJetPt = 40.0;
-Float_t goodJetBtagCSV = 0.679;
+Double_t goodJetPt = 40.0;
+//btagging medium working points
+Double_t goodJetBtagCSV = 0.679;
+Double_t goodJetBtagCMVA = 0.732;
+
+//fatjet
+Double_t goodFatJetPt = 100.0;
 
 // variables for tree
 const int arrayN = 50;
-Float_t Jet_pt[arrayN];
-Float_t Jet_eta[arrayN];
-Float_t Jet_phi[arrayN];
-Float_t Jet_mass[arrayN];
-Float_t Jet_btagCSV[arrayN];
+Double_t Jet_pt[arrayN];
+Double_t Jet_eta[arrayN];
+Double_t Jet_phi[arrayN];
+Double_t Jet_mass[arrayN];
+Double_t Jet_btagCSV[arrayN];
+Double_t Jet_btagCMVA[arrayN];
 
-Float_t LepGood_pt[arrayN];
-Float_t LepGood_eta[arrayN];
-Float_t LepGood_phi[arrayN];
-Float_t LepGood_mass[arrayN];
-Float_t LepGood_relIso03[arrayN];
+Double_t FatJet_pt[arrayN];
+Double_t FatJet_eta[arrayN];
+Double_t FatJet_phi[arrayN];
+Double_t FatJet_mass[arrayN];
+Double_t FatJet_prunedMass[arrayN];
+Double_t FatJet_trimmedMass[arrayN];
+Double_t FatJet_filteredMass[arrayN];
+
+Double_t FatJet_tau1[arrayN];
+Double_t FatJet_tau2[arrayN];
+Double_t FatJet_tau3[arrayN];
+Double_t FatJet_topMass[arrayN];
+Double_t FatJet_minMass[arrayN];
+Double_t FatJet_nSubJets[arrayN];
+
+
+
+Double_t LepGood_pt[arrayN];
+Double_t LepGood_eta[arrayN];
+Double_t LepGood_phi[arrayN];
+Double_t LepGood_mass[arrayN];
+Double_t LepGood_relIso03[arrayN];
 Int_t   LepGood_pdgId[arrayN];
 Int_t  LepGood_tightID[arrayN];
 
 // Gen particles
-Float_t genLep_pt[2]; //[ngenLep]
-Float_t genLep_mass[2]; //[ngenLep]
-Float_t genLep_eta[2]; //[ngenLep]
-Float_t genLep_phi[2]; //[ngenLep]
+Double_t genLep_pt[2]; //[ngenLep]
+Double_t genLep_mass[2]; //[ngenLep]
+Double_t genLep_eta[2]; //[ngenLep]
+Double_t genLep_phi[2]; //[ngenLep]
 Int_t genLep_pdgId[2]; //[ngenLep]
 
-Float_t genPart_pt[arrayN];
-Float_t genPart_mass[arrayN];
-Float_t genPart_eta[arrayN];
-Float_t genPart_phi[arrayN];
+Double_t genPart_pt[arrayN];
+Double_t genPart_mass[arrayN];
+Double_t genPart_eta[arrayN];
+Double_t genPart_phi[arrayN];
 Int_t genPart_pdgId[arrayN];
 Int_t genPart_motherId[arrayN];
 Int_t genPart_grandmaId[arrayN];
 
 
 // MET
-Float_t met_eta;
-Float_t met_phi;
-Float_t met_pt;
-Float_t met_mass;
+Double_t met_eta;
+Double_t met_phi;
+Double_t met_pt;
+Double_t met_mass;
 
 void GetObjects::GetLeptons(EasyChain * tree){
 
@@ -86,9 +109,8 @@ void GetObjects::GetLeptons(EasyChain * tree){
     tree->Get(LepGood_relIso03[0],"LepGood_relIso03");
     tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
     tree->Get(LepGood_tightID[0],"LepGood_tightId");
-
+    cout<<"nlep "<< nLep<<endl;
     for(int ilep = 0; ilep < nLep; ilep++){
-
 	Lepton dummyLep;
 	dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
 	dummyLep.pdgID = LepGood_pdgId[ilep];
@@ -148,12 +170,12 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	}
     }
 
-/*
+    /*
   cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
   cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
   cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
   cout << "Number of veto leptons = \t" << nLepVeto << endl;
-*/
+    */
 }
 
 void GetObjects::GetGenLeptons(EasyChain * tree){
@@ -275,14 +297,14 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     genPart.clear();
     nGenPart = 0;
     // filling objects from tree
-    tree->Get(nGenPart,"nGenP6StatusThree"); //n prompt Lep
-    tree->Get(genPart_pt[0],"GenP6StatusThree_pt");
-    tree->Get(genPart_mass[0],"GenP6StatusThree_mass");
-    tree->Get(genPart_eta[0],"GenP6StatusThree_eta");
-    tree->Get(genPart_phi[0],"GenP6StatusThree_phi");
-    tree->Get(genPart_pdgId[0],"GenP6StatusThree_pdgId");
-    tree->Get(genPart_motherId[0],"GenP6StatusThree_motherId");
-    tree->Get(genPart_grandmaId[0],"GenP6StatusThree_grandmaId");
+    tree->Get(nGenPart,"nGenPart"); //n prompt Lep
+    tree->Get(genPart_pt[0],"GenPart_pt");
+    tree->Get(genPart_mass[0],"GenPart_mass");
+    tree->Get(genPart_eta[0],"GenPart_eta");
+    tree->Get(genPart_phi[0],"GenPart_phi");
+    tree->Get(genPart_pdgId[0],"GenPart_pdgId");
+    tree->Get(genPart_motherId[0],"GenPart_motherId");
+    tree->Get(genPart_grandmaId[0],"GenPart_grandmotherId");
 
     for(int ipart = 0; ipart < nGenPart; ipart++){
 
@@ -312,6 +334,7 @@ void GetObjects::GetJets(EasyChain * tree){
     tree->Get(Jet_phi[0],"Jet_phi");
     tree->Get(Jet_mass[0],"Jet_mass");
     tree->Get(Jet_btagCSV[0],"Jet_btagCSV");
+    tree->Get(Jet_btagCMVA[0],"Jet_btagCMVA");
 
     for(int ijet = 0; ijet < nJet; ijet++)
     {
@@ -336,6 +359,55 @@ void GetObjects::GetJets(EasyChain * tree){
   cout << "Number of good jets = \t" << nJetGood  << " and b jets = \t" << nBJetGood << endl;
 */
 }
+
+void GetObjects::GetFatJets(EasyChain * tree){
+    goodFatJet.clear();
+
+    nFatJetGood = 0;
+    int nFatJet = tree->Get(nFatJet,"nFatJet");
+    tree->Get(FatJet_pt[0],"FatJet_pt");
+    tree->Get(FatJet_eta[0],"FatJet_eta");
+    tree->Get(FatJet_phi[0],"FatJet_phi");
+    tree->Get(FatJet_mass[0],"FatJet_mass");
+    tree->Get(FatJet_prunedMass[0],"FatJet_prunedMass");
+    tree->Get(FatJet_trimmedMass[0],"FatJet_trimmedMass");
+    tree->Get(FatJet_filteredMass[0],"FatJet_filteredMass");
+
+    tree->Get(FatJet_tau1[0],"FatJet_tau1");
+    tree->Get(FatJet_tau2[0],"FatJet_tau2");
+    tree->Get(FatJet_tau3[0],"FatJet_tau3");
+    tree->Get(FatJet_topMass[0],"FatJet_topMass");
+    tree->Get(FatJet_minMass[0],"FatJet_minMass");
+    tree->Get(FatJet_nSubJets[0],"FatJet_nSubJets");
+
+
+    for(int ijet = 0; ijet < nFatJet; ijet++)
+    {
+	FatJet dummyJet;
+	dummyJet.SetPtEtaPhiM(FatJet_pt[ijet],FatJet_eta[ijet],FatJet_phi[ijet],FatJet_mass[ijet]);
+	dummyJet.prunedMass = FatJet_prunedMass[ijet]; 
+	dummyJet.trimmedMass = FatJet_trimmedMass[ijet]; 
+	dummyJet.filteredMass = FatJet_filteredMass[ijet]; 
+	dummyJet.tau1 = FatJet_tau1[ijet]; 
+	dummyJet.tau2 = FatJet_tau2[ijet]; 
+	dummyJet.tau3 = FatJet_tau3[ijet];
+	dummyJet.topMass = FatJet_topMass[ijet];  
+	dummyJet.minMass = FatJet_minMass[ijet];  
+	dummyJet.nSubJets = FatJet_nSubJets[ijet];
+
+	if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
+	  dummyJet.topTagged = true;}
+	else dummyJet.topTagged = false;
+
+	if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
+	    goodFatJet.push_back(dummyJet);
+	    nFatJetGood++;
+
+	    }
+	}
+    }
+
+
 
 void GetObjects::GetMET(EasyChain * tree){
     MET.SetPtEtaPhiM(0,0,0,0);
