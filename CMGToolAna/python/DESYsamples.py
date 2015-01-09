@@ -26,7 +26,7 @@ for scene in scenarios:
 sample = 'TTbar'
 dirsHT[sample]  = ['/']
 xsec_lumi[sample] = [809.1*Lumi] #cross section in pb
-inDir['MC'][sample] = base+'TTJets/TTJets_MSDecaysCKM_central_PU_S14_POSTLS170/'
+inDir['MC'][sample] = base+'TTJets'
 ##################################
 sample = 'TTbar_SinLep'
 dirsHT[sample]  = ['/']
