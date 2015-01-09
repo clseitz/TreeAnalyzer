@@ -1,7 +1,7 @@
 #include "../interface/ClassObjects.h"
 
 using namespace std;
-    // global object variables
+// global object variables
 
 
 Double_t goodEta = 2.4;
@@ -109,20 +109,14 @@ void GetObjects::GetLeptons(EasyChain * tree){
     tree->Get(LepGood_relIso03[0],"LepGood_relIso03");
     tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
     tree->Get(LepGood_tightID[0],"LepGood_tightId");
-    cout<<"nlep "<< nLep<<endl;
+//    cout<<"nlep "<< nLep<<endl;
+
     for(int ilep = 0; ilep < nLep; ilep++){
 	Lepton dummyLep;
 	dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
 	dummyLep.pdgID = LepGood_pdgId[ilep];
 	dummyLep.tightID = LepGood_tightID[ilep];
 	dummyLep.relIso03 = LepGood_relIso03[ilep];
-
-/*
-  bool isGoodMu = false;
-  bool isGoodEl = false;
-  bool isGoodLep = false;
-  bool isVetoLep = false;
-*/
 	bool isVetoMu = false;
 	bool isVetoEl = false;
 
@@ -131,37 +125,37 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	    continue;
 	// Muon cuts
 	if(abs(LepGood_pdgId[ilep]) == 13){
-	  if( dummyLep.Pt() > goodMuPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodMu_relIso03){
-			goodLep.push_back(dummyLep);
-			goodMu.push_back(dummyLep);
-			nMuGood++;
-			nLepGood++;
+	    if( dummyLep.Pt() > goodMuPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodMu_relIso03){
+		goodLep.push_back(dummyLep);
+		goodMu.push_back(dummyLep);
+		nMuGood++;
+		nLepGood++;
 
-			//continue;
-		    }
-		    else{
-			isVetoMu = true;
-			nMuVeto++;
-		    }
-		}
+		//continue;
+	    }
+	    else{
+		isVetoMu = true;
+		nMuVeto++;
+	    }
+	}
 
 	// Electron cuts
 	if(abs(LepGood_pdgId[ilep]) == 11){
 	    if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
-			goodLep.push_back(dummyLep);
-			goodEl.push_back(dummyLep);
-			nElGood++;
-			nLepGood++;
+		goodLep.push_back(dummyLep);
+		goodEl.push_back(dummyLep);
+		nElGood++;
+		nLepGood++;
 
-		       // continue;
-		    }
-		    else{
-			isVetoEl = true;
-			nElVeto++;
-		    }
-
+		// continue;
 	    }
+	    else{
+		isVetoEl = true;
+		nElVeto++;
+	    }
+
+	}
 
 	// Only non-good El or Mu will pass => veto leptons
 	if(isVetoEl || isVetoMu){
@@ -171,10 +165,10 @@ void GetObjects::GetLeptons(EasyChain * tree){
     }
 
     /*
-  cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
-  cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
-  cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
-  cout << "Number of veto leptons = \t" << nLepVeto << endl;
+      cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
+      cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
+      cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
+      cout << "Number of veto leptons = \t" << nLepVeto << endl;
     */
 }
 
@@ -385,27 +379,27 @@ void GetObjects::GetFatJets(EasyChain * tree){
     {
 	FatJet dummyJet;
 	dummyJet.SetPtEtaPhiM(FatJet_pt[ijet],FatJet_eta[ijet],FatJet_phi[ijet],FatJet_mass[ijet]);
-	dummyJet.prunedMass = FatJet_prunedMass[ijet]; 
-	dummyJet.trimmedMass = FatJet_trimmedMass[ijet]; 
-	dummyJet.filteredMass = FatJet_filteredMass[ijet]; 
-	dummyJet.tau1 = FatJet_tau1[ijet]; 
-	dummyJet.tau2 = FatJet_tau2[ijet]; 
+	dummyJet.prunedMass = FatJet_prunedMass[ijet];
+	dummyJet.trimmedMass = FatJet_trimmedMass[ijet];
+	dummyJet.filteredMass = FatJet_filteredMass[ijet];
+	dummyJet.tau1 = FatJet_tau1[ijet];
+	dummyJet.tau2 = FatJet_tau2[ijet];
 	dummyJet.tau3 = FatJet_tau3[ijet];
-	dummyJet.topMass = FatJet_topMass[ijet];  
-	dummyJet.minMass = FatJet_minMass[ijet];  
+	dummyJet.topMass = FatJet_topMass[ijet];
+	dummyJet.minMass = FatJet_minMass[ijet];
 	dummyJet.nSubJets = FatJet_nSubJets[ijet];
 
 	if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
-	  dummyJet.topTagged = true;}
+	    dummyJet.topTagged = true;}
 	else dummyJet.topTagged = false;
 
 	if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
 	    goodFatJet.push_back(dummyJet);
 	    nFatJetGood++;
 
-	    }
 	}
     }
+}
 
 
 
@@ -445,12 +439,12 @@ void GetObjects::GetMETnoPU(EasyChain * tree){
 //////////////////////////////kinematic variables/////////////////
 
 void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET){
-  HT40 = 0;
-  ST = 0;
-  if(goodLep.size() > 0)
-  ST = goodLep[0].Pt() + MET.Pt();
+    HT40 = 0;
+    ST = 0;
+    if(goodLep.size() > 0)
+	ST = goodLep[0].Pt() + MET.Pt();
 
-  for(int ijet = 0; ijet < goodJet.size(); ijet++)                                                                                {                                                                                                                           	HT40 = HT40 + goodJet[ijet].Pt();                                                                                       
-  }
-
+    for(int ijet = 0; ijet < goodJet.size(); ijet++){
+	HT40 = HT40 + goodJet[ijet].Pt();
+    }
 }
