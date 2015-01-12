@@ -439,6 +439,9 @@ void GetObjects::GetMETnoPU(EasyChain * tree){
 //////////////////////////////kinematic variables/////////////////
 
 void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET){
+
+  //use leading LEPTON for everything, need to define cuts to make sure that 
+  //there is only one lepton
     HT40 = 0;
     ST = 0;
     if(goodLep.size() > 0)
@@ -446,5 +449,25 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 
     for(int ijet = 0; ijet < goodJet.size(); ijet++){
 	HT40 = HT40 + goodJet[ijet].Pt();
+    }
+    if(goodLep.size() > 0){
+        TLorentzVector WBos = MET + goodLep[0];
+	//standard root defintion (+ fabs)takes care of getting values between 0 and pi
+	 DelPhiWLep = fabs(WBos.DeltaPhi(goodLep[0]));
+	//alternative definiton with the same result, if you want to cross check
+	Double_t DelPhiWLepAlt = (WBos.Phi() - goodLep[0].Phi());
+	if (DelPhiWLepAlt > TMath::Pi()) DelPhiWLepAlt -= 2*TMath::Pi();
+	if (DelPhiWLepAlt <= -TMath::Pi()) DelPhiWLepAlt += 2*TMath::Pi();
+	DelPhiWLepAlt = fabs(DelPhiWLepAlt);
+	
+
+	DelPhiMetLep =  fabs(MET.DeltaPhi(goodLep[0]));
+
+        Float_t Wpt = WBos.Pt();
+        Float_t Wphi = WBos.Phi();
+	
+	MTMetLep = sqrt(2*MET.Pt()*goodLep[0].Pt()*(1-cos(MET.Phi()-goodLep[0].Phi())));
+
+	
     }
 }

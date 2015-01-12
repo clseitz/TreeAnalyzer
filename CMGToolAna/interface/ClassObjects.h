@@ -198,6 +198,14 @@ class GetObjects{
    
    Double_t HT40;
    Double_t ST;  
+   Double_t DelPhiWLep;  
+   Double_t DelPhiMetLep;  
+   Double_t MTMetLep;
+   Double_t  DelRJMet0;
+   Double_t  DelRJMet1;
+   Double_t  DelRJMet2;
+   Double_t  DelRJMet01;
+   Double_t   DelRJMet;
 
 };
 
