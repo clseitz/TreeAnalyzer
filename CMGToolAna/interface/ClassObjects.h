@@ -200,12 +200,22 @@ class GetObjects{
    Double_t ST;  
    Double_t DelPhiWLep;  
    Double_t DelPhiMetLep;  
+   Double_t DelPhibMet;  
+   Double_t DelPhiJMet;  
+   Double_t DelPhibW;  
+   Double_t DelPhibLep;  
+   
    Double_t MTMetLep;
+   Double_t MTbMet;
+   Double_t MTbLep;
+   Double_t MTbW;
    Double_t  DelRJMet0;
    Double_t  DelRJMet1;
    Double_t  DelRJMet2;
    Double_t  DelRJMet01;
-   Double_t   DelRJMet;
+   Double_t  DelRJLep;
+   Double_t  DelRbL ;
+
 
 };
 
