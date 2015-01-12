@@ -480,10 +480,10 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
             int bC =-1;
             int bCW =-1;
           for(int ib =0; ib < goodBJet.size(); ib++){
-              float  DelPhibiMet = fabs(MET.DeltaPhi(goodBJet[ib]));
-              float  DelPhibiW = fabs(WBos.DeltaPhi(goodBJet[ib]));
-              float  DelPhibiLep = fabs(goodLep[0].DeltaPhi(goodBJet[ib]));
-              float MTbMETMin =sqrt(pow((goodBJet[ib].Et()+MET.Et()),2)-pow((goodBJet[ib].Px()+MET.Px()),2)-pow((goodBJet[ib].Py()+MET.Py()),2));
+              Double_t   DelPhibiMet = fabs(MET.DeltaPhi(goodBJet[ib]));
+              Double_t   DelPhibiW = fabs(WBos.DeltaPhi(goodBJet[ib]));
+              Double_t   DelPhibiLep = fabs(goodLep[0].DeltaPhi(goodBJet[ib]));
+              Double_t  MTbMETMin =sqrt(pow((goodBJet[ib].Et()+MET.Et()),2)-pow((goodBJet[ib].Px()+MET.Px()),2)-pow((goodBJet[ib].Py()+MET.Py()),2));
                 if ( DelPhibiLep < DelPhibLep ) DelPhibLep = DelPhibiLep;
                 if ( DelPhibiMet < DelPhibMet ) {DelPhibMet = DelPhibiMet;
                          bC = ib;
@@ -496,7 +496,7 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 	// minDelta R between b and Lep
             int bCl =-1;
           for(int ib =0; ib < goodBJet.size(); ib++){
-              float  DelRbiL = (goodLep[0].DeltaR(goodBJet[ib]));
+              Double_t   DelRbiL = (goodLep[0].DeltaR(goodBJet[ib]));
                 if ( DelRbiL< DelRbL ) {DelRbL = DelRbiL;
                          bCl = ib;
                    }
@@ -517,8 +517,8 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 	//Min Delta Phi (J,MET) and Delta R(Jet,Lep) among three leading Jets
                    int JC =-1;
       for( int ij =0; ij < nJetGood; ij++){
-              float  DelPhijiMet = fabs(MET.DeltaPhi(goodJet[ij]));
-              float  DelRjiLep = fabs(goodLep[0].DeltaR(goodJet[ij]));
+              Double_t   DelPhijiMet = fabs(MET.DeltaPhi(goodJet[ij]));
+              Double_t   DelRjiLep = fabs(goodLep[0].DeltaR(goodJet[ij]));
               if(ij >2) continue;
               if ( DelPhijiMet < DelPhiJMet ) {DelPhiJMet = DelPhijiMet;
               JC = ij;
