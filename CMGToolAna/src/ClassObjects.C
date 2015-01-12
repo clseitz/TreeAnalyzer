@@ -7,9 +7,9 @@ using namespace std;
 Double_t goodEta = 2.4;
 
 //leptons
-Double_t goodElPt = 20.0;
-Double_t goodMuPt = 20.0;
-Double_t goodLepPt = 20.0;
+Double_t goodElPt = 25.0;
+Double_t goodMuPt = 25.0;
+Double_t goodLepPt = 25.0;
 Double_t vetoLepPt = 10.0;
 
 Double_t goodEl_relIso03 = 0.14;
@@ -17,7 +17,7 @@ Double_t goodMu_relIso03 = 0.12;
 Double_t goodLep_relIso03 = 0.15;
 
 //jets
-Double_t goodJetPt = 40.0;
+Double_t goodJetPt = 30.0;
 //btagging medium working points
 Double_t goodJetBtagCSV = 0.679;
 Double_t goodJetBtagCMVA = 0.732;
@@ -444,14 +444,18 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
   //there is only one lepton
     HT40 = -99;
     ST = -99;
-    DelPhiWLep = -99;  
-    DelPhiMetLep = -99;  
+    DelPhiWLep = 999;  
+    DelPhiMetLep = 999;  
+    DelPhibMet = 999;  
+    DelPhiJMet = 999;  
+    DelPhibW = 999;  
+    DelPhibLep = 999;  
     MTMetLep = -99;
-    DelRJMet0 = -99;
-    DelRJMet1 = -99;
-    DelRJMet2 = -99;
-    DelRJMet01 = -99;
-    DelRJMet = -99;
+    MTbMet = -99;
+    MTbW = -99;
+    MTbLep = -99;
+    DelRJLep = 999;
+    DelRbL = 999;
 
     if(goodLep.size() > 0)
 	ST = goodLep[0].Pt() + MET.Pt();
@@ -471,16 +475,60 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 	if (DelPhiWLepAlt <= -TMath::Pi()) DelPhiWLepAlt += 2*TMath::Pi();
 	DelPhiWLepAlt = fabs(DelPhiWLepAlt);
 	
-	// Delta phi between MET and Lep
+	// minDelta phi between b and Lep,MET and Lep
 	DelPhiMetLep =  fabs(MET.DeltaPhi(goodLep[0]));
+            int bC =-1;
+            int bCW =-1;
+          for(int ib =0; ib < goodBJet.size(); ib++){
+              Double_t   DelPhibiMet = fabs(MET.DeltaPhi(goodBJet[ib]));
+              Double_t   DelPhibiW = fabs(WBos.DeltaPhi(goodBJet[ib]));
+              Double_t   DelPhibiLep = fabs(goodLep[0].DeltaPhi(goodBJet[ib]));
+              Double_t  MTbMETMin =sqrt(pow((goodBJet[ib].Et()+MET.Et()),2)-pow((goodBJet[ib].Px()+MET.Px()),2)-pow((goodBJet[ib].Py()+MET.Py()),2));
+                if ( DelPhibiLep < DelPhibLep ) DelPhibLep = DelPhibiLep;
+                if ( DelPhibiMet < DelPhibMet ) {DelPhibMet = DelPhibiMet;
+                         bC = ib;
+                   }
+                if ( DelPhibiW < DelPhibW ) {DelPhibW = DelPhibiW;
+                         bCW = ib;
+                  }
+               }
+
+	// minDelta R between b and Lep
+            int bCl =-1;
+          for(int ib =0; ib < goodBJet.size(); ib++){
+              Double_t   DelRbiL = (goodLep[0].DeltaR(goodBJet[ib]));
+                if ( DelRbiL< DelRbL ) {DelRbL = DelRbiL;
+                         bCl = ib;
+                   }
+                  }
+
+
 	
-	//Transverse mass of MET and Lep
-	MTMetLep = sqrt(2*MET.Pt()*goodLep[0].Pt()*(1-cos(MET.Phi()-goodLep[0].Phi())));
-	
-	if (goodJet.size() > 0) DelRJMet0 = fabs(goodLep[0].DeltaR(goodJet[0]));
-	if (goodJet.size() > 1) DelRJMet1 = fabs(goodLep[0].DeltaR(goodJet[1]));
-	if (goodJet.size() > 2) DelRJMet2 = fabs(goodLep[0].DeltaR(goodJet[2]));
-	if (goodJet.size() > 1) DelRJMet01 = min(DelRJMet0,DelRJMet1);
-	if (goodJet.size() > 2) DelRJMet = min(DelRJMet2,DelRJMet01);	
+	//Transverse mass of Lep, MET
+	   MTMetLep = sqrt(pow((goodLep[0].Et()+MET.Et()),2)-pow((goodLep[0].Px()+MET.Px()),2)-pow((goodLep[0].Py()+MET.Py()),2));
+
+	//Transverse mass of closest b to MET (Delta phi), MET, Lep, W
+           if(goodBJet.size() >0) {
+                    MTbMet =sqrt(pow((goodBJet[bC].Et()+MET.Et()),2)-pow((goodBJet[bC].Px()+MET.Px()),2)-pow((goodBJet[bC].Py()+MET.Py()),2));
+                    MTbW =sqrt(pow((goodBJet[bC].Et()+WBos.Et()),2)-pow((goodBJet[bC].Px()+WBos.Px()),2)-pow((goodBJet[bC].Py()+WBos.Py()),2));
+                    MTbLep =sqrt(pow((goodBJet[bC].Et()+goodLep[0].Et()),2)-pow((goodBJet[bC].Px()+goodLep[0].Px()),2)-pow((goodBJet[bC].Py()+goodLep[0].Py()),2));
+                               }
+
+	//Min Delta Phi (J,MET) and Delta R(Jet,Lep) among three leading Jets
+                   int JC =-1;
+      for( int ij =0; ij < nJetGood; ij++){
+              Double_t   DelPhijiMet = fabs(MET.DeltaPhi(goodJet[ij]));
+              Double_t   DelRjiLep = fabs(goodLep[0].DeltaR(goodJet[ij]));
+              if(ij >2) continue;
+              if ( DelPhijiMet < DelPhiJMet ) {DelPhiJMet = DelPhijiMet;
+              JC = ij;
+              }
+            
+              if ( DelRjiLep < DelRJLep ) {DelRJLep = DelRjiLep;
+             }
+          }
+
+
     }
+
 }
