@@ -356,8 +356,10 @@ void GetObjects::GetJets(EasyChain * tree){
 
 void GetObjects::GetFatJets(EasyChain * tree){
     goodFatJet.clear();
+    goodTopTagJet.clear();
 
     nFatJetGood = 0;
+    nTopTagJetGood = 0;
     int nFatJet = tree->Get(nFatJet,"nFatJet");
     tree->Get(FatJet_pt[0],"FatJet_pt");
     tree->Get(FatJet_eta[0],"FatJet_eta");
@@ -389,14 +391,16 @@ void GetObjects::GetFatJets(EasyChain * tree){
 	dummyJet.minMass = FatJet_minMass[ijet];
 	dummyJet.nSubJets = FatJet_nSubJets[ijet];
 
-	if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
-	    dummyJet.topTagged = true;}
-	else dummyJet.topTagged = false;
-
+	
 	if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
-	    goodFatJet.push_back(dummyJet);
-	    nFatJetGood++;
-
+	  if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
+	    dummyJet.topTagged = true;
+	    nTopTagJetGood++;
+	    goodTopTagJet.push_back(dummyJet);	    
+	  }
+	  else dummyJet.topTagged = false;  
+	  goodFatJet.push_back(dummyJet);
+	  nFatJetGood++;
 	}
     }
 }

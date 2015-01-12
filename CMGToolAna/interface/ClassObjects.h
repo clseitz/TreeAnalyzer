@@ -154,6 +154,7 @@ class GetObjects{
    std::vector<Jet> goodJet;
    std::vector<Jet> goodBJet;
    std::vector<FatJet> goodFatJet;
+   std::vector<FatJet> goodTopTagJet;
   
    TLorentzVector MET;
    TLorentzVector genMET;
@@ -189,6 +190,7 @@ class GetObjects{
   
    Int_t nJetGood;
    Int_t nFatJetGood;
+   Int_t nTopTagJetGood;
    Int_t nBJetGood;
   
    Int_t nGenTau;
