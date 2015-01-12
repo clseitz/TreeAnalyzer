@@ -442,8 +442,17 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 
   //use leading LEPTON for everything, need to define cuts to make sure that 
   //there is only one lepton
-    HT40 = 0;
-    ST = 0;
+    HT40 = -99;
+    ST = -99;
+    DelPhiWLep = -99;  
+    DelPhiMetLep = -99;  
+    MTMetLep = -99;
+    DelRJMet0 = -99;
+    DelRJMet1 = -99;
+    DelRJMet2 = -99;
+    DelRJMet01 = -99;
+    DelRJMet = -99;
+
     if(goodLep.size() > 0)
 	ST = goodLep[0].Pt() + MET.Pt();
 
@@ -452,6 +461,8 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
     }
     if(goodLep.size() > 0){
         TLorentzVector WBos = MET + goodLep[0];
+
+	//Delta phi between W and Lep
 	//standard root defintion (+ fabs)takes care of getting values between 0 and pi
 	 DelPhiWLep = fabs(WBos.DeltaPhi(goodLep[0]));
 	//alternative definiton with the same result, if you want to cross check
@@ -460,14 +471,16 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 	if (DelPhiWLepAlt <= -TMath::Pi()) DelPhiWLepAlt += 2*TMath::Pi();
 	DelPhiWLepAlt = fabs(DelPhiWLepAlt);
 	
-
+	// Delta phi between MET and Lep
 	DelPhiMetLep =  fabs(MET.DeltaPhi(goodLep[0]));
-
-        Float_t Wpt = WBos.Pt();
-        Float_t Wphi = WBos.Phi();
 	
+	//Transverse mass of MET and Lep
 	MTMetLep = sqrt(2*MET.Pt()*goodLep[0].Pt()*(1-cos(MET.Phi()-goodLep[0].Phi())));
-
 	
+	if (goodJet.size() > 0) DelRJMet0 = fabs(goodLep[0].DeltaR(goodJet[0]));
+	if (goodJet.size() > 1) DelRJMet1 = fabs(goodLep[0].DeltaR(goodJet[1]));
+	if (goodJet.size() > 2) DelRJMet2 = fabs(goodLep[0].DeltaR(goodJet[2]));
+	if (goodJet.size() > 1) DelRJMet01 = min(DelRJMet0,DelRJMet1);
+	if (goodJet.size() > 2) DelRJMet = min(DelRJMet2,DelRJMet01);	
     }
 }
