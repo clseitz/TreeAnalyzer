@@ -197,6 +197,7 @@ int main (int argc, char* argv[]){
 	if(debug) cout<<" GetGenMET"<<endl;
         Obj.GetGenMET(tree);
 	if(debug) cout<<" GetKinVariables"<<endl;
+	//check src/ClassObjects.C for what is available and implement new variables in there 
         Obj.GetKinVariables(Obj.goodLep,Obj.goodJet,Obj.MET);
 
         // Define ST (needs to fixed for general use)
@@ -218,16 +219,6 @@ int main (int argc, char* argv[]){
 
         FillMainHists(iCut, EvWeight);
 
-        //Calculation of special variables, to be moved to external class
-
-        TLorentzVector WBos = Obj.MET + Obj.goodMu[0];
-	float DelPhiWlep = fabs(WBos.DeltaPhi(Obj.goodLep[0]));
-	float DelPhiMetMu =  fabs(Obj.MET.DeltaPhi(Obj.goodMu[0]));
-
-        float Wpt = WBos.Pt();
-        float Wphi = WBos.Phi();
-        float MT = sqrt(pow((Obj.goodMu[0].Et()+Obj.MET.Et()),2)-
-                        pow((Obj.goodMu[0].Px()+Obj.MET.Px()),2)-pow((Obj.goodMu[0].Py()+Obj.MET.Py()),2));
         CFCounter[iCut]+= EvWeight;
         iCFCounter[iCut]++;
         iCut++;
@@ -251,7 +242,7 @@ int main (int argc, char* argv[]){
                             if(Obj.nJetGood >= iNjet){
                                 if(Obj.nBJetGood >= iNbjetmin && Obj.nBJetGood < iNbjetmax){
                                     if(Obj.HT40 > iHT){
-                                        if(fabs(DelPhiWlep) >= iMJmin && fabs(DelPhiWlep) <= iMJmax){
+				      if(fabs(Obj.DelPhiWLep) >= iMJmin && fabs(Obj.DelPhiWLep) <= iMJmax){
 
                                             if(Obj.ST > iSTmin && Obj.ST < iSTmax){
                                                 test[n][b][h][m][s]->Fill(Obj.ST, EvWeight);
