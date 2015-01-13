@@ -11,10 +11,17 @@ Double_t goodElPt = 25.0;
 Double_t goodMuPt = 25.0;
 Double_t goodLepPt = 25.0;
 Double_t vetoLepPt = 10.0;
+// SoftLeptons
+Double_t softElPt = 7.0;
+Double_t softLepPtUp =25.0;
+Double_t softMuPt = 5.0;
+Double_t softLepPt = 5.0;
+Double_t softvetoLepPt = 5.0;
 
 Double_t goodEl_relIso03 = 0.14;
 Double_t goodMu_relIso03 = 0.12;
 Double_t goodLep_relIso03 = 0.15;
+Double_t softLep_relIso03 = 0.4;
 
 //jets
 Double_t goodJetPt = 30.0;
@@ -88,9 +95,18 @@ void GetObjects::GetLeptons(EasyChain * tree){
     goodEl.clear();
     goodMu.clear();
 
+    SelectedLep.clear();
+    softLep.clear();
+    softEl.clear();
+    softMu.clear();
+
     vetoLep.clear();
     vetoEl.clear();
     vetoMu.clear();
+
+    SoftvetoLep.clear();
+    SoftvetoEl.clear();
+    SoftvetoMu.clear();
 
     nLepGood = 0;
     nMuGood = 0;
@@ -100,6 +116,13 @@ void GetObjects::GetLeptons(EasyChain * tree){
     nElVeto = 0;
     nMuVeto = 0;
 
+    nSoftLepGood = 0;
+    nSoftMuGood = 0;
+    nSoftElGood = 0;
+
+    nSoftLepVeto = 0;
+    nSoftElVeto = 0;
+    nSoftMuVeto = 0;
     // filling objects from tree
     int nLep = tree->Get(nLep,"nLepGood");
     tree->Get(LepGood_pt[0],"LepGood_pt");
@@ -119,8 +142,52 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	dummyLep.relIso03 = LepGood_relIso03[ilep];
 	bool isVetoMu = false;
 	bool isVetoEl = false;
+	bool isSoftVetoMu = false;
+	bool isSoftVetoEl = false;
 
-	// common cuts for all leptons (good and veto leps pass)
+       //common cuts for all soft leptons (good and veto leps pass)
+
+	if(dummyLep.Pt() <= softvetoLepPt || fabs(dummyLep.Eta()) > goodEta)
+	    continue;
+	// Muon cuts
+	if(abs(LepGood_pdgId[ilep]) == 13){
+	    if( dummyLep.Pt() > softMuPt &&  dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < softLep_relIso03){
+		softLep.push_back(dummyLep);
+		softMu.push_back(dummyLep);
+		nSoftMuGood++;
+		nSoftLepGood++;
+
+		//continue;
+	    }
+	    else{
+		isSoftVetoMu = true;
+		nSoftMuVeto++;
+	    }
+	}
+
+	// Electron cuts
+	if(abs(LepGood_pdgId[ilep]) == 11){
+	    if( dummyLep.Pt() > softElPt && dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < softLep_relIso03){
+//                    isGoodEl = true;
+		softLep.push_back(dummyLep);
+		softEl.push_back(dummyLep);
+		nSoftElGood++;
+		nSoftLepGood++;
+
+		// continue;
+	    }
+	    else{
+		nSoftElVeto++;
+		isSoftVetoEl = true;
+	    }
+
+        }
+	// Only non-good El or Mu will pass => veto leptons
+	if(isSoftVetoEl || isSoftVetoMu){
+	    SoftvetoLep.push_back(dummyLep);
+	    nSoftLepVeto++;
+         }
+	// common cuts for all hard leptons (good and veto leps pass)
 	if(dummyLep.Pt() <= vetoLepPt || fabs(dummyLep.Eta()) > goodEta)
 	    continue;
 	// Muon cuts
@@ -163,7 +230,6 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	    nLepVeto++;
 	}
     }
-
     /*
       cout << "Get leptons summary: total number of Leptons = \t" << nLep << endl;
       cout << "Number of good Muons = \t" << nMuGood << " and veto Mu = \t" << nMuVeto << endl;
@@ -461,32 +527,37 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
     DelRJLep = 999;
     DelRbL = 999;
 
-    if(goodLep.size() > 0)
-	ST = goodLep[0].Pt() + MET.Pt();
+    //if(goodLep.size()==1) SelectedLep[0]=goodLep[0];
+    //else if(softLep.size()==1) SelectedLep[0]=softLep[0];
+    if(goodLep.size()==1) SelectedLep=goodLep;
+    else if(softLep.size()==1) SelectedLep=softLep;
+
+    if(SelectedLep.size() > 0)
+	ST = SelectedLep[0].Pt() + MET.Pt();
 
     for(int ijet = 0; ijet < goodJet.size(); ijet++){
 	HT40 = HT40 + goodJet[ijet].Pt();
     }
-    if(goodLep.size() > 0){
-        TLorentzVector WBos = MET + goodLep[0];
+    if(SelectedLep.size() > 0){
+        TLorentzVector WBos = MET + SelectedLep[0];
 
 	//Delta phi between W and Lep
 	//standard root defintion (+ fabs)takes care of getting values between 0 and pi
-	 DelPhiWLep = fabs(WBos.DeltaPhi(goodLep[0]));
+	 DelPhiWLep = fabs(WBos.DeltaPhi(SelectedLep[0]));
 	//alternative definiton with the same result, if you want to cross check
-	Double_t DelPhiWLepAlt = (WBos.Phi() - goodLep[0].Phi());
+	Double_t DelPhiWLepAlt = (WBos.Phi() - SelectedLep[0].Phi());
 	if (DelPhiWLepAlt > TMath::Pi()) DelPhiWLepAlt -= 2*TMath::Pi();
 	if (DelPhiWLepAlt <= -TMath::Pi()) DelPhiWLepAlt += 2*TMath::Pi();
 	DelPhiWLepAlt = fabs(DelPhiWLepAlt);
 	
 	// minDelta phi between b and Lep,MET and Lep
-	DelPhiMetLep =  fabs(MET.DeltaPhi(goodLep[0]));
+	DelPhiMetLep =  fabs(MET.DeltaPhi(SelectedLep[0]));
             int bC =-1;
             int bCW =-1;
           for(int ib =0; ib < goodBJet.size(); ib++){
               Double_t   DelPhibiMet = fabs(MET.DeltaPhi(goodBJet[ib]));
               Double_t   DelPhibiW = fabs(WBos.DeltaPhi(goodBJet[ib]));
-              Double_t   DelPhibiLep = fabs(goodLep[0].DeltaPhi(goodBJet[ib]));
+              Double_t   DelPhibiLep = fabs(SelectedLep[0].DeltaPhi(goodBJet[ib]));
               Double_t  MTbMETMin =sqrt(pow((goodBJet[ib].Et()+MET.Et()),2)-pow((goodBJet[ib].Px()+MET.Px()),2)-pow((goodBJet[ib].Py()+MET.Py()),2));
                 if ( DelPhibiLep < DelPhibLep ) DelPhibLep = DelPhibiLep;
                 if ( DelPhibiMet < DelPhibMet ) {DelPhibMet = DelPhibiMet;
@@ -500,7 +571,7 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 	// minDelta R between b and Lep
             int bCl =-1;
           for(int ib =0; ib < goodBJet.size(); ib++){
-              Double_t   DelRbiL = (goodLep[0].DeltaR(goodBJet[ib]));
+              Double_t   DelRbiL = (SelectedLep[0].DeltaR(goodBJet[ib]));
                 if ( DelRbiL< DelRbL ) {DelRbL = DelRbiL;
                          bCl = ib;
                    }
@@ -509,20 +580,20 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
 
 	
 	//Transverse mass of Lep, MET
-	   MTMetLep = sqrt(pow((goodLep[0].Et()+MET.Et()),2)-pow((goodLep[0].Px()+MET.Px()),2)-pow((goodLep[0].Py()+MET.Py()),2));
+	   MTMetLep = sqrt(pow((SelectedLep[0].Et()+MET.Et()),2)-pow((SelectedLep[0].Px()+MET.Px()),2)-pow((SelectedLep[0].Py()+MET.Py()),2));
 
 	//Transverse mass of closest b to MET (Delta phi), MET, Lep, W
            if(goodBJet.size() >0) {
                     MTbMet =sqrt(pow((goodBJet[bC].Et()+MET.Et()),2)-pow((goodBJet[bC].Px()+MET.Px()),2)-pow((goodBJet[bC].Py()+MET.Py()),2));
                     MTbW =sqrt(pow((goodBJet[bC].Et()+WBos.Et()),2)-pow((goodBJet[bC].Px()+WBos.Px()),2)-pow((goodBJet[bC].Py()+WBos.Py()),2));
-                    MTbLep =sqrt(pow((goodBJet[bC].Et()+goodLep[0].Et()),2)-pow((goodBJet[bC].Px()+goodLep[0].Px()),2)-pow((goodBJet[bC].Py()+goodLep[0].Py()),2));
+                    MTbLep =sqrt(pow((goodBJet[bC].Et()+SelectedLep[0].Et()),2)-pow((goodBJet[bC].Px()+SelectedLep[0].Px()),2)-pow((goodBJet[bC].Py()+SelectedLep[0].Py()),2));
                                }
 
 	//Min Delta Phi (J,MET) and Delta R(Jet,Lep) among three leading Jets
                    int JC =-1;
       for( int ij =0; ij < nJetGood; ij++){
               Double_t   DelPhijiMet = fabs(MET.DeltaPhi(goodJet[ij]));
-              Double_t   DelRjiLep = fabs(goodLep[0].DeltaR(goodJet[ij]));
+              Double_t   DelRjiLep = fabs(SelectedLep[0].DeltaR(goodJet[ij]));
               if(ij >2) continue;
               if ( DelPhijiMet < DelPhiJMet ) {DelPhiJMet = DelPhijiMet;
               JC = ij;

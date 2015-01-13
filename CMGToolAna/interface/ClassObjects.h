@@ -164,10 +164,20 @@ class GetObjects{
    std::vector<Lepton> goodEl;
    std::vector<Lepton> goodMu;
   
+   std::vector<Lepton> SelectedLep;
+
+   std::vector<Lepton> softLep;
+   std::vector<Lepton> softEl;
+   std::vector<Lepton> softMu;
+
    std::vector<Lepton> vetoLep;
    std::vector<Lepton> vetoEl;
    std::vector<Lepton> vetoMu;
   
+   std::vector<Lepton> SoftvetoLep;
+   std::vector<Lepton> SoftvetoEl;
+   std::vector<Lepton> SoftvetoMu;
+
    std::vector<GenLepton> genLep;
    std::vector<GenLepton> genEl;
    std::vector<GenLepton> genMu;
@@ -184,10 +194,19 @@ class GetObjects{
    Int_t nMuGood;
    Int_t nElGood;
   
+   Int_t nSoftLepGood;
+   Int_t nSoftMuGood;
+   Int_t nSoftElGood;
+
    Int_t nLepVeto;
    Int_t nElVeto;
    Int_t nMuVeto;
   
+   Int_t nSoftLepVeto;
+   Int_t nSoftElVeto;
+   Int_t nSoftMuVeto;
+
+
    Int_t nJetGood;
    Int_t nFatJetGood;
    Int_t nTopTagJetGood;

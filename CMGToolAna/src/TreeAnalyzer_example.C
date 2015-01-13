@@ -30,6 +30,7 @@ TH1F *hnLep[CutNumb];
 TH1F *hLeppt[CutNumb];
 TH1F *hLepeta[CutNumb];
 TH1F *hMET[CutNumb];
+TH1F *hnOver[CutNumb];
 
 // Set Up histograms and Cut Flow variables
 void SetupHists(int CutNumber){
@@ -58,6 +59,7 @@ void SetupHists(int CutNumber){
         hLeppt[cj] = new TH1F ("LeppT_"+nCut,"Lep pT "+cutName,100,0,1000);
         hLeppt[cj]->Sumw2();
 
+        hnOver[cj] = new TH1F ("nOver_"+nCut,"nOver "+cutName,2,0,2);
         hLepeta[cj] = new TH1F ("Lepeta_"+nCut,"Lep eta "+cutName,100,-4,4);
         hLepeta[cj]->Sumw2();
         hMET[cj] = new TH1F("MET_"+nCut,"MET "+cutName,200.0,0.0,4000.0);
@@ -209,14 +211,18 @@ int main (int argc, char* argv[]){
         CFCounter[iCut]+= EvWeight;
         iCFCounter[iCut]++;
         iCut++;
-
+        bool SoftHard_over =false;
         // 1. Cut
         //////////////////Require exactly one good Muon
         if (Obj.nLepGood != 1) continue;
         if( Obj.nMuGood != 1) continue;
         if(Obj.nMuVeto !=0 || Obj.nElVeto !=0) continue;
-
-
+        // replace LepGood collection with SoftLepGood if you want to do the soft lep analysis
+        /*
+        if (Obj.nSoftLepGood != 1) continue;
+        if( Obj.nSoftMuGood != 1) continue;
+        if(Obj.nSoftMuVeto !=0 || Obj.nSoftElVeto !=0) continue;
+        */
         FillMainHists(iCut, EvWeight);
 
         CFCounter[iCut]+= EvWeight;
@@ -284,6 +290,7 @@ int main (int argc, char* argv[]){
         ////////////////////////////
         if (Obj.nBJetGood < 1) continue;
         FillMainHists(iCut, EvWeight);
+       //cout<<Obj.MTbMet<<endl;
 
         CFCounter[iCut]+= EvWeight;
         iCFCounter[iCut]++;
@@ -319,6 +326,7 @@ int main (int argc, char* argv[]){
         //outf->cd(CutList[cj]);
         h0JetpT[cj]->Write();
         hnJet[cj]->Write();
+        hnOver[cj]->Write();
         hnBJet[cj]->Write();
         hnLep[cj]->Write();
         hLeppt[cj]->Write();
