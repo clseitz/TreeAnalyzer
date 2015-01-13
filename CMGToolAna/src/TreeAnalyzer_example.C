@@ -58,7 +58,6 @@ void SetupHists(int CutNumber){
         hnLep[cj]->Sumw2();
         hLeppt[cj] = new TH1F ("LeppT_"+nCut,"Lep pT "+cutName,100,0,1000);
         hLeppt[cj]->Sumw2();
-
         hnOver[cj] = new TH1F ("nOver_"+nCut,"nOver "+cutName,2,0,2);
         hLepeta[cj] = new TH1F ("Lepeta_"+nCut,"Lep eta "+cutName,100,-4,4);
         hLepeta[cj]->Sumw2();
@@ -200,7 +199,8 @@ int main (int argc, char* argv[]){
         Obj.GetGenMET(tree);
 	if(debug) cout<<" GetKinVariables"<<endl;
 	//check src/ClassObjects.C for what is available and implement new variables in there 
-        Obj.GetKinVariables(Obj.goodLep,Obj.goodJet,Obj.MET);
+        //Obj.GetKinVariables(Obj.goodLep,Obj.goodJet,Obj.MET);
+        Obj.GetKinVariables();
 
         // Define ST (needs to fixed for general use)
 

@@ -512,7 +512,8 @@ void GetObjects::GetMETnoPU(EasyChain * tree){
 //////////////////////////////kinematic variables/////////////////
 
 //void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET){
-void GetObjects::GetKinVariables(std::vector<Lepton> SelectedLep, std::vector<Jet> goodJet, TLorentzVector MET){
+//void GetObjects::GetKinVariables(std::vector<Lepton> SelectedLep, std::vector<Jet> goodJet, TLorentzVector MET){
+void GetObjects::GetKinVariables(){
 
   //use leading LEPTON for everything, need to define cuts to make sure that 
   //there is only one lepton
