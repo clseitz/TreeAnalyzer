@@ -77,7 +77,7 @@ inDir['MC'][sample] = base+'TTZJets/'
 ################################## Not HT bins different top decay chains
 sample = 'SingleTop'
 dirsHT[sample]  = ['TToLeptons_tch/','TToLeptons_sch/','T_tWch/','TBarToLeptons_tch/','TBarToLeptons_sch/','TBar_tWch/']
-xsec_lumi[sample] = [136.05*0.108*3,7.20*0.108*3,35.6,80.97*0.108*3,4.16*0.108,35.6]
+xsec_lumi[sample] = [136.05*0.108*3,7.20*0.108*3,35.6,80.97*0.108*3,4.16*0.108*3,35.6]
 xsec_lumi[sample] = scale(Lumi,xsec_lumi[sample])
 inDir['MC'][sample] = base+'SingleTop/'
 #       SIGNAL
