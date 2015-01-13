@@ -236,6 +236,9 @@ void GetObjects::GetLeptons(EasyChain * tree){
       cout << "Number of good Electrons = \t" << nElGood  << " and veto El = \t" << nElVeto << endl;
       cout << "Number of veto leptons = \t" << nLepVeto << endl;
     */
+     
+    if(goodLep.size()==1) SelectedLep=goodLep;
+    else if(softLep.size()==1) SelectedLep=softLep;
 }
 
 void GetObjects::GetGenLeptons(EasyChain * tree){
@@ -508,7 +511,9 @@ void GetObjects::GetMETnoPU(EasyChain * tree){
 
 //////////////////////////////kinematic variables/////////////////
 
-void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET){
+//void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET){
+//void GetObjects::GetKinVariables(std::vector<Lepton> SelectedLep, std::vector<Jet> goodJet, TLorentzVector MET){
+void GetObjects::GetKinVariables(){
 
   //use leading LEPTON for everything, need to define cuts to make sure that 
   //there is only one lepton
@@ -527,10 +532,6 @@ void GetObjects::GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> g
     DelRJLep = 999;
     DelRbL = 999;
 
-    //if(goodLep.size()==1) SelectedLep[0]=goodLep[0];
-    //else if(softLep.size()==1) SelectedLep[0]=softLep[0];
-    if(goodLep.size()==1) SelectedLep=goodLep;
-    else if(softLep.size()==1) SelectedLep=softLep;
 
     if(SelectedLep.size() > 0)
 	ST = SelectedLep[0].Pt() + MET.Pt();
