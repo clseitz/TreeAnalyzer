@@ -149,7 +149,8 @@ class GetObjects{
   void GetGenParticles(EasyChain * tree);
   void GetGenLeptonsFromTau(EasyChain * tree);
   void GetGenTaus(EasyChain * tree);
-  void GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET);
+  //void GetKinVariables(std::vector<Lepton> goodLep, std::vector<Jet> goodJet, TLorentzVector MET);
+  void GetKinVariables(std::vector<Lepton> SelectedLep, std::vector<Jet> goodJet, TLorentzVector MET);
 
    std::vector<Jet> goodJet;
    std::vector<Jet> goodBJet;
