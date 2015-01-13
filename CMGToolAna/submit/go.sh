@@ -2,10 +2,9 @@
 #!/bin/bash
 
 ana=$1
-
-echo "checking library - compiling if neccesssary (no error check)"
-root -q -b reader${ana}.C+ > /dev/null 2>&1
-samples="MC_TTbar"
+#put you the samples  you want to run
+#samples="MC_T1tttt_1500_100 MC_T1tttt_1200_800 MC_TTbar MC_WJets"
+samples="MC_WJets"
 dir=$PWD
 
 #mkdir -p $ana

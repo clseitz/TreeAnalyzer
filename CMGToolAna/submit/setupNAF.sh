@@ -15,9 +15,12 @@
 #$ -l h_cpu=02:00:00
 ##$ -l h_cpu=05:00:00
 #$ -l site=hh
+#$ -l distro=sld6
 ## the maximum memory usage of this job
 #$ -l h_vmem=1900M
 ##$ -l h_vmem=3000M
+## Use the submitting hosts env variables
+#$ -V
 ## stderr and stdout are merged together to stdout
 #$ -j y
 ## define input dir,output dir,executable LD_LIBRARY_PATH
@@ -38,15 +41,11 @@ echo command dir is $SGE_O_WORKDIR
 echo sent from host $SGE_O_HOST
 echo
 echo temp dir: $TMP
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/d-cache/dcap/lib64:/afs/desy.de/products/root/amd64_rhel50/5.34.00/lib::/opt/products/fftw/2.1.5/lib/
-export ROOTSYS=/afs/desy.de/products/root/amd64_rhel50/5.34.00
 ########################################################
 #
 echo $PWD
 cd $OUTDIR
 echo start at `date`
-module load root/5.34
-ini ROOT534
 echo $ROOTSYS
 which root
 ../python/./runAnalyzer.py XXXX YYYY
