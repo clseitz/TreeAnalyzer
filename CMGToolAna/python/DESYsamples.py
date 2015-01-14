@@ -7,7 +7,7 @@ def scale(fac,list):
 # scenarios and samples
 scenarios = ['MC','data']
 #SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450','T1tttt_1300_100','T1qqqq_1400_15']
-SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','DYJets','QCD','SingleTop','TTH','TTW','TTZ','T1tttt_1500_100','T1tttt_1200_800']
+SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','DYJets','QCD','SingleTop','TTH','TTW','TTZ','T1tttt_1500_100','T1tttt_1200_800','T5tttt_1000_280','T5tttt_1300_280','T5tttt_1000_285','T5tttt_1300_285']
 treename = 'treeProducerSusySingleLepton/'
 base = '/nfs/dust/cms/group/susy-desy/Run2/MC/CMGtuples/Phys14_v1/'
 Lumi = 4 #given in fb^-1
@@ -120,6 +120,28 @@ dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.085641*Lumi]
 inDir['MC'][sample] = base+'SMS_T1tttt_2J_mGl1200_mLSP800/'
 ## DESY PRIVATE
+
+sample = 'T5tttt_1300_280'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.044*Lumi]
+inDir['MC'][sample] = base+'T5ttttDeg_mGo1300_mStop300_mChi280/'
+
+sample = 'T5tttt_1000_280'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.325388*Lumi]
+inDir['MC'][sample] = base+'T5ttttDeg_mGo1000_mStop300_mChi280/'
+
+
+sample = 'T5tttt_1300_285'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.044*Lumi]
+inDir['MC'][sample] = base+'T5ttttDeg_mGo1300_mStop300_mCh285_mChi280/'
+
+sample = 'T5tttt_1000_285'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.325388*Lumi]
+inDir['MC'][sample] = base+'T5ttttDeg_mGo1000_mStop300_mCh285_mChi280/'
+
 '''
 sample = 'T1tttt_800_450'
 dirsHT[sample] = ['/']
