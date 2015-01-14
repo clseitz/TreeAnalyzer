@@ -66,7 +66,7 @@ void SetupHists(int CutNumber){
     }
 }
 
-void FillMainHists(int CutIndex, float EvWeight, bool FillBJets = true){
+void FillMainHists(int CutIndex, double EvWeight, bool FillBJets = true){
     hnJet[CutIndex]->Fill(Obj.nJetGood,EvWeight);
     hnLep[CutIndex]->Fill(Obj.nLepGood,EvWeight);
     if (Obj.nJetGood > 0) h0JetpT[CutIndex]->Fill(Obj.goodJet[0].Pt(),EvWeight);
@@ -92,8 +92,8 @@ const int max_m = 3;
 const int max_s = 6;
 int STmin[max_s] = {0,    250,    0, 250, 350, 450};
 int STmax[max_s] = {4000, 4000, 250, 350, 450,4000};
-float MJmin[max_s] = {0,1,0};
-float MJmax[max_s] = {1,3.5,3,5};
+double MJmin[max_s] = {0,1,0};
+double MJmax[max_s] = {1,3.5,3,5};
 
 int main (int argc, char* argv[]){
     if (argc < 4) {
@@ -178,8 +178,8 @@ int main (int argc, char* argv[]){
                 cout << "================= Processing entry: " << entry << '\r' << flush;
 
         //lumi calcualtion done in runAnalyzer.py (fb and pb)
-    Float_t fw = tree->GetEntryW(entry);
-    Float_t EvWeight = 1.0;
+    Double_t fw = tree->GetEntryW(entry);
+    Double_t EvWeight = 1.0;
     EvWeight *= fw ;
 
         iCut = 0;
@@ -237,14 +237,14 @@ int main (int argc, char* argv[]){
                 int iNbjetmin=Bmin[b];
                 int iNbjetmax=Bmax[b];
                 for (int h=0; h<max_h; h++){
-                    float iHT=HTmin[h];
+                    double iHT=HTmin[h];
                     for(int m=0; m<max_m; m++){
-                        //float iMJ=100.0*m;
-                        float iMJmin=MJmin[m];
-                        float iMJmax=MJmax[m];
+                        //double iMJ=100.0*m;
+                        double iMJmin=MJmin[m];
+                        double iMJmax=MJmax[m];
                         for(int s=0; s<max_s; s++){
-                            float iSTmin = STmin[s];
-                            float iSTmax = STmax[s];
+                            double iSTmin = STmin[s];
+                            double iSTmax = STmax[s];
                             if(Obj.nJetGood >= iNjet){
                                 if(Obj.nBJetGood >= iNbjetmin && Obj.nBJetGood < iNbjetmax){
                                     if(Obj.HT40 > iHT){
