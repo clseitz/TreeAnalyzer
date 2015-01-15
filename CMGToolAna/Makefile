@@ -7,7 +7,7 @@
 #
 # and create this executable
 #
-  EXEC = $(CODE)
+  EXEC = $(CODE).exe
 ## if FastJet is being used (would need installation, maybe works within CMSSW?)
 FASTJET=/nfs/dust/cms/user/clseitz/1LepSUS/CMSSW_7_0_6_patch1/src/fastjet-install/
 MORELIBS = -L$(ROOTSYS)/lib  `$(FASTJET)/bin/fastjet-config --cxxflags --libs --plugins`

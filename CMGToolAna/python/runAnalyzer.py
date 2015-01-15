@@ -59,7 +59,7 @@ if len(sys.argv)>1:
         gROOT.LoadMacro(srcdir+'TreeOutput.C+')
         from ROOT import TreeWriter as reader
     elif sys.argv[1]=='TreeAnalyzer_example':  # example with compiled executable
-        exe = 'TreeAnalyzer_example'
+        exe = 'TreeAnalyzer_example.exe'
     else:
         help()
 else:
