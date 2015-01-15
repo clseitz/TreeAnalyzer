@@ -1,9 +1,10 @@
 #Make file to compile TreeAnalzyer
 #define code to be compiled
-  CODE = TreeAnalyzer_example
+#  CODE = TreeAnalyzer_example
+  CODE = TreeAnalyzer_SingleEl
 #define sources
-  SOURCE = src/$(CODE).C
-  EXTRA =  src/ClassObjects.C
+  SOURCE = src/$(CODE).cc
+  EXTRA =  src/ClassObjects.cc
 #
 # and create this executable
 #
@@ -14,7 +15,7 @@ MORELIBS = -L$(ROOTSYS)/lib  `$(FASTJET)/bin/fastjet-config --cxxflags --libs --
 
 OBJS	  = $(notdir $(SOURCE))
 OBJS     := $(OBJS:.cpp=.o)
-OBJS     := $(OBJS:.C=.o)
+OBJS     := $(OBJS:.cc=.o)
 
 
 
@@ -33,7 +34,7 @@ ROOTLIBS    = `root-config --cflags --libs` -lGenVector
 LD          = g++
 LDFLAGS     = `root-config --ldflags`
 
-.SUFFIXES: .cpp .C .o .so
+.SUFFIXES: .cpp .cc .o .so
 
 #------------------------------------------------------------------------------
 
