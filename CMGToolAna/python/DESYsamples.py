@@ -7,7 +7,7 @@ def scale(fac,list):
 # scenarios and samples
 scenarios = ['MC','data']
 #SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','T1tttt_1500_100','T1tttt_1200_800','T1tttt_800_450','T1tttt_1300_100','T1qqqq_1400_15']
-SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','DYJets','QCD','SingleTop','TTH','TTW','TTZ','T1tttt_1500_100','T1tttt_1200_800','T5tttt_1000_280','T5tttt_1300_280','T5tttt_1000_285','T5tttt_1300_285','T1ttbbWW_1300_290','T1ttbbWW_1300_295','T1ttbbWW_1000_715','T1ttbbWW_1000_720']
+SAMPLES = ['WJets','TTbar','TTbar_DiLep','TTbar_SinLep','DYJets','QCD','SingleTop','TTH','TTW','TTZ','T1tttt_1500_100','T1tttt_1200_800','T5tttt_1000_280','T5tttt_1300_280','T5tttt_1000_285','T5tttt_1300_285','T1ttbbWW_1300_290','T1ttbbWW_1300_295','T1ttbbWW_1000_715','T1ttbbWW_1000_720','SqGl_1300_100']
 treename = 'treeProducerSusySingleLepton/'
 base = '/nfs/dust/cms/group/susy-desy/Run2/MC/CMGtuples/Phys14_v1/'
 Lumi = 4 #given in fb^-1
@@ -164,6 +164,11 @@ sample = 'T1ttbbWW_1300_295'
 dirsHT[sample] = ['/']
 xsec_lumi[sample] = [0.044*Lumi]
 inDir['MC'][sample] = base+'T1ttbbWW_mGo1300_mCh300_mChi295/'
+
+sample = 'SqGl_1300_100'
+dirsHT[sample] = ['/']
+xsec_lumi[sample] = [0.151*Lumi]
+inDir['MC'][sample] = base+'Sq_Gl_4t_Gl1300_Sq1300_LSP100/Loop/'
 
 
 
