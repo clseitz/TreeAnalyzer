@@ -151,7 +151,7 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	    continue;
 	// Muon cuts
 	if(abs(LepGood_pdgId[ilep]) == 13){
-	    if( dummyLep.Pt() > softMuPt &&  dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < softLep_relIso03){
+	    if( dummyLep.Pt() > softMuPt &&  dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep]==1 && LepGood_relIso03[ilep] < softLep_relIso03){
 		softLep.push_back(dummyLep);
 		softMu.push_back(dummyLep);
 		nSoftMuGood++;
@@ -167,7 +167,7 @@ void GetObjects::GetLeptons(EasyChain * tree){
 
 	// Electron cuts
 	if(abs(LepGood_pdgId[ilep]) == 11){
-	    if( dummyLep.Pt() > softElPt && dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < softLep_relIso03){
+	    if( dummyLep.Pt() > softElPt && dummyLep.Pt() < softLepPtUp && LepGood_tightID[ilep] > 2 && LepGood_relIso03[ilep] < softLep_relIso03){
 //                    isGoodEl = true;
 		softLep.push_back(dummyLep);
 		softEl.push_back(dummyLep);
@@ -192,7 +192,7 @@ void GetObjects::GetLeptons(EasyChain * tree){
 	    continue;
 	// Muon cuts
 	if(abs(LepGood_pdgId[ilep]) == 13){
-	    if( dummyLep.Pt() > goodMuPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodMu_relIso03){
+	    if( dummyLep.Pt() > goodMuPt && LepGood_tightID[ilep] ==1 && LepGood_relIso03[ilep] < goodMu_relIso03){
 		goodLep.push_back(dummyLep);
 		goodMu.push_back(dummyLep);
 		nMuGood++;
@@ -208,7 +208,7 @@ void GetObjects::GetLeptons(EasyChain * tree){
 
 	// Electron cuts
 	if(abs(LepGood_pdgId[ilep]) == 11){
-	    if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] && LepGood_relIso03[ilep] < goodEl_relIso03){
+	    if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] > 2 && LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
 		goodLep.push_back(dummyLep);
 		goodEl.push_back(dummyLep);
@@ -426,9 +426,13 @@ void GetObjects::GetJets(EasyChain * tree){
 void GetObjects::GetFatJets(EasyChain * tree){
     goodFatJet.clear();
     goodTopTagJet.clear();
+    goodWTagJet.clear();
+    goodWmassTagJet.clear();
 
     nFatJetGood = 0;
     nTopTagJetGood = 0;
+    nWTagJetGood = 0;
+    nWmassTagJetGood = 0;
     int nFatJet = tree->Get(nFatJet,"nFatJet");
     tree->Get(FatJet_pt[0],"FatJet_pt");
     tree->Get(FatJet_eta[0],"FatJet_eta");
@@ -462,6 +466,14 @@ void GetObjects::GetFatJets(EasyChain * tree){
 
 	
 	if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
+	  if ( ((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 70.0 &&  dummyJet.prunedMass < 100.0 ){ //&& dummyJet.prunedMass < 100.0 ){
+	    nWmassTagJetGood++;
+	    goodWmassTagJet.push_back(dummyJet);	    
+	  }
+	  if (((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 50.0 ){ //&& dummyJet.prunedMass < 100.0 ){
+	    nWTagJetGood++;
+	    goodWTagJet.push_back(dummyJet);	    
+	  }
 	  if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
 	    dummyJet.topTagged = true;
 	    nTopTagJetGood++;
