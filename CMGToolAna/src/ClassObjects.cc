@@ -529,20 +529,20 @@ void GetObjects::GetKinVariables(){
 
   //use leading LEPTON for everything, need to define cuts to make sure that 
   //there is only one lepton
-    HT40 = -99;
-    ST = -99;
-    DelPhiWLep = 999;  
-    DelPhiMetLep = 999;  
-    DelPhibMet = 999;  
-    DelPhiJMet = 999;  
-    DelPhibW = 999;  
-    DelPhibLep = 999;  
-    MTMetLep = -99;
-    MTbMet = -99;
-    MTbW = -99;
-    MTbLep = -99;
-    DelRJLep = 999;
-    DelRbL = 999;
+    HT40 = 0;
+    ST   = 0;
+    DelPhiWLep   = -99999.9;  
+    DelPhiMetLep = -99999.9;  
+    minDelPhibMet   =  99999.9;  //  we want to minimize this variable  
+    minDelPhiJMet   =  99999.9;  //  we want to minimize this variable 
+    minDelPhibW     =  99999.9;  //  we want to minimize this variable 
+    minDelPhibLep   =  99999.9;  //  we want to minimize this variable 
+    minDelRJLep     =  99999.9;  //  we want to minimize this variable 
+    minDelRbL       =  99999.9;  //  we want to minimize this variable 
+    MTMetLep     = -99999.9;
+    MTbMet       = -99999.9;
+    MTbW         = -99999.9;
+    MTbLep       = -99999.9;
 
 
     if(SelectedLep.size() > 0)
@@ -572,11 +572,11 @@ void GetObjects::GetKinVariables(){
               Double_t   DelPhibiW = fabs(WBos.DeltaPhi(goodBJet[ib]));
               Double_t   DelPhibiLep = fabs(SelectedLep[0].DeltaPhi(goodBJet[ib]));
               Double_t  MTbMETMin =sqrt(pow((goodBJet[ib].Et()+MET.Et()),2)-pow((goodBJet[ib].Px()+MET.Px()),2)-pow((goodBJet[ib].Py()+MET.Py()),2));
-                if ( DelPhibiLep < DelPhibLep ) DelPhibLep = DelPhibiLep;
-                if ( DelPhibiMet < DelPhibMet ) {DelPhibMet = DelPhibiMet;
+                if ( DelPhibiLep < minDelPhibLep ) minDelPhibLep = DelPhibiLep;
+                if ( DelPhibiMet < minDelPhibMet ) {minDelPhibMet = DelPhibiMet;
                          bC = ib;
                    }
-                if ( DelPhibiW < DelPhibW ) {DelPhibW = DelPhibiW;
+                if ( DelPhibiW < minDelPhibW ) {minDelPhibW = DelPhibiW;
                          bCW = ib;
                   }
                }
@@ -585,16 +585,13 @@ void GetObjects::GetKinVariables(){
             int bCl =-1;
           for(int ib =0; ib < goodBJet.size(); ib++){
               Double_t   DelRbiL = (SelectedLep[0].DeltaR(goodBJet[ib]));
-                if ( DelRbiL< DelRbL ) {DelRbL = DelRbiL;
+                if ( DelRbiL< minDelRbL ) {minDelRbL = DelRbiL;
                          bCl = ib;
                    }
                   }
-
-
 	
 	//Transverse mass of Lep, MET
 	   MTMetLep = sqrt(pow((SelectedLep[0].Et()+MET.Et()),2)-pow((SelectedLep[0].Px()+MET.Px()),2)-pow((SelectedLep[0].Py()+MET.Py()),2));
-
 	//Transverse mass of closest b to MET (Delta phi), MET, Lep, W
            if(goodBJet.size() >0) {
                     MTbMet =sqrt(pow((goodBJet[bC].Et()+MET.Et()),2)-pow((goodBJet[bC].Px()+MET.Px()),2)-pow((goodBJet[bC].Py()+MET.Py()),2));
@@ -608,11 +605,11 @@ void GetObjects::GetKinVariables(){
               Double_t   DelPhijiMet = fabs(MET.DeltaPhi(goodJet[ij]));
               Double_t   DelRjiLep = fabs(SelectedLep[0].DeltaR(goodJet[ij]));
               if(ij >2) continue;
-              if ( DelPhijiMet < DelPhiJMet ) {DelPhiJMet = DelPhijiMet;
+              if ( DelPhijiMet < minDelPhiJMet ) {minDelPhiJMet = DelPhijiMet;
               JC = ij;
               }
             
-              if ( DelRjiLep < DelRJLep ) {DelRJLep = DelRjiLep;
+              if ( DelRjiLep < minDelRJLep ) {minDelRJLep = DelRjiLep;
              }
           }
 
