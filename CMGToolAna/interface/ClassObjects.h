@@ -47,7 +47,7 @@ public:
     Int_t pdgID;
     Double_t relIso03;
     Int_t tightID;
-    Int_t mvaSusy;
+    Double_t mvaSusy;
     Int_t charge;
 };
 
