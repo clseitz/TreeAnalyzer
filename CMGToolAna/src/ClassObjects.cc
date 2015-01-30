@@ -68,8 +68,8 @@ Double_t LepGood_mass[arrayN];
 Double_t LepGood_relIso03[arrayN];
 Int_t   LepGood_pdgId[arrayN];
 Int_t  LepGood_tightID[arrayN];
-Int_t  LepGood_mvaID[arrayN];
-Int_t  LepGood_mvaSusy[arrayN];
+Double_t  LepGood_mvaID[arrayN];
+Double_t  LepGood_mvaSusy[arrayN];
 
 // Gen particles
 Double_t genLep_pt[2]; //[ngenLep]
