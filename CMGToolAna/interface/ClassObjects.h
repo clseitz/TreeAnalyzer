@@ -39,34 +39,6 @@ public:
 
 };
 
-/*
-  class ParticleObject{
-
-  private:
-// constructor
-ParticleObject() {}
-
-public:
-TLorentzVector vect;
-
-void SetVect(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
-vect.SetPtEtaPhiM(pt,eta,phi,mass);
-}
-
-// for fast access to kinematic variables
-Double_t Pt(){ return vect.Pt() }
-Double_t Eta(){ return vect.Eta() }
-Double_t Phi(){ return vect.Phi() }
-
-};
-
-// constuctor as TLV SetPtEtaPhiM
-ParticleObject::ParticleObject(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
-SetVect(pt,eta,phi,mass);
-}
-
-*/
-
 // Lepton
 class Lepton: public ParticleObject{
 public:
@@ -75,6 +47,7 @@ public:
     Int_t pdgID;
     Double_t relIso03;
     Int_t tightID;
+    Int_t mvaSusy;
     Int_t charge;
 };
 

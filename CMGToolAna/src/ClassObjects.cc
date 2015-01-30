@@ -23,6 +23,9 @@ Double_t goodMu_relIso03 = 0.12;
 Double_t goodLep_relIso03 = 0.15;
 Double_t softLep_relIso03 = 0.4;
 
+// mva
+Double_t goodEl_mvaSusy = 0.53;
+
 //jets
 Double_t goodJetPt = 30.0;
 //btagging medium working points
@@ -65,6 +68,8 @@ Double_t LepGood_mass[arrayN];
 Double_t LepGood_relIso03[arrayN];
 Int_t   LepGood_pdgId[arrayN];
 Int_t  LepGood_tightID[arrayN];
+Int_t  LepGood_mvaID[arrayN];
+Int_t  LepGood_mvaSusy[arrayN];
 
 // Gen particles
 Double_t genLep_pt[2]; //[ngenLep]
@@ -132,13 +137,14 @@ void GetObjects::GetLeptons(EasyChain * tree){
     tree->Get(LepGood_relIso03[0],"LepGood_relIso03");
     tree->Get(LepGood_pdgId[0],"LepGood_pdgId");
     tree->Get(LepGood_tightID[0],"LepGood_tightId");
-//    cout<<"nlep "<< nLep<<endl;
+    tree->Get(LepGood_mvaSusy[0],"LepGood_mvaSusy");
 
     for(int ilep = 0; ilep < nLep; ilep++){
         Lepton dummyLep;
         dummyLep.SetPtEtaPhiM(LepGood_pt[ilep],LepGood_eta[ilep],LepGood_phi[ilep],LepGood_mass[ilep]);
         dummyLep.pdgID = LepGood_pdgId[ilep];
         dummyLep.tightID = LepGood_tightID[ilep];
+        dummyLep.mvaSusy = LepGood_mvaSusy[ilep];
         dummyLep.relIso03 = LepGood_relIso03[ilep];
         bool isVetoMu = false;
         bool isVetoEl = false;
@@ -208,7 +214,8 @@ void GetObjects::GetLeptons(EasyChain * tree){
 
         // Electron cuts
         if(abs(LepGood_pdgId[ilep]) == 11){
-            if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] > 2 && LepGood_relIso03[ilep] < goodEl_relIso03){
+//            if( dummyLep.Pt() > goodElPt && LepGood_tightID[ilep] > 2 && LepGood_relIso03[ilep] < goodEl_relIso03){
+            if( dummyLep.Pt() > goodElPt && LepGood_mvaSusy[ilep] > goodEl_mvaSusy  && LepGood_relIso03[ilep] < goodEl_relIso03){
 //                    isGoodEl = true;
                 goodLep.push_back(dummyLep);
                 goodEl.push_back(dummyLep);
