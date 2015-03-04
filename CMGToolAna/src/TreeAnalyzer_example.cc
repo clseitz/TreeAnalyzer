@@ -185,18 +185,21 @@ int main (int argc, char* argv[]){
 	iCut = 0;
 
 	//get all objects
-    if(debug) cout<<"GetLeptons" <<endl;
-    Obj.GetLeptons(tree,"mvaPhys14","CristinaID");
-	if(debug) cout<<" GetJets"<<endl;
-	Obj.GetJets(tree);
-	if(debug) cout<<" GetFatJets"<<endl;
-	Obj.GetFatJets(tree);
+	//start with gen information since it is needed for matching
 	if(debug) cout<<" GetGenLeptons"<<endl;
 	Obj.GetGenLeptons(tree);
 	if(debug) cout<<" GetMET"<<endl;
 	Obj.GetMET(tree);
 	if(debug) cout<<" GetGenMET"<<endl;
 	Obj.GetGenMET(tree);
+	Obj.GetGenParticles(tree);
+
+	if(debug) cout<<"GetLeptons" <<endl;
+    Obj.GetLeptons(tree,"mvaPhys14","CristinaID");
+	if(debug) cout<<" GetJets"<<endl;
+	Obj.GetJets(tree);
+	if(debug) cout<<" GetFatJets"<<endl;
+	Obj.GetFatJets(tree);
 	if(debug) cout<<" GetKinVariables"<<endl;
 	//check src/ClassObjects.C for what is available and implement new variables in there
 	//Obj.GetKinVariables(Obj.goodLep,Obj.goodJet,Obj.MET);
