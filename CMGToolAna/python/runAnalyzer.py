@@ -59,6 +59,17 @@ if len(sys.argv)>1:
     # example with compiled executable
     elif sys.argv[1]=='TreeAnalyzer_example':
         exe = 'TreeAnalyzer_example.exe'
+    elif sys.argv[1]=='TreeAnalyzer_SingleEl':  # Single Electron with compiled executable
+        exe = 'TreeAnalyzer_SingleEl.exe'
+    elif sys.argv[1]=='TreeAnalyzer_SingleMu':  # Single Electron with compiled executable
+        exe = 'TreeAnalyzer_SingleMu.exe'
+    elif sys.argv[1]=='TreeAnalyzer_Gen':  # gen study
+        exe = 'TreeAnalyzer_GenStudy.exe'
+    elif sys.argv[1]=='TreeAnalyzer_Eff':  # efficiency study
+        exe = 'TreeAnalyzer_EffStudy.exe'
+    elif sys.argv[1]=='TreeAnalyzer_EffTree':  # efficiency study
+        exe = 'TreeAnalyzer_EffStudyTree.exe'
+
     else:
         help()
 else:
