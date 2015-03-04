@@ -680,6 +680,7 @@ void GetObjects::GetGenTaus(EasyChain * tree){
 void GetObjects::GetGenParticles(EasyChain * tree){
     genPart.clear();
     nGenPart = 0;
+    genTopWQuarkGluon.clear();
     // filling objects from tree
     tree->Get(nGenPart,"ngenPart");
 
@@ -710,9 +711,18 @@ void GetObjects::GetGenParticles(EasyChain * tree){
         dummyPart.pdgId = genPart_pdgId[ipart];
         dummyPart.motherId = genPart_motherId[ipart];
         dummyPart.grandmaId = genPart_grandmaId[ipart];
-
+	
         genPart.push_back(dummyPart);
-
+	if (abs(genPart_pdgId[ipart]) == 6 or abs(genPart_pdgId[ipart]) == 24)                                               
+	  genTopWQuarkGluon.push_back(dummyPart);                                                                           
+	
+        
+        if( (abs(genPart_pdgId[ipart]) == 21 or abs(genPart_pdgId[ipart]) == 1                                            
+	     or abs(genPart_pdgId[ipart]) == 2 or abs(genPart_pdgId[ipart])== 3       
+	     or abs(genPart_pdgId[ipart])== 4 or abs(genPart_pdgId[ipart]) == 5)                                          
+	    and (abs(genPart_motherId[ipart]) != 24 and abs(genPart_motherId[ipart]) != 6))                             
+	  genTopWQuarkGluon.push_back(dummyPart);                      
+	
     }
 }
 void GetObjects::GetJets(EasyChain * tree){
@@ -832,25 +842,46 @@ void GetObjects::GetFatJets(EasyChain * tree){
         dummyJet.topMass = FatJet_topMass[ijet];
         dummyJet.minMass = FatJet_minMass[ijet];
         dummyJet.nSubJets = FatJet_nSubJets[ijet];
+        dummyJet.genMatchInd = -1; 
+        dummyJet.genMatchDr = -1; 
+        dummyJet.genMatchPdg = -1;
+        dummyJet.genMatchPt = -1;
+	Float_t minDr = 9999;                                                                                                
+	for (int iTopW = 0 ; iTopW < genTopWQuarkGluon.size(); iTopW++){                                                     
+	  if (genTopWQuarkGluon[iTopW].DeltaR(dummyJet) < minDr){
+	    minDr = genTopWQuarkGluon[iTopW].DeltaR(dummyJet);                                                               
+	    if (minDr < 0.8){                                                                                                
+	      dummyJet.genMatchInd = iTopW;
+	      dummyJet.genMatchDr = minDr;  
+	      dummyJet.genMatchPdg = abs(genTopWQuarkGluon[iTopW].pdgId);
+	      dummyJet.genMatchPt = genTopWQuarkGluon[iTopW].Pt();                                                           
+	    }                                                                                                                
+	  }                                                                                                                  
+	}
 
-
+	dummyJet.topTagged = false;                                                                                        
+	dummyJet.WTagged = false;                                                                                          
+	dummyJet.WmassTagged = false; 
+	
         if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
-            if ( ((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 70.0 &&  dummyJet.prunedMass < 100.0 ){ //&& dummyJet.prunedMass < 100.0 ){
-                nWmassTagJetGood++;
-                goodWmassTagJet.push_back(dummyJet);
-            }
-            if (((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 50.0 ){ //&& dummyJet.prunedMass < 100.0 ){
-                nWTagJetGood++;
-                goodWTagJet.push_back(dummyJet);
-            }
-            if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 150.0 ){
-                dummyJet.topTagged = true;
-                nTopTagJetGood++;
-                goodTopTagJet.push_back(dummyJet);
-            }
-            else dummyJet.topTagged = false;
-            goodFatJet.push_back(dummyJet);
-            nFatJetGood++;
+	  if ( ((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 70.0 &&  dummyJet.prunedMass < 100.0 ){
+	    dummyJet.WmassTagged = true;        
+	    nWmassTagJetGood++;
+	    goodWmassTagJet.push_back(dummyJet);
+	  }
+	  if (((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 50.0 ){
+	    dummyJet.WTagged = true;
+	    nWTagJetGood++;
+	    goodWTagJet.push_back(dummyJet);
+	  }
+	  if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 140.0 && dummyJet.topMass < 250.0){
+	    dummyJet.topTagged = true;
+	    nTopTagJetGood++;
+	    goodTopTagJet.push_back(dummyJet);
+	  }
+	  else dummyJet.topTagged = false;
+	  goodFatJet.push_back(dummyJet);
+	  nFatJetGood++;
         }
     }
 }

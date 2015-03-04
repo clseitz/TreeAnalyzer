@@ -91,7 +91,14 @@ public:
     Float_t topMass;
     Float_t minMass;
     Float_t nSubJets;
+    Int_t genMatchInd;
+    Int_t genMatchPdg;
+    Float_t genMatchDr;
+    Float_t genMatchPt;  
 
+
+    bool WTagged;
+    bool WmassTagged; 
     bool topTagged;
 
 
@@ -171,6 +178,7 @@ public:
     std::vector<GenLepton> genMuFromTau;
 
     std::vector<GenParticle> genPart;
+    std::vector<GenParticle> genTopWQuarkGluon;
     // objects number can be aslo detemined as object.size()
 
     Int_t nLepGood;
