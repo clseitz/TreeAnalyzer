@@ -30,10 +30,10 @@ class ParticleObject: public TLorentzVector{
 
 public:
 // inherit baseclass constructors (C++11)
-    using TLorentzVector::TLorentzVector;
+    //using TLorentzVector::TLorentzVector;
     ParticleObject() {}
 // conflict with default constructor?
-    ParticleObject(Double_t pt, Double_t eta, Double_t phi, Double_t mass){
+    ParticleObject(Float_t pt, Float_t eta, Float_t phi, Float_t mass){
         SetPtEtaPhiM(pt,eta,phi,mass);
     }
 
@@ -42,32 +42,37 @@ public:
 // Lepton
 class Lepton: public ParticleObject{
 public:
-    using ParticleObject::ParticleObject;
+    //using ParticleObject::ParticleObject;
 
-    Int_t pdgID;
-    Double_t relIso03;
+    Int_t pdgId;
+    Float_t relIso03;
+    Float_t miniRelIso;
     Int_t tightID;
-    Double_t mvaSusy;
+    Float_t mvaSusy;
+    Float_t mvaPhys14;
     Int_t charge;
-};
-
-
-// Generator Lepton
-class GenLepton: public ParticleObject{
-public:
-    using ParticleObject::ParticleObject;
-
-    int status;
+    Int_t passID;
+    Int_t passIso;
 };
 
 // a bit more generic, generator partices
 class GenParticle: public ParticleObject{
 public:
-    using ParticleObject::ParticleObject;
+    //using ParticleObject::ParticleObject;
 
-    int pdgid;
-    int motherid;
-    int grandmaid;
+    Int_t status;
+    Int_t pdgId;
+    Int_t motherId;
+    Int_t grandmaId;
+};
+
+
+// Generator Lepton
+class GenLepton: public GenParticle{
+public:
+
+    Int_t charge;
+
 };
 
 // Jet
@@ -77,15 +82,15 @@ private:
 //    Jet() { if(btagCSV > 0.676) btag = true; }
 
 public:
-    Double_t prunedMass;
-    Double_t trimmedMass;
-    Double_t filteredMass;
-    Double_t  tau1;
-    Double_t tau2;
-    Double_t tau3;
-    Double_t topMass;
-    Double_t minMass;
-    Double_t nSubJets;
+    Float_t prunedMass;
+    Float_t trimmedMass;
+    Float_t filteredMass;
+    Float_t  tau1;
+    Float_t tau2;
+    Float_t tau3;
+    Float_t topMass;
+    Float_t minMass;
+    Float_t nSubJets;
 
     bool topTagged;
 
@@ -97,7 +102,7 @@ class Jet: public ParticleObject{
 private:
 public:
     bool btag;
-    Double_t btagCSV;
+    Float_t btagCSV;
 };
 
 
@@ -105,8 +110,8 @@ public:
 class MET: public ParticleObject{
 public:
 
-//    Double_t met(){ return TLorentzVector::Pt() }
-    Double_t met(){ return Pt(); }
+//    Float_t met(){ return TLorentzVector::Pt() }
+    Float_t met(){ return Pt(); }
 };
 
 class GetObjects{
@@ -117,7 +122,9 @@ public:
     void GetGenMET(EasyChain * tree);
 
     void GetMETnoPU(EasyChain * tree);
-    void GetLeptons(EasyChain * tree);
+    void GetLeptons(EasyChain * tree, string elID = "POG2012", string muID = "POG2012");
+    void GetSoftLeptons(EasyChain * tree);
+
     void GetGenLeptons(EasyChain * tree);
     void GetGenParticles(EasyChain * tree);
     void GetGenLeptonsFromTau(EasyChain * tree);
@@ -195,25 +202,25 @@ public:
     Int_t nGenPart;
     Int_t nGenLepFromTau;
 
-    Double_t HT40;
-    Double_t ST;
-    Double_t DelPhiWLep;
-    Double_t DelPhiMetLep;
-    Double_t minDelPhibMet;
-    Double_t minDelPhiJMet;
-    Double_t minDelPhibW;
-    Double_t minDelPhibLep;
+    Float_t HT40;
+    Float_t ST;
+    Float_t DelPhiWLep;
+    Float_t DelPhiMetLep;
+    Float_t minDelPhibMet;
+    Float_t minDelPhiJMet;
+    Float_t minDelPhibW;
+    Float_t minDelPhibLep;
 
-    Double_t MTMetLep;
-    Double_t MTbMet;
-    Double_t MTbLep;
-    Double_t MTbW;
-    Double_t  DelRJMet0;
-    Double_t  DelRJMet1;
-    Double_t  DelRJMet2;
-    Double_t  DelRJMet01;
-    Double_t  minDelRJLep;
-    Double_t  minDelRbL ;
+    Float_t MTMetLep;
+    Float_t MTbMet;
+    Float_t MTbLep;
+    Float_t MTbW;
+    Float_t  DelRJMet0;
+    Float_t  DelRJMet1;
+    Float_t  DelRJMet2;
+    Float_t  DelRJMet01;
+    Float_t  minDelRJLep;
+    Float_t  minDelRbL ;
 
 
 };
