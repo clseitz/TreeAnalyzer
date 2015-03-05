@@ -682,7 +682,7 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     nGenPart = 0;
     genTopWQuarkGluon.clear();
     // filling objects from tree
-    tree->Get(nGenPart,"ngenPart");
+    tree->Get(nGenPart,"nGenPart");
 
     if (nGenPart < 1) return;
 
@@ -696,13 +696,13 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     Int_t genPart_motherId[arrayN];
     Int_t genPart_grandmaId[arrayN];
 
-    tree->Get(genPart_pt[0],"genPart_pt");
-    tree->Get(genPart_mass[0],"genPart_mass");
-    tree->Get(genPart_eta[0],"genPart_eta");
-    tree->Get(genPart_phi[0],"genPart_phi");
-    tree->Get(genPart_pdgId[0],"genPart_pdgId");
-    tree->Get(genPart_motherId[0],"genPart_motherId");
-    tree->Get(genPart_grandmaId[0],"genPart_grandmotherId");
+    tree->Get(genPart_pt[0],"GenPart_pt");
+    tree->Get(genPart_mass[0],"GenPart_mass");
+    tree->Get(genPart_eta[0],"GenPart_eta");
+    tree->Get(genPart_phi[0],"GenPart_phi");
+    tree->Get(genPart_pdgId[0],"GenPart_pdgId");
+    tree->Get(genPart_motherId[0],"GenPart_motherId");
+    tree->Get(genPart_grandmaId[0],"GenPart_grandmotherId");
 
     for(int ipart = 0; ipart < nGenPart; ipart++){
 
