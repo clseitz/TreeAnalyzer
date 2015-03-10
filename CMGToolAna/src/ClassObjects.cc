@@ -682,7 +682,7 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     nGenPart = 0;
     genTopWQuarkGluon.clear();
     // filling objects from tree
-    tree->Get(nGenPart,"nGenPart");
+    tree->Get(nGenPart,"ngenPart");
 
     if (nGenPart < 1) return;
 
@@ -696,31 +696,29 @@ void GetObjects::GetGenParticles(EasyChain * tree){
     Int_t genPart_motherId[arrayN];
     Int_t genPart_grandmaId[arrayN];
 
-    tree->Get(genPart_pt[0],"GenPart_pt");
-    tree->Get(genPart_mass[0],"GenPart_mass");
-    tree->Get(genPart_eta[0],"GenPart_eta");
-    tree->Get(genPart_phi[0],"GenPart_phi");
-    tree->Get(genPart_pdgId[0],"GenPart_pdgId");
-    tree->Get(genPart_motherId[0],"GenPart_motherId");
-    tree->Get(genPart_grandmaId[0],"GenPart_grandmotherId");
+    tree->Get(genPart_pt[0],"genPart_pt");
+    tree->Get(genPart_mass[0],"genPart_mass");
+    tree->Get(genPart_eta[0],"genPart_eta");
+    tree->Get(genPart_phi[0],"genPart_phi");
+    tree->Get(genPart_pdgId[0],"genPart_pdgId");
+    tree->Get(genPart_motherId[0],"genPart_motherId");
+    tree->Get(genPart_grandmaId[0],"genPart_grandmotherId");
 
     for(int ipart = 0; ipart < nGenPart; ipart++){
-
+            if (genPart_pdgId[ipart] == genPart_motherId[ipart] or genPart_pt[ipart] < 1.0) continue;
         GenParticle dummyPart;
         dummyPart.SetPtEtaPhiM(genPart_pt[ipart], genPart_eta[ipart], genPart_phi[ipart], genPart_mass[ipart]);
         dummyPart.pdgId = genPart_pdgId[ipart];
         dummyPart.motherId = genPart_motherId[ipart];
         dummyPart.grandmaId = genPart_grandmaId[ipart];
 	
-        genPart.push_back(dummyPart);
-	if (abs(genPart_pdgId[ipart]) == 6 or abs(genPart_pdgId[ipart]) == 24)                                               
-	  genTopWQuarkGluon.push_back(dummyPart);                                                                           
+
+       genPart.push_back(dummyPart);
+	if (abs(genPart_pdgId[ipart]) == 6 or abs(genPart_pdgId[ipart]) == 24)                                            	  genTopWQuarkGluon.push_back(dummyPart);                                                                           
 	
         
-        if( (abs(genPart_pdgId[ipart]) == 21 or abs(genPart_pdgId[ipart]) == 1                                            
-	     or abs(genPart_pdgId[ipart]) == 2 or abs(genPart_pdgId[ipart])== 3       
-	     or abs(genPart_pdgId[ipart])== 4 or abs(genPart_pdgId[ipart]) == 5)                                          
-	    and (abs(genPart_motherId[ipart]) != 24 and abs(genPart_motherId[ipart]) != 6))                             
+        if( (abs(genPart_pdgId[ipart]) == 21 or abs(genPart_pdgId[ipart]) == 1                                            	     or abs(genPart_pdgId[ipart]) == 2 or abs(genPart_pdgId[ipart])== 3       
+	     or abs(genPart_pdgId[ipart])== 4 or abs(genPart_pdgId[ipart]) == 5)                                          	    and (abs(genPart_motherId[ipart]) != 24 and abs(genPart_motherId[ipart]) != 6))                             
 	  genTopWQuarkGluon.push_back(dummyPart);                      
 	
     }
@@ -842,46 +840,223 @@ void GetObjects::GetFatJets(EasyChain * tree){
         dummyJet.topMass = FatJet_topMass[ijet];
         dummyJet.minMass = FatJet_minMass[ijet];
         dummyJet.nSubJets = FatJet_nSubJets[ijet];
+        dummyJet.cone = 8; 
+        dummyJet.algo = 0; 
+	dummyJet.passHTT = -1;
         dummyJet.genMatchInd = -1; 
         dummyJet.genMatchDr = -1; 
         dummyJet.genMatchPdg = -1;
         dummyJet.genMatchPt = -1;
-	Float_t minDr = 9999;                                                                                                
-	for (int iTopW = 0 ; iTopW < genTopWQuarkGluon.size(); iTopW++){                                                     
+	Float_t minDr = 9999;                                                                                            
+	for (int iTopW = 0 ; iTopW < genTopWQuarkGluon.size(); iTopW++){ 
+
 	  if (genTopWQuarkGluon[iTopW].DeltaR(dummyJet) < minDr){
-	    minDr = genTopWQuarkGluon[iTopW].DeltaR(dummyJet);                                                               
-	    if (minDr < 0.8){                                                                                                
-	      dummyJet.genMatchInd = iTopW;
-	      dummyJet.genMatchDr = minDr;  
-	      dummyJet.genMatchPdg = abs(genTopWQuarkGluon[iTopW].pdgId);
-	      dummyJet.genMatchPt = genTopWQuarkGluon[iTopW].Pt();                                                           
-	    }                                                                                                                
-	  }                                                                                                                  
+	    minDr = genTopWQuarkGluon[iTopW].DeltaR(dummyJet);
+	    dummyJet.genMatchInd = iTopW;
+	    dummyJet.genMatchDr = minDr;  
+	    dummyJet.genMatchPdg = genTopWQuarkGluon[iTopW].pdgId;
+	    dummyJet.genMatchPt = genTopWQuarkGluon[iTopW].Pt();  
+	  }
 	}
 
-	dummyJet.topTagged = false;                                                                                        
-	dummyJet.WTagged = false;                                                                                          
+	
+	dummyJet.topTagged = false;  
+	dummyJet.WTagged = false; 
 	dummyJet.WmassTagged = false; 
 	
         if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
-	  if ( ((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 70.0 &&  dummyJet.prunedMass < 100.0 ){
+
+	  if ( ((dummyJet.tau2)/(dummyJet.tau1)) < 0.5 && dummyJet.prunedMass > 70.0 &&  dummyJet.prunedMass < 100.0 ){
 	    dummyJet.WmassTagged = true;        
 	    nWmassTagJetGood++;
 	    goodWmassTagJet.push_back(dummyJet);
 	  }
-	  if (((dummyJet.tau2)/(dummyJet.tau1)) < 0.6 && dummyJet.prunedMass > 50.0 ){
+	  if (((dummyJet.tau2)/(dummyJet.tau1)) < 0.5 && dummyJet.prunedMass > 50.0 ){
 	    dummyJet.WTagged = true;
 	    nWTagJetGood++;
 	    goodWTagJet.push_back(dummyJet);
 	  }
-	  if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 140.0 && dummyJet.topMass < 250.0){
+	  if ( ((dummyJet.tau3)/(dummyJet.tau2)) < 0.6 && dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 140.0 && dummyJet.topMass < 250.0){
 	    dummyJet.topTagged = true;
 	    nTopTagJetGood++;
 	    goodTopTagJet.push_back(dummyJet);
 	  }
-	  else dummyJet.topTagged = false;
+
 	  goodFatJet.push_back(dummyJet);
 	  nFatJetGood++;
+        }
+    }
+}
+
+
+void GetObjects::GetFatJets15(EasyChain * tree){
+    goodFatJet15.clear();
+    goodTopTagJet15.clear();
+    nFatJet15Good = 0;
+    nTopTagJet15Good = 0;
+    int nFatJet15 = tree->Get(nFatJet15,"nFatJet15");
+
+    if (nFatJet15 < 1) return;
+
+    const int arrayN = nFatJet15;
+
+    Float_t FatJet15_pt[arrayN];
+    Float_t FatJet15_eta[arrayN];
+    Float_t FatJet15_phi[arrayN];
+    Float_t FatJet15_mass[arrayN];
+    
+    Float_t FatJet15_tau1[arrayN];
+    Float_t FatJet15_tau2[arrayN];
+    Float_t FatJet15_tau3[arrayN];
+    Float_t FatJet15_topMass[arrayN];
+    Float_t FatJet15_minMass[arrayN];
+    Float_t FatJet15_nSubJets[arrayN];
+
+
+    tree->Get(FatJet15_pt[0],"FatJet15_pt");
+    tree->Get(FatJet15_eta[0],"FatJet15_eta");
+    tree->Get(FatJet15_phi[0],"FatJet15_phi");
+    tree->Get(FatJet15_mass[0],"FatJet15_mass");
+    
+    tree->Get(FatJet15_tau1[0],"FatJet15_Njettines_tau1");
+    tree->Get(FatJet15_tau2[0],"FatJet15_Njettines_tau2");
+    tree->Get(FatJet15_tau3[0],"FatJet15_Njettines_tau3");
+    tree->Get(FatJet15_topMass[0],"FatJet15Info_topMass");
+    tree->Get(FatJet15_minMass[0],"FatJet15Info_minMass");
+    tree->Get(FatJet15_nSubJets[0],"FatJet15Info_nSubJets");
+
+
+    for(int ijet = 0; ijet < nFatJet15; ijet++)
+    {
+        FatJet dummyJet;
+        dummyJet.SetPtEtaPhiM(FatJet15_pt[ijet],FatJet15_eta[ijet],FatJet15_phi[ijet],FatJet15_mass[ijet]);
+        dummyJet.prunedMass = -1;
+        dummyJet.trimmedMass = -1;
+        dummyJet.filteredMass = -1;
+        dummyJet.tau1 = FatJet15_tau1[ijet];
+        dummyJet.tau2 = FatJet15_tau2[ijet];
+        dummyJet.tau3 = FatJet15_tau3[ijet];
+        dummyJet.topMass = FatJet15_topMass[ijet];
+        dummyJet.minMass = FatJet15_minMass[ijet];
+        dummyJet.nSubJets = FatJet15_nSubJets[ijet];
+        dummyJet.cone = 15; 
+        dummyJet.algo = 0; 
+	dummyJet.passHTT = -1;
+        dummyJet.genMatchInd = -1; 
+        dummyJet.genMatchDr = -1; 
+        dummyJet.genMatchPdg = -1;
+        dummyJet.genMatchPt = -1;
+	Float_t minDr = 9999;                                                                                            
+	for (int iTopW = 0 ; iTopW < genTopWQuarkGluon.size(); iTopW++){ 
+	  if (genTopWQuarkGluon[iTopW].DeltaR(dummyJet) < minDr){
+	    minDr = genTopWQuarkGluon[iTopW].DeltaR(dummyJet);
+	    dummyJet.genMatchInd = iTopW;
+	    dummyJet.genMatchDr = minDr;  
+	    dummyJet.genMatchPdg = genTopWQuarkGluon[iTopW].pdgId;
+	    dummyJet.genMatchPt = genTopWQuarkGluon[iTopW].Pt();  
+	  }
+	}
+	
+	dummyJet.topTagged = false;  
+
+        if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
+	  
+	  if ( dummyJet.nSubJets > 2 && dummyJet.minMass > 50.0 && dummyJet.topMass > 140.0 && dummyJet.topMass < 250.0){
+	    dummyJet.topTagged = true;
+	    nTopTagJet15Good++;
+	    goodTopTagJet15.push_back(dummyJet);
+	  }
+	  
+	  goodFatJet15.push_back(dummyJet);
+	  nFatJet15Good++;
+        }
+    }
+}
+
+
+void GetObjects::GetHTTJets15(EasyChain * tree){
+    goodHTTJet15.clear();
+    goodTopTagHTTJet15.clear();
+    nHTTJet15Good = 0;
+    nTopTagHTTJet15Good = 0;
+    int nHTTJet15 = tree->Get(nHTTJet15,"nHTTJet15");
+
+    if (nHTTJet15 < 1) return;
+
+    const int arrayN = nHTTJet15;
+
+    Float_t HTTJet15_pt[arrayN];
+    Float_t HTTJet15_eta[arrayN];
+    Float_t HTTJet15_phi[arrayN];
+    Float_t HTTJet15_mass[arrayN];
+    
+    Float_t HTTJet15_tau1[arrayN];
+    Float_t HTTJet15_tau2[arrayN];
+    Float_t HTTJet15_tau3[arrayN];
+    Float_t HTTJet15_passHTT[arrayN];
+    Float_t HTTJet15_topMass[arrayN];
+    Float_t HTTJet15_minMass[arrayN];
+    Float_t HTTJet15_nSubJets[arrayN];
+
+
+    tree->Get(HTTJet15_pt[0],"HTTJet15_pt");
+    tree->Get(HTTJet15_eta[0],"HTTJet15_eta");
+    tree->Get(HTTJet15_phi[0],"HTTJet15_phi");
+    tree->Get(HTTJet15_mass[0],"HTTJet15_mass");
+    
+    tree->Get(HTTJet15_tau1[0],"HTTJet15_Njettines_tau1");
+    tree->Get(HTTJet15_tau2[0],"HTTJet15_Njettines_tau2");
+    tree->Get(HTTJet15_tau3[0],"HTTJet15_Njettines_tau3");
+    tree->Get(HTTJet15_passHTT[0],"HTTJet15_Njettines_PassHTT");
+
+    tree->Get(HTTJet15_topMass[0],"HTTJet15Info_topMass");
+    tree->Get(HTTJet15_minMass[0],"HTTJet15Info_minMass");
+    tree->Get(HTTJet15_nSubJets[0],"HTTJet15Info_nSubJets");
+
+
+    for(int ijet = 0; ijet < nHTTJet15; ijet++)
+    {
+        FatJet dummyJet;
+        dummyJet.SetPtEtaPhiM(HTTJet15_pt[ijet],HTTJet15_eta[ijet],HTTJet15_phi[ijet],HTTJet15_mass[ijet]);
+        dummyJet.prunedMass = -1;
+        dummyJet.trimmedMass = -1;
+        dummyJet.filteredMass = -1;
+        dummyJet.tau1 = HTTJet15_tau1[ijet];
+        dummyJet.tau2 = HTTJet15_tau2[ijet];
+        dummyJet.tau3 = HTTJet15_tau3[ijet];
+        dummyJet.topMass = HTTJet15_topMass[ijet];
+        dummyJet.minMass = HTTJet15_minMass[ijet];
+        dummyJet.nSubJets = HTTJet15_nSubJets[ijet];
+        dummyJet.cone = 15; 
+        dummyJet.algo = 1;
+	dummyJet.passHTT = HTTJet15_passHTT[ijet]; 
+        dummyJet.genMatchInd = -1; 
+        dummyJet.genMatchDr = -1; 
+        dummyJet.genMatchPdg = -1;
+        dummyJet.genMatchPt = -1;
+	Float_t minDr = 9999;                                                                                            
+	for (int iTopW = 0 ; iTopW < genTopWQuarkGluon.size(); iTopW++){ 
+	  if (genTopWQuarkGluon[iTopW].DeltaR(dummyJet) < minDr){
+	    minDr = genTopWQuarkGluon[iTopW].DeltaR(dummyJet);
+	    dummyJet.genMatchInd = iTopW;
+	    dummyJet.genMatchDr = minDr;  
+	    dummyJet.genMatchPdg = genTopWQuarkGluon[iTopW].pdgId;
+	    dummyJet.genMatchPt = genTopWQuarkGluon[iTopW].Pt();  
+	  }
+	}
+	
+	dummyJet.topTagged = false;  
+
+        if(dummyJet.Pt() > goodFatJetPt && fabs(dummyJet.Eta()) < goodEta){
+	  
+	  if ( HTTJet15_passHTT[ijet] == 1){
+	    dummyJet.topTagged = true;
+	    nTopTagHTTJet15Good++;
+	    goodTopTagHTTJet15.push_back(dummyJet);
+	  }
+	  
+	  goodHTTJet15.push_back(dummyJet);
+	  nHTTJet15Good++;
         }
     }
 }

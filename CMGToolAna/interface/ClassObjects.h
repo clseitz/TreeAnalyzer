@@ -95,7 +95,9 @@ public:
     Int_t genMatchPdg;
     Float_t genMatchDr;
     Float_t genMatchPt;  
-
+    Int_t cone;
+    Int_t passHTT;
+    Int_t algo; //0 = CMS, 1 = HTT
 
     bool WTagged;
     bool WmassTagged; 
@@ -125,6 +127,8 @@ class GetObjects{
 public:
     void GetJets(EasyChain * tree);
     void GetFatJets(EasyChain * tree);
+    void GetFatJets15(EasyChain * tree);
+    void GetHTTJets15(EasyChain * tree);
     void GetMET(EasyChain * tree);
     void GetGenMET(EasyChain * tree);
 
@@ -143,6 +147,10 @@ public:
     std::vector<Jet> goodBJet;
     std::vector<FatJet> goodFatJet;
     std::vector<FatJet> goodTopTagJet;
+    std::vector<FatJet> goodFatJet15;
+    std::vector<FatJet> goodTopTagJet15;
+    std::vector<FatJet> goodHTTJet15;
+    std::vector<FatJet> goodTopTagHTTJet15;
     std::vector<FatJet> goodWTagJet;
     std::vector<FatJet> goodWmassTagJet;
 
@@ -201,6 +209,10 @@ public:
     Int_t nJetGood;
     Int_t nFatJetGood;
     Int_t nTopTagJetGood;
+    Int_t nFatJet15Good;
+    Int_t nTopTagJet15Good;
+    Int_t nHTTJet15Good;
+    Int_t nTopTagHTTJet15Good;
     Int_t nWmassTagJetGood;
     Int_t nWTagJetGood;
     Int_t nBJetGood;
