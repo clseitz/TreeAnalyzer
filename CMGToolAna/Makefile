@@ -1,6 +1,6 @@
 #Make file to compile TreeAnalzyer
 #define code to be compiled
-  CODE = TreeAnalyzer_example
+  CODE = TreeAnalyzer_JetMET
 #  CODE = TreeAnalyzer_SingleLep
 #define sources
   SOURCE = src/$(CODE).cc
@@ -40,7 +40,7 @@ LDFLAGS     = `root-config --ldflags`
 
 all:           $(EXEC)
 $(EXEC):       $(SOURCE) $(EXTRA)
-	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -o $@
+	$(LD) $(LDFLAGS) $^ $(ROOTLIBS)  -l TreePlayer -o $@
 	@echo "$@ done"
 
 clean:
