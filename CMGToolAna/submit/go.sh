@@ -3,7 +3,17 @@
 
 ana=$1
 #put you the samples  you want to run
-samples="MC_T1tttt_1500_100 MC_T1tttt_1200_800 MC_TTbar MC_WJets"
+samples="data_DoubleMu2015_chunk0 data_DoubleMu2015_chunk1 data_DoubleMu2015_chunk2 
+data_DoubleMu2015_chunk3 data_DoubleMu2015_chunk4 data_DoubleMu2015_chunk5 
+data_DoubleMu2015_chunk6 data_DoubleMu2015_chunk7 data_DoubleMu2015_chunk8 
+data_DoubleMu2015_chunk9 data_DoubleMu2015_chunk10 
+MC_DYMG_chunk0 MC_DYMG_chunk1 MC_DYMG_chunk2 MC_DYMG_chunk3 
+MC_DYMG_chunk4 MC_DYMG_chunk5 MC_DYMG_chunk6 MC_DYMG_chunk7 
+MC_DYMG_chunk8 MC_DYMG_chunk9 MC_DYMG_chunk10"
+#MC_DY_chunk0 MC_DY_chunk1 MC_DY_chunk2 MC_DY_chunk3 
+#MC_DY_chunk4 MC_DY_chunk5 MC_DY_chunk6 MC_DY_chunk7 
+#MC_DY_chunk8 MC_DY_chunk9
+
 #samples="MC_WJets"
 dir=$PWD
 
