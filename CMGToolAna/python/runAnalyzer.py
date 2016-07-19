@@ -17,9 +17,8 @@ def help():
     print ' TYPE = MC, data'
     print ' SAMPLE = ',
 
-    from DESYsamples import SAMPLES
-    print SAMPLES
-
+    from JetMetsamples import SAMPLES
+    print SAMPLES    
     sys.exit(0)
 
 def GetNevents(loc):
@@ -51,35 +50,22 @@ if len(sys.argv)>1:
         gROOT.LoadMacro(srcdir+'TreeOutput.C+')
         from ROOT import TreeWriter as reader
     # single muon compilable (Batool)
-    elif sys.argv[1]=='TreeAnalyzer_Mu':
-        exe = 'TreeAnalyzer_Mu.exe'
-    # single lepton compilable (Artur)
+    elif sys.argv[1]=='TreeAnalyzer_JetMET':
+        exe = 'TreeAnalyzer_JetMET.exe'
     elif sys.argv[1]=='TreeAnalyzer_SingleLep':
         exe = 'TreeAnalyzer_SingleLep.exe'
-    # example with compiled executable
-    elif sys.argv[1]=='TreeAnalyzer_example':
-        exe = 'TreeAnalyzer_example.exe'
-    elif sys.argv[1]=='TreeAnalyzer_SingleEl':  # Single Electron with compiled executable
-        exe = 'TreeAnalyzer_SingleEl.exe'
-    elif sys.argv[1]=='TreeAnalyzer_SingleMu':  # Single Electron with compiled executable
-        exe = 'TreeAnalyzer_SingleMu.exe'
-    elif sys.argv[1]=='TreeAnalyzer_Gen':  # gen study
-        exe = 'TreeAnalyzer_GenStudy.exe'
-    elif sys.argv[1]=='TreeAnalyzer_Eff':  # efficiency study
-        exe = 'TreeAnalyzer_EffStudy.exe'
-    elif sys.argv[1]=='TreeAnalyzer_EffTree':  # efficiency study
-        exe = 'TreeAnalyzer_EffStudyTree.exe'
-
     else:
+        print '1'
         help()
 else:
+    print '2'
     help()
 
 # check sample location in sys.argv
 if 'EOS' in sys.argv:
     from EOSsamples import *
 else:
-    from DESYsamples import *
+    from JetMetsamples import *
 
 # fill sample dictionaries
 foundFlag=False
@@ -101,7 +87,7 @@ for arg in sys.argv:
                     # Get sample directory
                     sampDir = inDir[scene][samp]+HT
                     # Calculate number of events
-                    entries = GetNevents(sampDir)
+                    entries = evtgen[samp]#GetNevents(sampDir)
                     print "cross section x lumi", xsec_lumi[samp][i], "Events generated", entries
                     fileNames+=inDir[scene][samp]+dirsHT[samp][i]+treename+' '+str(xsec_lumi[samp][i]/entries)+' '
 
@@ -115,4 +101,6 @@ for arg in sys.argv:
                     print([".././"+exe, fileNames,scene+'_'+samp])
                     os.system(".././"+exe+" "+fileNames+" "+scene+'_'+samp)
 
-if not foundFlag: help()
+if not foundFlag: 
+    print '3'
+    help()
