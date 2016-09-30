@@ -1,22 +1,25 @@
 #!/usr/bin/python
 
 import sys, math
-import CMS_lumi 
+import CMS_lumi, tdrstyle
 from ROOT import *
 gROOT.SetStyle("Plain");
 gStyle.SetOptStat(0);
 gROOT.SetBatch(kTRUE);	
 
+
 postfix = "PF_DYMG"
 
-etabins= {0:"Jet |#eta| < 5", 1:"Jet |#eta| < 2.5", 2:"2.5 < Jet |#eta| < 2.75",3:"2.75 < Jet |#eta| < 3", 4:"3 < Jet |#eta| < 5"}
-ptbins= {0:"20 < Jet p_{T} < 100", 1:"20 < Jet p_{T} < 30", 2:"30 < Jet p_{T} < 50",3:"50 < Jet p_{T} < 100"}
+etabins= {0:"|#eta| < 5", 1:"|#eta| < 2.5", 2:"2.5 < |#eta| < 2.75",3:"2.75 < |#eta| < 3", 4:"3 < |#eta| < 5"}
+ptbins= {0:"20 < p_{T} < 100 GeV", 1:"20 < p_{T} < 30 GeV", 2:"30 < p_{T} < 50 GeV",3:"50 < p_{T} < 100 GeV"}
 
 etabinspdf= {0:"eta_5", 1:"eta_2p5", 2:"2p5_eta_2p75",3:"2p75_eta_3", 4:"3_eta_5"}
 ptbinspdf= {0:"20_pt_100", 1:"20_pt_30", 2:"30_pt_50",3:"50_pt_100"}
 
+
+varnames = {'hJetpT':'Jet p_{T} [GeV]','hJetEta':'Jet #eta'}
 dummys = []
-CMS_lumi.writeExtraText = 0
+CMS_lumi.writeExtraText = 1
 CMS_lumi.lumi_13TeV = "2.3 fb^{-1}"
 CMS_lumi.lumi_sqrtS = "13 TeV"
 iPos=0                                                                                                        
@@ -24,10 +27,10 @@ Tl = TLatex()
 Tl.SetTextSizePixels(15)                                                                                            
 Tl.SetTextFont(42)                                                                                                  
 Tl.SetTextAlign(13);                                                                                                
-ypos = 0.82                                                                                                         
+ypos = 0.88                                                                                                         
 xpos = 0.45   
 def getLegend():
-	leg = TLegend(0.6036789,0.2766226,0.7625418,0.5538752)
+	leg = TLegend(0.3875839,0.1026148,0.5469799,0.3787879)
 	leg.SetBorderSize(1)
 	leg.SetTextFont(62)
 	leg.SetTextSize(0.04)
@@ -38,7 +41,7 @@ def getLegend():
 	leg.SetFillStyle(1001)          
 	return leg
 
-def makeEffPlots(eff, var ):
+def makeEffPlots(eff, plot ,k, j):
 	hdata = eff["data"]
 	hDY = eff["DY"]
 	hDYmatch = eff["DYmatch"]
@@ -55,13 +58,13 @@ def makeEffPlots(eff, var ):
 	
         p1.cd()   
 	hdata.Draw()
-	dummy = hdata.GetName()
+
 	hdata.SetTitle('')
 	hdata.GetYaxis().SetLabelSize(0.04)
 	hdata.GetYaxis().SetTitle("Efficiency")
 
 	hdata.GetYaxis().SetTitleSize(0.045)
-	hdata.GetYaxis().SetRangeUser(0,1.2)
+	hdata.GetYaxis().SetRangeUser(0.42,1.3)
 	hDY.Draw("same")
 
 	hdata.SetLineColor(kBlack)
@@ -71,6 +74,7 @@ def makeEffPlots(eff, var ):
 	hDY.SetFillColor(kBlue)
 	hDY.SetFillStyle(3003)
 	hDY.Draw("sameE4")
+	hDYmatch.SetLineColor(kBlue)
 	hDYmatch.SetLineColor(kBlue)
 	hDYmatch.Draw("samee")
 
@@ -85,17 +89,25 @@ def makeEffPlots(eff, var ):
 	leg.AddEntry(hdata,"Data","lep")
 	dummys.append(leg)
 	leg.Draw()
-	Tl.DrawLatexNDC(xpos,ypos, 'Loose working point') 
-	Tl.DrawLatexNDC(xpos,ypos-0.06, dummy) 
-	CMS_lumi.CMS_lumi(p1,4, 2) 
+	if "loose" in hdata.GetName():
+		Tl.DrawLatexNDC(xpos,ypos, 'Loose MVA working point') 
+	elif "medium" in hdata.GetName():
+		Tl.DrawLatexNDC(xpos,ypos, 'Medium MVA working point') 
+	elif "tight" in hdata.GetName():
+		Tl.DrawLatexNDC(xpos,ypos, 'Tight MVA working point') 
+	Tl.DrawLatexNDC(xpos,ypos-0.06, etabins[k]) 
+	Tl.DrawLatexNDC(xpos,ypos-0.12, ptbins[j]) 
+	CMS_lumi.CMS_lumi(p1,4, 11) 
 	h_ratio = hdata.Clone()
 	h_ratio.Divide(hDY)	
 	p2.cd()
+	p2.SetGridy()
 	h_ratio.Draw()
 	h_ratio.GetXaxis().SetTickLength(0.07)
-	h_ratio.GetYaxis().SetRangeUser(0.78,1.22)
-	h_ratio.GetYaxis().SetTitle("data/MC")
-	h_ratio.GetXaxis().SetTitle("Jet"+var)
+	h_ratio.GetYaxis().SetRangeUser(0.82,1.18)
+	h_ratio.GetYaxis().SetTitle("data/MC   ")
+	
+	h_ratio.GetXaxis().SetTitle(varnames[plot])
 	h_ratio.GetYaxis().SetLabelSize(0.09)
 	h_ratio.GetXaxis().SetLabelSize(0.09)
 	h_ratio.GetYaxis().SetTitleSize(0.09)
@@ -111,7 +123,7 @@ def makeEffPlots(eff, var ):
 
 if __name__ == "__main__":  
 	hists = []	
-	fout = TFile.Open('PUEff_'+postfix+'.root', 'recreate')   
+	fout = TFile.Open('PUEff_new'+postfix+'.root', 'recreate')   
 
 	fdata = TFile.Open('../submit/CMG_data_DoubleMu2015_all_his.root', 'read')   
 	fDY = TFile.Open('../submit/CMG_MC_DYMG_all_his.root', 'read')
@@ -123,63 +135,101 @@ if __name__ == "__main__":
 	Tl.SetTextSizePixels(15)
 	Tl.SetTextFont(42)
 	Tl.SetTextAlign(13);
-	ypos = 0.82
-	xpos = 0.45                   
-#	wps = ['loose','medium','tight']
-	wps = ['loose']
+
+	wps = ['loose','medium','tight']
+#	wps = ['loose']
 #	variables = ['pT','Eta']
 	variables = {'pT':('','_cent','_forw'),'Eta':('','','')}
 	SR = 'dPhiGeq2p5'
 	CR = 'dPhiLeq1p5'
 
-	for i in range(0,3):
-		wp = 'loose'
-		for var in variables:
-			efficiencies = {}
-			for f,fn in zip(files,filenames):
-				eta = variables[var][i]
-				postfix = ''
-				if 'match' in fn:
-					postfix = '_QG'
-				h_SR_all = f.Get('Jet' + var + '_' + SR + '_All'+postfix+eta)
-				h_CR_all = f.Get('Jet' + var + '_' + CR + '_All'+eta)
-				h_SR_pass = f.Get('Jet' + var + '_' + SR + '_Pass_' + wp+postfix+eta)
-				h_CR_pass = f.Get('Jet' + var + '_' + CR + '_Pass_' + wp+eta)
-				h_all = h_SR_all.Clone()
-				h_pass = h_SR_pass.Clone()
-				#scale background under the assumptio that dphi is flat for pu jets
-				k = (math.pi-2.5)/1.5
-				h_CR_all.Scale(k)
-				h_CR_pass.Scale(k)
-				#subtract background from side band
-				if 'match' not in fn:
-					h_all.Add(h_CR_all,-1)
-					h_pass.Add(h_CR_pass,-1)
+	plots = ['hJetpT','hJetEta']
+	etaranges = {'hJetpT':5,'hJetEta':1}
+	ptranges = {'hJetpT':1,'hJetEta':4}
+	for wp in wps:
+		for plot in plots:
+			for k in range (0,etaranges[plot],1):
+				for j in range (0,ptranges[plot],1):
+					efficiencies = {}
+					for f,fn in zip(files,filenames):
+					#					wp = 'medium'
+						print k,j
+						binAllFlav = '_0'+'_'+str(j)+'_'+str(k)
+						print 'Efficiency/'+plot + '_' + SR + '_All'+binAllFlav
+						h_SR_all = f.Get('Efficiency/'+plot + '_' + SR + '_All'+binAllFlav).Clone()
+						h_CR_all = f.Get('Efficiency/'+plot + '_' + CR + '_All'+binAllFlav).Clone()
+						h_SR_pass = f.Get('Efficiency/'+plot + '_' + SR + '_Pass_' + wp +binAllFlav).Clone()
+						h_CR_pass = f.Get('Efficiency/'+plot + '_' + CR + '_Pass_' + wp +binAllFlav).Clone()
+						h_SR_all_match =  TH1D()
+						h_SR_pass_match =  TH1D()
+						if 'match' in fn:
+							h1 = fDY.Get('Efficiency/'+plot + '_' + SR + '_All'+ '_1'+'_'+str(j)+'_'+str(k)).Clone()
+							h2 = fDY.Get('Efficiency/'+plot + '_' + SR + '_All'+ '_2'+'_'+str(j)+'_'+str(k)).Clone()
+							h3 = fDY.Get('Efficiency/'+plot + '_' + SR + '_All'+ '_3'+'_'+str(j)+'_'+str(k)).Clone()
+							h4 = fDY.Get('Efficiency/'+plot + '_' + SR + '_All'+ '_4'+'_'+str(j)+'_'+str(k)).Clone()
+							h_SR_all_match = h1.Clone()
+							h_SR_all_match.Add(h2)
+							#exclude pile up jets
+							#h_SR_all_match.Add(h3)
+							h_SR_all_match.Add(h4)
+							
+							h1 = fDY.Get('Efficiency/'+plot + '_' + SR +  '_Pass_' + wp + '_1'+'_'+str(j)+'_'+str(k)).Clone()
+							h2 = fDY.Get('Efficiency/'+plot + '_' + SR +  '_Pass_' + wp + '_2'+'_'+str(j)+'_'+str(k)).Clone()
+							h3 = fDY.Get('Efficiency/'+plot + '_' + SR +  '_Pass_' + wp + '_3'+'_'+str(j)+'_'+str(k)).Clone()
+							h4 = fDY.Get('Efficiency/'+plot + '_' + SR +  '_Pass_' + wp + '_4'+'_'+str(j)+'_'+str(k)).Clone()
+							h_SR_pass_match = h1.Clone()
+							h_SR_pass_match.Add(h2)
+							#exclude pilup jets
+							#h_SR_pass_match.Add(h3)
+							h_SR_pass_match.Add(h4)
+							
+						h_all = h_SR_all.Clone()
+						h_pass = h_SR_pass.Clone()
+						if 'match' in fn:
+							h_all = h_SR_all_match.Clone()
+							h_pass = h_SR_pass_match.Clone()
+						
 
-				h_pass.SetName('hpass_'+var+'_'+wp+fn+eta)
-				h_all.SetName('hall_'+var+'_'+wp+fn+eta)
-				h_efficiency = h_pass.Clone()
-				h_efficiency.Divide(h_pass,h_all,1.0,1.0,"B")
-				h_efficiency.SetName('heff_'+var+'_'+wp+fn+eta)
-				c = TCanvas('Dist_'+var+'_'+wp+fn+eta,'Dist_'+var+'_'+wp+fn+eta, 800, 600)
-				h_all.Draw()
-				h_pass.Draw("same")
-				c1 = TCanvas('eff_'+var+'_'+wp+fn+eta,'eff_'+var+'_'+wp+fn+eta, 800, 600)
-				h_efficiency.Draw("")
-				hists.append(h_efficiency)
-				hists.append(h_pass)
-				hists.append(h_all)
-				fout.cd()
-				c.Write()
-				h_efficiency.Write()
-				h_pass.Write()
-				h_all.Write()
-				c1.Write()
-				efficiencies[fn] = h_efficiency
-			fout.cd()
-			ceff = makeEffPlots(efficiencies, var)
-			SetOwnership(ceff, 0)
-			ceff.Write()
+			                #scale background under the assumptio that dphi is flat for pu jets
+						fac = (math.pi-2.5)/1.5
+						h_CR_all.Scale(fac)
+						h_CR_pass.Scale(fac)
+					#subtract background in data and DY MC
+						if 'match' not in fn:                                                                                  
+							h_all.Add(h_CR_all,-1)               
+							h_pass.Add(h_CR_pass,-1) 
+
+						binName = '_0'+'_'+etabinspdf[k]+'_'+ptbinspdf[j]
+						h_pass.SetName('hpass_'+plot+'_'+wp+fn+binName)
+						h_all.SetName('hall_'+plot+'_'+wp+fn+binName)
+						h_CR_all.SetName('hCRall_'+plot+'_'+wp+fn+binName)
+						h_efficiency = h_pass.Clone()
+						
+						h_efficiency.Divide(h_pass,h_all,1.0,1.0,"B")
+						h_efficiency.SetName('heff_'+plot+'_'+wp+fn+binName)
+						c = TCanvas('Dist_'+plot+'_'+wp+fn+binName,'Dist_'+plot+'_'+wp+fn+binName, 800, 600)
+						h_all.Draw()
+						h_pass.Draw("same")
+						c1 = TCanvas('eff_'+plot+'_'+wp+fn+binName,'eff_'+plot+'_'+wp+fn+binName, 800, 600)
+						h_efficiency.Draw("")
+						hists.append(h_efficiency)
+						hists.append(h_pass)
+						hists.append(h_all)
+						fout.cd()
+						c.Write()
+						h_efficiency.Write()
+						h_pass.Write()
+						h_all.Write()
+						h_CR_all.Write()
+						c1.Write()
+						efficiencies[fn] = h_efficiency 
+						
+					fout.cd()
+					ceff = makeEffPlots(efficiencies, plot, k, j)
+					SetOwnership(ceff, 0)
+					ceff.Write()
+					ceff.SaveAs("EffPlots/"+ceff.GetName()+".pdf")
+
 			
 
 	
