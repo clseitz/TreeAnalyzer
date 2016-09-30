@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, math
+import sys, math, os
 import CMS_lumi, tdrstyle
 from ROOT import *
 gROOT.SetStyle("Plain");
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 	fDYmatch = TFile.Open('../submit/CMG_MC_DYMG_all_his.root', 'read')
 	files = [fdata, fDY,fDYmatch]
 	filenames = ['data', 'DY','DYmatch']
-
+	if not os.path.exists("EffPlots"): os.system("mkdir -p EffPlots")
 	Tl = TLatex()
 	Tl.SetTextSizePixels(15)
 	Tl.SetTextFont(42)
