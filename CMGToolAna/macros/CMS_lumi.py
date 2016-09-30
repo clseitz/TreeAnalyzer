@@ -6,17 +6,17 @@ import ROOT as rt
 #   Updated by:   Dinko Ferencek (Rutgers)
 #
 
-cmsText     = "CMS Preliminary";
+cmsText     = "CMS";
 cmsTextFont   = 61  
 
 writeExtraText = True
 extraText   = "Preliminary"
 extraTextFont = 52 
 
-lumiTextSize     = 0.4
-lumiTextOffset   = 0.1
+lumiTextSize     = 0.6
+lumiTextOffset   = 0.2
 
-cmsTextSize      = 0.4
+cmsTextSize      = 0.75
 cmsTextOffset    = 0.1
 
 relPosX    = 0.045
@@ -88,7 +88,7 @@ def CMS_lumi(pad,  iPeriod,  iPosX ):
     elif ( iPeriod==0 ):
         lumiText += lumi_sqrtS
             
-    #print lumiText
+    print lumiText
 
     latex = rt.TLatex()
     latex.SetNDC()
@@ -145,7 +145,7 @@ def CMS_lumi(pad,  iPeriod,  iPosX ):
                 latex.SetTextFont(extraTextFont)
                 latex.SetTextAlign(align_)
                 latex.SetTextSize(extraTextSize*t)
-                latex.DrawLatex(posX_+0.1, posY_- relExtraDY*cmsTextSize*t, extraText)
+                latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText)
     elif( writeExtraText ):
         if( iPosX==0):
             posX_ =   l +  relPosX*(1-l-r)
