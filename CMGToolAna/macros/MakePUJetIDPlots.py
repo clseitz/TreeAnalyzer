@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-import sys
-import CMS_lumi 
+import sys, os
+import CMS_lumi , tdrstyle
 from ROOT import *
 gROOT.SetStyle("Plain");
 gStyle.SetOptStat(0);
 gROOT.SetBatch(kTRUE);	
-
+#tdrstyle.setTDRStyle()
 postfix = "PF_DYMG"
 
 etabins= {0:"Jet |#eta| < 5", 1:"Jet |#eta| < 2.5", 2:"2.5 < Jet |#eta| < 2.75",3:"2.75 < Jet |#eta| < 3", 4:"3 < Jet |#eta| < 5"}
@@ -29,12 +29,14 @@ def getLegend():
 	return leg
 if __name__ == "__main__":  
 	hists = []	
-	fout = TFile.Open('JetMetPlots_'+postfix+'.root', 'recreate')   
+	fout = TFile.Open('JetMetPlots_Var_'+postfix+'.root', 'recreate')   
 
 	fdata = TFile.Open('../submit/CMG_data_DoubleMu2015_all_his.root', 'read')   
 	fDY = TFile.Open('../submit/CMG_MC_DYMG_all_his.root', 'read')   
+
+	if not os.path.exists("VarPlots"): os.system("mkdir -p VarPlots")
 	
-	CMS_lumi.writeExtraText = 0
+	CMS_lumi.writeExtraText = 1
 	CMS_lumi.lumi_13TeV = "2.3 fb^{-1}"
 	CMS_lumi.lumi_sqrtS = "13 TeV"
 	iPos=0                                                                                                        
@@ -75,12 +77,18 @@ if __name__ == "__main__":
 			Tl.DrawLatexNDC(xpos,ypos-0.06, etabins[0])
 			Tl.DrawLatexNDC(xpos,ypos-0.12, "MC_{SF} = %.2f" % sf)
 			fout.cd()
-			CMS_lumi.CMS_lumi(c,4, 2)   
+			CMS_lumi.CMS_lumi(c,4, 11)   
 			c.Write()
 
 	
 	plots = ['hnpv','hPUdisc','hmLL','hDRweighted',	'hnTot','hnCh','haxisMajor','haxisMinor','hfRing0','hfRing1',
 		 'hfRing2','hfRing3','hptD','hbetaClassic','hpull','hjetR','hjetRchg','hjtpt','hjteta']
+
+	plotsDict = {'hnpv':'N_{vertex}','hPUdisc':'Pileup Jet MVA','hmLL':'Dilepton mass','hDRweighted':'hDRweighted',
+		 'hnTot':'hnTot','hnCh':'hnCh',
+		 'haxisMajor':'haxisMajor','haxisMinor':'haxisMinor','hfRing0':'hfRing0','hfRing1':'hfRing1',
+		 'hfRing2':'hfRing2','hfRing3':'hfRing3','hptD':'hptD','hbetaClassic':'#beta',
+		 'hpull':'Pull','hjetR':'hjetR','hjetRchg':'hjetRchg','hjtpt':'Jet p_{T}','hjteta':'Jet #eta'}
 
    	for plot in plots:
 
@@ -94,16 +102,17 @@ if __name__ == "__main__":
 
 				
 #				print plot + '_0'+'_'+str(k)+'_'+str(j)
-				h1 = fDY.Get(plot + '_1'+'_'+str(j)+'_'+str(k)).Clone()
-				h2 = fDY.Get(plot + '_2'+'_'+str(j)+'_'+str(k)).Clone()
-				h3 = fDY.Get(plot + '_3'+'_'+str(j)+'_'+str(k)).Clone()
-				h4 = fDY.Get(plot + '_4'+'_'+str(j)+'_'+str(k)).Clone()
+				
+				h1 = fDY.Get('Variables/'+plot + '_1'+'_'+str(j)+'_'+str(k)).Clone()
+				h2 = fDY.Get('Variables/'+plot + '_2'+'_'+str(j)+'_'+str(k)).Clone()
+				h3 = fDY.Get('Variables/'+plot + '_3'+'_'+str(j)+'_'+str(k)).Clone()
+				h4 = fDY.Get('Variables/'+plot + '_4'+'_'+str(j)+'_'+str(k)).Clone()
 
  
-				hdata = fdata.Get(plot + '_0'+'_'+str(j)+'_'+str(k)).Clone()
-				htot = fDY.Get(plot + '_0'+'_'+str(j)+'_'+str(k)).Clone() 
+				hdata = fdata.Get('Variables/'+plot + '_0'+'_'+str(j)+'_'+str(k)).Clone()
+				htot = fDY.Get('Variables/'+plot + '_0'+'_'+str(j)+'_'+str(k)).Clone() 
 
-				htotsum = fDY.Get(plot + '_1'+'_'+str(j)+'_'+str(k)).Clone()
+				htotsum = fDY.Get('Variables/'+plot + '_1'+'_'+str(j)+'_'+str(k)).Clone()
 				htotsum.Add(h2)
 				htotsum.Add(h3)
 				htotsum.Add(h4)
@@ -161,6 +170,7 @@ if __name__ == "__main__":
 				htotsum.GetYaxis().SetRangeUser(0.01, ymax)
 				htotsum.GetXaxis().SetTitleSize(0.055)
 				htotsum.GetXaxis().SetTitleOffset(0.8)
+				htotsum.GetXaxis().SetTitle(plotsDict[plot])
 				leg = getLegend()
 				leg.AddEntry(h1)
 				leg.AddEntry(h2)
@@ -174,14 +184,14 @@ if __name__ == "__main__":
 				Tl.DrawLatexNDC(xpos,ypos-0.06, etabins[k])
 				Tl.DrawLatexNDC(xpos,ypos-0.12, "MC_{SF} = %.2f" % sf)
 				fout.cd()
-				CMS_lumi.CMS_lumi(c2,4, iPos)   
+				CMS_lumi.CMS_lumi(c2,4, 11)   
 				if 'beta' in plot:
 					c2.SetLogy()
 					htotsum.GetYaxis().SetRangeUser(1, 4*ymax)
 				c2.SetName("plotsForPAS/"+plot+"_"+etabinspdf[k]+"_"+ptbinspdf[j])
 				#if (j == 2 and (k ==1 or k ==4)):
 				c2.Write()
-				c2.SaveAs("plots_"+postfix+"/"+plot+"_"+etabinspdf[k]+"_"+ptbinspdf[j]+".pdf")
+				c2.SaveAs("VarPlots/"+plot+"_"+etabinspdf[k]+"_"+ptbinspdf[j]+".pdf")
 				if j > 0 and k > 0:
 					c.cd(icanvas)
 					c.SetLogy()
@@ -209,13 +219,13 @@ if __name__ == "__main__":
 					Tl.DrawLatexNDC(xpos+0.07,ypos, ptbins[j]) 
 					Tl.DrawLatexNDC(xpos+0.07,ypos-0.06, etabins[k])
 					Tl.DrawLatexNDC(xpos+0.07,ypos-0.12, "MC_{SF} = %.2f" % sf)
-					CMS_lumi.CMS_lumi(c.cd(icanvas),4, iPos) 
+					CMS_lumi.CMS_lumi(c.cd(icanvas),4, 11) 
 					icanvas = icanvas + 1
 
 		fout.cd()
 #		for obj in c.cd(1).GetListOfPrimitives():
 #			print obj
 		c.Write()
-		c.SaveAs("plots_"+postfix+"/"+plot+".pdf")
+		c.SaveAs("VarPlots/"+plot+".pdf")
 		
 		#print hists
