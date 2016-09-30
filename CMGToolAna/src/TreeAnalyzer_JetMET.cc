@@ -188,6 +188,28 @@ int main (int argc, char* argv[]){
     int nflav = 5;
     int npt = 4;
     int neta = 5;
+
+    TH1D * hJetpT_dPhiGeq2p5_Pass_loose[nflav][npt][neta];
+    TH1D * hJetpT_dPhiLeq1p5_Pass_loose[nflav][npt][neta];
+    TH1D * hJetpT_dPhiGeq2p5_All[nflav][npt][neta];
+    TH1D * hJetpT_dPhiLeq1p5_All[nflav][npt][neta];
+
+    TH1D * hJetEta_dPhiGeq2p5_Pass_loose[nflav][npt][neta];
+    TH1D * hJetEta_dPhiLeq1p5_Pass_loose[nflav][npt][neta];
+    TH1D * hJetEta_dPhiGeq2p5_All[nflav][npt][neta];
+    TH1D * hJetEta_dPhiLeq1p5_All[nflav][npt][neta];
+
+    TH1D * hJetpT_dPhiGeq2p5_Pass_medium[nflav][npt][neta];
+    TH1D * hJetpT_dPhiLeq1p5_Pass_medium[nflav][npt][neta];
+    TH1D * hJetEta_dPhiGeq2p5_Pass_medium[nflav][npt][neta];
+    TH1D * hJetEta_dPhiLeq1p5_Pass_medium[nflav][npt][neta];
+
+
+    TH1D * hJetpT_dPhiGeq2p5_Pass_tight[nflav][npt][neta];
+    TH1D * hJetpT_dPhiLeq1p5_Pass_tight[nflav][npt][neta];
+    TH1D * hJetEta_dPhiGeq2p5_Pass_tight[nflav][npt][neta];
+    TH1D * hJetEta_dPhiLeq1p5_Pass_tight[nflav][npt][neta];
+
     TH1D * hDRweighted[nflav][npt][neta];
     TH1D * hmLL[nflav][npt][neta];
     TH1D * hnpv[nflav][npt][neta];
@@ -275,6 +297,83 @@ int main (int argc, char* argv[]){
 	  hjteta[i][j][k]=new TH1D(Form("hjteta_%d_%d_%d",i,j,k),Form("hjteta_%d_%d_%d",i,j,k),100,-5.,5.);
 	  hjteta[i][j][k]->SetTitle(";jet #eta;");
 	  hjteta[i][j][k]->Sumw2();
+
+
+	  ///////////Plots for efficieceny//////////
+
+	  hJetpT_dPhiGeq2p5_All[i][j][k]=new TH1D(Form("hJetpT_dPhiGeq2p5_All_%d_%d_%d",i,j,k),Form("hJetpT_dPhiGeq2p5_All_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiGeq2p5_All[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiGeq2p5_All[i][j][k]->Sumw2();
+
+	  hJetpT_dPhiLeq1p5_All[i][j][k]=new TH1D(Form("hJetpT_dPhiLeq1p5_All_%d_%d_%d",i,j,k),Form("hJetpT_dPhiLeq1p5_All_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiLeq1p5_All[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiLeq1p5_All[i][j][k]->Sumw2();
+
+
+	  hJetpT_dPhiGeq2p5_Pass_loose[i][j][k]=new TH1D(Form("hJetpT_dPhiGeq2p5_Pass_loose_%d_%d_%d",i,j,k),Form("hJetpT_dPhiGeq2p5_Pass_loose_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiGeq2p5_Pass_loose[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiGeq2p5_Pass_loose[i][j][k]->Sumw2();
+
+	  hJetpT_dPhiLeq1p5_Pass_loose[i][j][k]=new TH1D(Form("hJetpT_dPhiLeq1p5_Pass_loose_%d_%d_%d",i,j,k),Form("hJetpT_dPhiLeq1p5_Pass_loose_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiLeq1p5_Pass_loose[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiLeq1p5_Pass_loose[i][j][k]->Sumw2();
+
+
+	  hJetpT_dPhiGeq2p5_Pass_medium[i][j][k]=new TH1D(Form("hJetpT_dPhiGeq2p5_Pass_medium_%d_%d_%d",i,j,k),Form("hJetpT_dPhiGeq2p5_Pass_medium_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiGeq2p5_Pass_medium[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiGeq2p5_Pass_medium[i][j][k]->Sumw2();
+
+	  hJetpT_dPhiLeq1p5_Pass_medium[i][j][k]=new TH1D(Form("hJetpT_dPhiLeq1p5_Pass_medium_%d_%d_%d",i,j,k),Form("hJetpT_dPhiLeq1p5_Pass_medium_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiLeq1p5_Pass_medium[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiLeq1p5_Pass_medium[i][j][k]->Sumw2();
+
+
+	  hJetpT_dPhiGeq2p5_Pass_tight[i][j][k]=new TH1D(Form("hJetpT_dPhiGeq2p5_Pass_tight_%d_%d_%d",i,j,k),Form("hJetpT_dPhiGeq2p5_Pass_tight_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiGeq2p5_Pass_tight[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiGeq2p5_Pass_tight[i][j][k]->Sumw2();
+
+	  hJetpT_dPhiLeq1p5_Pass_tight[i][j][k]=new TH1D(Form("hJetpT_dPhiLeq1p5_Pass_tight_%d_%d_%d",i,j,k),Form("hJetpT_dPhiLeq1p5_Pass_tight_%d_%d_%d",i,j,k),20,20.,100);
+	  hJetpT_dPhiLeq1p5_Pass_tight[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetpT_dPhiLeq1p5_Pass_tight[i][j][k]->Sumw2();
+	  //////////ETA/////
+
+	  hJetEta_dPhiGeq2p5_All[i][j][k]=new TH1D(Form("hJetEta_dPhiGeq2p5_All_%d_%d_%d",i,j,k),Form("hJetEta_dPhiGeq2p5_All_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiGeq2p5_All[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiGeq2p5_All[i][j][k]->Sumw2();
+
+	  hJetEta_dPhiLeq1p5_All[i][j][k]=new TH1D(Form("hJetEta_dPhiLeq1p5_All_%d_%d_%d",i,j,k),Form("hJetEta_dPhiLeq1p5_All_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiLeq1p5_All[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiLeq1p5_All[i][j][k]->Sumw2();
+
+
+	  hJetEta_dPhiGeq2p5_Pass_loose[i][j][k]=new TH1D(Form("hJetEta_dPhiGeq2p5_Pass_loose_%d_%d_%d",i,j,k),Form("hJetEta_dPhiGeq2p5_Pass_loose_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiGeq2p5_Pass_loose[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiGeq2p5_Pass_loose[i][j][k]->Sumw2();
+
+	  hJetEta_dPhiLeq1p5_Pass_loose[i][j][k]=new TH1D(Form("hJetEta_dPhiLeq1p5_Pass_loose_%d_%d_%d",i,j,k),Form("hJetEta_dPhiLeq1p5_Pass_loose_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiLeq1p5_Pass_loose[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiLeq1p5_Pass_loose[i][j][k]->Sumw2();
+
+
+	  hJetEta_dPhiGeq2p5_Pass_medium[i][j][k]=new TH1D(Form("hJetEta_dPhiGeq2p5_Pass_medium_%d_%d_%d",i,j,k),Form("hJetEta_dPhiGeq2p5_Pass_medium_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiGeq2p5_Pass_medium[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiGeq2p5_Pass_medium[i][j][k]->Sumw2();
+
+	  hJetEta_dPhiLeq1p5_Pass_medium[i][j][k]=new TH1D(Form("hJetEta_dPhiLeq1p5_Pass_medium_%d_%d_%d",i,j,k),Form("hJetEta_dPhiLeq1p5_Pass_medium_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiLeq1p5_Pass_medium[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiLeq1p5_Pass_medium[i][j][k]->Sumw2();
+
+
+
+	  hJetEta_dPhiGeq2p5_Pass_tight[i][j][k]=new TH1D(Form("hJetEta_dPhiGeq2p5_Pass_tight_%d_%d_%d",i,j,k),Form("hJetEta_dPhiGeq2p5_Pass_tight_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiGeq2p5_Pass_tight[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiGeq2p5_Pass_tight[i][j][k]->Sumw2();
+
+	  hJetEta_dPhiLeq1p5_Pass_tight[i][j][k]=new TH1D(Form("hJetEta_dPhiLeq1p5_Pass_tight_%d_%d_%d",i,j,k),Form("hJetEta_dPhiLeq1p5_Pass_tight_%d_%d_%d",i,j,k),25,-5,5);
+	  hJetEta_dPhiLeq1p5_Pass_tight[i][j][k]->SetTitle(";jet p_{T};");
+	  hJetEta_dPhiLeq1p5_Pass_tight[i][j][k]->Sumw2();
+
+
 	}
       }
     }
@@ -406,9 +505,9 @@ int main (int argc, char* argv[]){
       evtReader.Next();  
       muReader.Next();  
       hltReader.Next();  
-      
-      //      if (entry % 1000 == 0)
-      //cout << "================= Processing entry: " << entry << '\r' << flush;
+      //      if (entry > 20) break;
+            if (entry % 1000 == 0)
+      cout << "================= Processing entry: " << entry << '\r' << flush;
       
       
       
@@ -584,6 +683,59 @@ int main (int argc, char* argv[]){
 	      hjetRchg[i][j][k]->Fill(jet_Rchg[nJ],myweight);
 	      hjtpt[i][j][k] ->Fill(vJet.Pt(),myweight);
 	      hjteta[i][j][k]->Fill(vJet.Eta(),myweight);
+
+	      float pt = vJet.Pt();
+	      float ptratio = pt/Zvector.Pt();
+	      float dphi = Zvector.DeltaPhi(vJet);
+	      float eta = vJet.Eta();
+	      float flav = vJet.flavor;
+	      bool loose =  vJet.PU_loose;
+	      bool medium =  vJet.PU_medium;
+	      bool tight =  vJet.PU_tight;
+	      bool matched = (flav == 1 or flav ==2 or flav ==4);
+
+	      //	      cout<<"----nominal njet loop bins "<<i<<" "<< j << " "<<k<<endl;
+	      //cout<<"pt: "<< pt <<" eta: "<<eta<<" "<<loose << " "<<medium
+	      //  << " "<<tight<<" flav: "<<flav<<endl;
+	      if (fabs(dphi) > 2.5 and 0.5 < ptratio and ptratio < 1.5){
+		hJetpT_dPhiGeq2p5_All[i][j][k]->Fill(pt, myweight);
+		hJetEta_dPhiGeq2p5_All[i][j][k]->Fill(eta, myweight);
+		if (loose){
+		  hJetpT_dPhiGeq2p5_Pass_loose[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiGeq2p5_Pass_loose[i][j][k]->Fill(eta, myweight);	    
+		}
+
+		if (medium){
+		  hJetpT_dPhiGeq2p5_Pass_medium[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiGeq2p5_Pass_medium[i][j][k]->Fill(eta, myweight);	    
+		}
+
+		if (tight){
+		  hJetpT_dPhiGeq2p5_Pass_tight[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiGeq2p5_Pass_tight[i][j][k]->Fill(eta, myweight);	    
+		}
+	      }
+	      if (fabs(dphi) < 1.5){// and 0.5 < ptratio and ptratio < 1.5){
+		hJetpT_dPhiLeq1p5_All[i][j][k]->Fill(pt, myweight);
+		hJetEta_dPhiLeq1p5_All[i][j][k]->Fill(eta, myweight);
+		if (loose){
+		  hJetpT_dPhiLeq1p5_Pass_loose[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiLeq1p5_Pass_loose[i][j][k]->Fill(eta, myweight);	    
+		}
+
+		if (medium){
+		  hJetpT_dPhiLeq1p5_Pass_medium[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiLeq1p5_Pass_medium[i][j][k]->Fill(eta, myweight);	    
+		}
+
+		if (tight){
+		  hJetpT_dPhiLeq1p5_Pass_tight[i][j][k]->Fill(pt, myweight);	    
+		  hJetEta_dPhiLeq1p5_Pass_tight[i][j][k]->Fill(eta, myweight);	    
+		}
+	      }
+	      
+
+	      
 	    }//pt bin
 	  }// eta bin
 	}// flavor
@@ -602,8 +754,9 @@ int main (int argc, char* argv[]){
 	bool medium = jets20.at(jet).PU_medium;
 	bool tight = jets20.at(jet).PU_tight;
 	bool matched = (flav == 1 or flav ==2 or flav ==4);
-	//	cout<<"pt: "<< pt <<" eta: "<<eta<<" "<<loose << " "<<medium
-	//  << " "<<tight<<" flav: "<<flav<<endl;
+	//cout<<"----njet20 loop"<<endl;
+	//cout<<"pt: "<< pt <<" eta: "<<eta<<" "<<loose << " "<<medium
+	// << " "<<tight<<" flav: "<<flav<<endl;
 	hPtRatio_vs_dphiZJ[0]->Fill(dphi, ptratio);
 	hPtRatio_vs_dphiZJ[jets20.at(jet).flavor]->Fill(dphi, ptratio);
 	if (fabs(dphi) > 2.5 and 0.5 < ptratio and ptratio < 1.5){
@@ -775,12 +928,13 @@ int main (int argc, char* argv[]){
     h_JetEta_dPhiGeq2p5_All_QG.Write();
     h_JetEta_dPhiLeq1p5_All.Write();
 
-
+    outf->mkdir("Variables");
+    outf->mkdir("Efficiency");
     for(int i=0;i<nflav;i++){
       hPtRatio_vs_dphiZJ[i]->Write();
       for(int j=0;j<npt;j++){
 	for(int k=0;k<neta;k++){
-	  outf->cd();
+	  outf->cd("Variables");
 	  hmLL[i][j][k]->Write();
 	  hDRweighted[i][j][k]->Write();
 	  hnpv[i][j][k]->Write();
@@ -800,7 +954,28 @@ int main (int argc, char* argv[]){
 	  hjetRchg[i][j][k]->Write();
 	  hjtpt[i][j][k]->Write();
 	  hjteta[i][j][k]->Write();
- 
+
+ 	  outf->cd("Efficiency");
+	  hJetpT_dPhiGeq2p5_All[i][j][k]->Write();
+	  hJetpT_dPhiLeq1p5_All[i][j][k]->Write();
+	  hJetpT_dPhiGeq2p5_Pass_loose[i][j][k]->Write();
+	  hJetpT_dPhiLeq1p5_Pass_loose[i][j][k]->Write();
+
+	  hJetEta_dPhiGeq2p5_All[i][j][k]->Write();
+	  hJetEta_dPhiLeq1p5_All[i][j][k]->Write();
+	  hJetEta_dPhiGeq2p5_Pass_loose[i][j][k]->Write();
+	  hJetEta_dPhiLeq1p5_Pass_loose[i][j][k]->Write();
+
+	  hJetpT_dPhiGeq2p5_Pass_medium[i][j][k]->Write();
+	  hJetpT_dPhiLeq1p5_Pass_medium[i][j][k]->Write();
+	  hJetEta_dPhiGeq2p5_Pass_medium[i][j][k]->Write();
+	  hJetEta_dPhiLeq1p5_Pass_medium[i][j][k]->Write();
+
+	  hJetpT_dPhiGeq2p5_Pass_tight[i][j][k]->Write();
+	  hJetpT_dPhiLeq1p5_Pass_tight[i][j][k]->Write();
+	  hJetEta_dPhiGeq2p5_Pass_tight[i][j][k]->Write();
+	  hJetEta_dPhiLeq1p5_Pass_tight[i][j][k]->Write();
+
 	}
       }
     }
